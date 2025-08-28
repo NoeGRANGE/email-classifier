@@ -1,0 +1,7 @@
+@url = http://localhost:8800
+
+
+###
+# GET user passwords list
+GET {{url}}/health
+
