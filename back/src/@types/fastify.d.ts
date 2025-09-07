@@ -1,11 +1,11 @@
-import 'fastify';
+import "fastify";
 
-declare module 'fastify' {
+declare module "fastify" {
   interface FastifyRequest {
     user?: {
-      id?: number;
-      isPremium?: boolean;
-      premiumUntil?: Date;
+      id: string;
+      email?: string;
+      token?: string;
     };
   }
 }
