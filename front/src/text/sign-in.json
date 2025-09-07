@@ -1,0 +1,18 @@
+{
+  "en": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Log In",
+    "forgot_password": "Forgot your password?",
+    "no_account": "Don't have an account? Sign up"
+  },
+  "fr": {
+    "title": "Connexion",
+    "email": "Email",
+    "password": "Mot de passe",
+    "submit": "Se connecter",
+    "forgot_password": "Mot de passe oublié ?",
+    "no_account": "Vous n'avez pas de compte ? Inscrivez-vous"
+  }
+}
