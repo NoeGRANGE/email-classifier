@@ -2,29 +2,32 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
-import { apiRegister } from "@/lib/api";
+import { supabase } from "@/lib/supabase-client";
+import { apiRegister, apiLogin } from "@/lib/api";
+import { useI18n } from "@/i18n/I18n-provider";
 
 export default function AuthCallback() {
   const router = useRouter();
+  const { locale } = useI18n();
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     let active = true;
     (async () => {
       try {
-        // Exchange the OAuth code for a session (PKCE)
         await supabase.auth.exchangeCodeForSession(window.location.href);
-        // Ensure Supabase has processed the URL and a session is set
         const { data, error } = await supabase.auth.getSession();
         if (error || !data.session) throw error || new Error("No session");
         const accessToken = data.session.access_token;
-
-        // Idempotent: backend returns existing or creates user
-        await apiRegister(accessToken);
-
+        const refreshToken = data.session.refresh_token || undefined;
+        const url = new URL(window.location.href);
+        const mode = url.searchParams.get("mode") || "sign-in";
+        if (mode === "sign-up") {
+          await apiRegister(accessToken, refreshToken);
+        } else {
+          await apiLogin(accessToken, refreshToken);
+        }
         if (!active) return;
-        router.replace("/");
+        router.replace(`/${locale}`);
       } catch (e: any) {
         if (!active) return;
         setError(e?.message || "Unexpected error");

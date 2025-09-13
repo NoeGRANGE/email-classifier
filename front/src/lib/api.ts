@@ -1,27 +1,135 @@
-"use client";
+export const API_BASE = (process.env.NEXT_PUBLIC_BACKEND_URL || "").replace(
+  /\/$/,
+  ""
+);
 
-export const API_BASE = (process.env.NEXT_PUBLIC_BACKEND_URL || "").replace(/\/$/, "");
+const isServer = typeof window === "undefined";
 
-export async function apiRegister(token: string) {
+type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+
+type FetchWithAuthOptions = {
+  path: string;
+  method?: HttpMethod;
+  body?: unknown;
+  cookieHeader?: string;
+  retryRefresh?: boolean;
+  extraHeaders?: Record<string, string>;
+};
+
+async function fetchWithAuth<T = any>({
+  path,
+  method = "GET",
+  body,
+  cookieHeader,
+  retryRefresh = true,
+  extraHeaders = {},
+}: FetchWithAuthOptions): Promise<T> {
   if (!API_BASE) throw new Error("Missing NEXT_PUBLIC_BACKEND_URL");
-  const res = await fetch(`${API_BASE}/auth/register`, {
+  if (!path.startsWith("/"))
+    throw new Error(`Path must start with "/": ${path}`);
+
+  const url = `${API_BASE}${path}`;
+
+  const baseHeaders: Record<string, string> = {
+    ...(body != null ? { "Content-Type": "application/json" } : {}),
+    ...extraHeaders,
+  };
+
+  // First attempt
+  let res = await fetch(url, {
+    method,
+    ...(isServer
+      ? {
+          headers: {
+            ...baseHeaders,
+            ...(cookieHeader ? { cookie: cookieHeader } : {}),
+          },
+        }
+      : { headers: baseHeaders, credentials: "include" as const }),
+    ...(body != null
+      ? { body: typeof body === "string" ? body : JSON.stringify(body) }
+      : {}),
+  });
+
+  // If unauthorized, try a refresh once, then retry
+  if (res.status === 401 && retryRefresh) {
+    const refreshed = await refreshSession(isServer ? cookieHeader : undefined);
+    if (!refreshed.ok) {
+      throw new Error("Not authenticated");
+    }
+    // If server and Set-Cookie returned, forward it on retry
+    const retryCookie =
+      isServer && refreshed.setCookie ? refreshed.setCookie : cookieHeader;
+
+    res = await fetch(url, {
+      method,
+      ...(isServer
+        ? {
+            headers: {
+              ...baseHeaders,
+              ...(retryCookie ? { cookie: retryCookie } : {}),
+            },
+          }
+        : { headers: baseHeaders, credentials: "include" as const }),
+      ...(body != null
+        ? { body: typeof body === "string" ? body : JSON.stringify(body) }
+        : {}),
+    });
+  }
+
+  if (!res.ok) throw new Error(`${method} ${path} failed: ${res.status}`);
+  const contentType = res.headers.get("content-type") || "";
+  if (contentType.includes("application/json")) {
+    return res.json() as Promise<T>;
+  }
+  return (await res.text()) as unknown as T;
+}
+
+async function refreshSession(cookieHeader?: string) {
+  const res = await fetch(`${API_BASE}/auth/refresh`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({}),
+    ...(isServer
+      ? { headers: cookieHeader ? { cookie: cookieHeader } : undefined }
+      : { credentials: "include" }),
   });
-  if (!res.ok) throw new Error(`Register failed: ${res.status}`);
-  return res.json();
+  const setCookie = res.headers.get("set-cookie") || undefined;
+  return { ok: res.ok, setCookie };
 }
 
-export async function apiMe(token: string) {
-  if (!API_BASE) throw new Error("Missing NEXT_PUBLIC_BACKEND_URL");
-  const res = await fetch(`${API_BASE}/auth/me`, {
-    headers: { Authorization: `Bearer ${token}` },
+export async function apiRegister(accessToken: string, refreshToken?: string) {
+  return fetchWithAuth({
+    path: "/auth/register",
+    method: "POST",
+    body: { accessToken, refreshToken },
   });
-  if (!res.ok) throw new Error(`Me failed: ${res.status}`);
-  return res.json();
 }
 
+export async function apiLogin(accessToken: string, refreshToken?: string) {
+  return fetchWithAuth({
+    path: "/auth/login",
+    method: "POST",
+    body: { accessToken, refreshToken },
+  });
+}
+
+export async function apiMe(cookieHeader?: string): Promise<RegisterResult> {
+  return fetchWithAuth({ path: "/auth/me", cookieHeader });
+}
+
+export async function joinOrganisation(token: string, cookieHeader?: string) {
+  return fetchWithAuth({
+    path: "/organisation/join",
+    method: "POST",
+    body: { token },
+    cookieHeader,
+  });
+}
+
+export async function getOrganisationData(
+  cookieHeader?: string
+): Promise<OrganisationData> {
+  return fetchWithAuth<OrganisationData>({
+    path: "/organisation",
+    cookieHeader,
+  });
+}

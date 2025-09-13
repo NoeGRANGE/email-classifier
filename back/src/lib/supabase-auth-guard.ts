@@ -14,7 +14,7 @@ export class SupabaseAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<FastifyRequest>();
-    const token = this.extractTokenFromHeader(request);
+    const token = this.extractTokenFromRequest(request);
     if (!token) {
       throw new UnauthorizedException();
     }
@@ -34,10 +34,14 @@ export class SupabaseAuthGuard implements CanActivate {
     return true;
   }
 
-  private extractTokenFromHeader(request: FastifyRequest): string | undefined {
-    const authorization = request.headers["authorization"];
-    if (!authorization) return undefined;
-    const [type, token] = authorization.split(" ");
-    return type === "Bearer" ? token : undefined;
+  private extractTokenFromRequest(request: FastifyRequest): string | undefined {
+    const authorization = request.headers["authorization"] as string | undefined;
+    if (authorization) {
+      const [type, token] = authorization.split(" ");
+      if (type === "Bearer" && token) return token;
+    }
+    const cookies = (request as any).cookies || request["cookies"] || {};
+    if (cookies["sb-access-token"]) return cookies["sb-access-token"];
+    return undefined;
   }
 }

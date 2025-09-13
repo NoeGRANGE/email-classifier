@@ -1,12 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Supa } from "../lib/supabase";
 
-export interface RegisterResult {
-  auth_user_id: string;
-  email: string;
-  org_id: number;
-}
-
 @Injectable()
 export class RegisterService {
   constructor(@Inject("SUPABASE") private readonly supabase: Supa) {}
@@ -37,7 +31,6 @@ export class RegisterService {
         auth_user_id: authUserId,
         email,
         org_id: null,
-        outlook_email: null,
       })
       .select("auth_user_id,email,org_id")
       .single();

@@ -1,8 +1,8 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
-  Query,
   Req,
   Res,
   UseGuards,
@@ -20,9 +20,53 @@ export class OrganisationController {
   ) {}
 
   @UseGuards(SupabaseAuthGuard)
+  @Get()
+  async get(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
+    const user = await this.registerService.getMe(req.user.id);
+    if (!user) {
+      res.status(404).send({ error: "User not found" });
+      return;
+    }
+    if (user.org_id === null) {
+      res
+        .status(404)
+        .send({ error: "User already registered in an organisation" });
+      return;
+    }
+
+    const organisation = await this.organisationService.getOrganisationForUser(
+      user.auth_user_id
+    );
+    if (!organisation) {
+      res.status(404).send({ error: "Organisation not found" });
+      return;
+    }
+    const members = await this.organisationService.getMembersForOrg(
+      organisation.id
+    );
+
+    res.status(200).send({
+      ok: true,
+      organisation: {
+        name: organisation.name,
+        seatsPurchased: organisation.seats_purchased,
+        seatsUsed: organisation.seats_used,
+        members: members.map((m) => ({
+          id: m.id,
+          email: m.email,
+          role: m.role,
+          status: m.status,
+          authorizedEmails: m.authorized_emails,
+          createdAt: m.created_at,
+          acceptedAt: m.accepted_at,
+        })),
+      },
+    });
+  }
+  @UseGuards(SupabaseAuthGuard)
   @Post("/join")
   async join(
-    @Query("token") token: string,
+    @Body("token") token: string,
     @Req() req: FastifyRequest,
     @Res() res: FastifyReply
   ) {

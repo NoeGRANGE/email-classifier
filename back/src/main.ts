@@ -16,6 +16,7 @@ import {
   NestFastifyApplication,
 } from "@nestjs/platform-fastify";
 import cors from "@fastify/cors";
+import cookie from "@fastify/cookie";
 import "ts-node/register/transpile-only";
 import "tsconfig-paths/register";
 
@@ -30,6 +31,7 @@ async function start() {
     origin: true,
     credentials: true,
   });
+  await app.register(cookie);
   await app.listen(process.env.PORT || 8800, "0.0.0.0");
 }
 

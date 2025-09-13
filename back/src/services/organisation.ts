@@ -111,4 +111,49 @@ export class OrganisationService {
     }
     return token;
   }
+
+  async getOrganisationForUser(
+    userId: string
+  ): Promise<Pick<
+    Tables<"organisations">,
+    "id" | "name" | "subscription_type" | "seats_purchased" | "seats_used"
+  > | null> {
+    const { data, error } = await this.supabase
+      .from("users")
+      .select(
+        "org_id, organisations(id, name, subscription_type, seats_purchased, seats_used)"
+      )
+      .eq("auth_user_id", userId)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    return data?.organisations ?? null;
+  }
+
+  async getMembersForOrg(
+    orgId: number
+  ): Promise<
+    Pick<
+      Tables<"members">,
+      | "id"
+      | "email"
+      | "role"
+      | "status"
+      | "authorized_emails"
+      | "created_at"
+      | "accepted_at"
+    >[]
+  > {
+    const { data, error } = await this.supabase
+      .from("members")
+      .select(
+        "id, email, role, status, authorized_emails, created_at, accepted_at"
+      )
+      .eq("org_id", orgId);
+
+    if (error) throw error;
+
+    return data;
+  }
 }

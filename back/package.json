@@ -25,6 +25,7 @@
     "test:dev": "NODE_ENV=test jest --config ./test/jest-e2e.json --runInBand"
   },
   "dependencies": {
+    "@fastify/cookie": "^9",
     "@fastify/cors": "^9.0.1",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^10.0.0",
