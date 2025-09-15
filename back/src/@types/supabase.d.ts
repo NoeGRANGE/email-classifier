@@ -770,6 +770,27 @@ declare global {
     };
     public: {
       Tables: {
+        billing_prices: {
+          Row: {
+            id: string;
+            mailbox_limit: number;
+            plan: Database["public"]["Enums"]["plan_t"];
+            stripe_price_id: string;
+          };
+          Insert: {
+            id?: string;
+            mailbox_limit: number;
+            plan: Database["public"]["Enums"]["plan_t"];
+            stripe_price_id: string;
+          };
+          Update: {
+            id?: string;
+            mailbox_limit?: number;
+            plan?: Database["public"]["Enums"]["plan_t"];
+            stripe_price_id?: string;
+          };
+          Relationships: [];
+        };
         members: {
           Row: {
             accepted_at: string | null;
@@ -909,24 +930,57 @@ declare global {
             },
           ];
         };
+        stripe_events: {
+          Row: {
+            created_at: string | null;
+            id: string;
+            type: string | null;
+          };
+          Insert: {
+            created_at?: string | null;
+            id: string;
+            type?: string | null;
+          };
+          Update: {
+            created_at?: string | null;
+            id?: string;
+            type?: string | null;
+          };
+          Relationships: [];
+        };
         users: {
           Row: {
             auth_user_id: string;
             created_at: string;
+            current_period_end: string | null;
+            current_plan: Database["public"]["Enums"]["plan_t"] | null;
+            current_price_id: string | null;
             email: string;
             org_id: number | null;
+            stripe_customer_id: string | null;
+            subscription_status: string | null;
           };
           Insert: {
             auth_user_id: string;
             created_at?: string;
+            current_period_end?: string | null;
+            current_plan?: Database["public"]["Enums"]["plan_t"] | null;
+            current_price_id?: string | null;
             email: string;
             org_id?: number | null;
+            stripe_customer_id?: string | null;
+            subscription_status?: string | null;
           };
           Update: {
             auth_user_id?: string;
             created_at?: string;
+            current_period_end?: string | null;
+            current_plan?: Database["public"]["Enums"]["plan_t"] | null;
+            current_price_id?: string | null;
             email?: string;
             org_id?: number | null;
+            stripe_customer_id?: string | null;
+            subscription_status?: string | null;
           };
           Relationships: [];
         };
@@ -938,7 +992,7 @@ declare global {
         [_ in never]: never;
       };
       Enums: {
-        [_ in never]: never;
+        plan_t: "solo" | "team" | "business" | "enterprise";
       };
       CompositeTypes: {
         [_ in never]: never;
@@ -1533,7 +1587,9 @@ declare global {
       },
     },
     public: {
-      Enums: {},
+      Enums: {
+        plan_t: ["solo", "team", "business", "enterprise"],
+      },
     },
     storage: {
       Enums: {
