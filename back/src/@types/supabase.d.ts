@@ -982,7 +982,15 @@ declare global {
             stripe_customer_id?: string | null;
             subscription_status?: string | null;
           };
-          Relationships: [];
+          Relationships: [
+            {
+              foreignKeyName: "users_org_id_fkey";
+              columns: ["org_id"];
+              isOneToOne: false;
+              referencedRelation: "organisations";
+              referencedColumns: ["id"];
+            },
+          ];
         };
       };
       Views: {

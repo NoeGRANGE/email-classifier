@@ -35,7 +35,6 @@ async function fetchWithAuth<T = any>({
     ...extraHeaders,
   };
 
-  // First attempt
   let res = await fetch(url, {
     method,
     ...(isServer
@@ -132,4 +131,17 @@ export async function getOrganisationData(
     path: "/organisation",
     cookieHeader,
   });
+}
+
+// Billing
+export async function getBillingInfo(
+  cookieHeader?: string
+): Promise<BillingInfo> {
+  return fetchWithAuth<BillingInfo>({ path: "/billing/me", cookieHeader });
+}
+
+export async function getBillingPlans(
+  cookieHeader?: string
+): Promise<PlanInfo[]> {
+  return fetchWithAuth<PlanInfo[]>({ path: "/billing/plans", cookieHeader });
 }

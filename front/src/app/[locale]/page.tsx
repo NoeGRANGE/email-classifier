@@ -6,8 +6,6 @@ export default async function Home() {
   try {
     const cookieHeader = (await headers()).get("cookie") ?? "";
     const me = await API.apiMe(cookieHeader);
-    console.log("me");
-    console.log(me);
     return (
       <div className={styles.page}>
         <main className={styles.main}>

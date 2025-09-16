@@ -121,14 +121,13 @@ export class OrganisationService {
     const { data, error } = await this.supabase
       .from("users")
       .select(
-        "org_id, organisations(id, name, subscription_type, seats_purchased, seats_used)"
+        "org_id, org:organisations!users_org_id_fkey(id, name, subscription_type, seats_purchased, seats_used)"
       )
       .eq("auth_user_id", userId)
       .maybeSingle();
-
     if (error) throw error;
 
-    return data?.organisations ?? null;
+    return data?.org ?? null;
   }
 
   async getMembersForOrg(

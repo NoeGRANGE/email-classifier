@@ -28,9 +28,7 @@ export class OrganisationController {
       return;
     }
     if (user.org_id === null) {
-      res
-        .status(404)
-        .send({ error: "User already registered in an organisation" });
+      res.status(404).send({ error: "User not registered in an organisation" });
       return;
     }
 

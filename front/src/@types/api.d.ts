@@ -23,4 +23,25 @@ declare global {
       org_id: number;
     };
   };
+
+  // Billing
+  type PlanInfo = {
+    canSwitchTo: boolean;
+    isCurrent: boolean;
+    id: string;
+    stripe_price_id: string;
+    plan: "solo" | "team" | "business" | "enterprise";
+    mailbox_limit: number;
+  };
+  type Plan = "solo" | "team" | "business";
+  type BillingInfo = {
+    userId: string;
+    stripeCustomerId: string | null;
+    currentPlan: "solo" | "team" | "business" | "enterprise" | null;
+    subscriptionStatus: "trialing" | "active" | "past_due" | "canceled" | null;
+    currentPriceId: string | null;
+    currentPeriodEnd: string | null;
+    mailboxLimit: number;
+    mailboxUsed: number;
+  };
 }
