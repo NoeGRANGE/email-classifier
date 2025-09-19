@@ -32,7 +32,7 @@ export default function AuthButtons({ mode = "sign-in" }: Props) {
     if (inviteToken) {
       router.replace(`/organisation/accept?inviteToken=${inviteToken}`);
     }
-    router.replace(`/subscription`);
+    router.replace(`/subscriptions`);
   }
 
   async function onSubmitEmailPassword(e: FormEvent) {

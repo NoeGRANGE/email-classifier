@@ -4,7 +4,7 @@ import { type ReactNode, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
-import { Building2, CreditCard } from "lucide-react";
+import { Building2, CreditCard, Mails, Settings, Wrench } from "lucide-react";
 
 import {
   Sidebar,
@@ -23,6 +23,8 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
+import LanguageSwitcher from "@/components/language-switcher";
+import styles from "./dashboard-shell.module.css";
 
 export type DashboardNavItem = {
   /** Unique identifier so the list is easy to extend later. */
@@ -47,10 +49,28 @@ export const DEFAULT_DASHBOARD_NAV: DashboardNavItem[] = [
     icon: Building2,
   },
   {
-    id: "subscription",
-    label: "Subscription",
-    href: "subscription",
+    id: "emails",
+    label: "Emails",
+    href: "emails",
+    icon: Mails,
+  },
+  {
+    id: "configurations",
+    label: "Configurations",
+    href: "configurations",
+    icon: Wrench,
+  },
+  {
+    id: "subscriptions",
+    label: "Subscriptions",
+    href: "subscriptions",
     icon: CreditCard,
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    href: "settings",
+    icon: Settings,
   },
 ];
 
@@ -80,9 +100,7 @@ export function DashboardShell({
   const normalizedItems = useMemo<NormalizedNavItem[]>(() => {
     const prefix = baseHref.replace(/\/$/, "");
     return items.map((item) => {
-      const rawHref = item.href.startsWith("/")
-        ? item.href
-        : `/${item.href}`;
+      const rawHref = item.href.startsWith("/") ? item.href : `/${item.href}`;
       const fullHref = `${prefix}${rawHref}`.replace(/\/+/g, "/") || "/";
       return {
         ...item,
@@ -102,32 +120,43 @@ export function DashboardShell({
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-svh w-full">
-        <Sidebar>
-          <SidebarHeader>
-            <div className="flex h-12 items-center px-2 text-sm font-semibold">
-              Mailroom
+      <div className={styles.dashboardShell}>
+        <Sidebar className={styles.sidebar}>
+          <SidebarHeader className={styles.sidebarHeader}>
+            <div className={styles.sidebarHeaderContent}>
+              <span className={styles.brand}>Taggly</span>
+              <div
+                className={cn(
+                  styles.languageSwitcher,
+                  "group-data-[collapsible=icon]:hidden"
+                )}
+              >
+                <LanguageSwitcher />
+              </div>
             </div>
           </SidebarHeader>
-          <SidebarContent>
+          <SidebarContent className={styles.sidebarContent}>
             <SidebarGroup>
-              <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+              <SidebarGroupLabel className={styles.groupLabel}>
+                Workspace
+              </SidebarGroupLabel>
               <SidebarMenu>
                 {normalizedItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = activeItem?.id === item.id;
                   return (
                     <SidebarMenuItem key={item.id}>
-                      <SidebarMenuButton asChild isActive={isActive}>
-                        <Link
-                          href={item.fullHref}
-                          className={cn(
-                            "flex w-full items-center gap-2",
-                            !Icon && "pl-1"
-                          )}
-                        >
-                          {Icon ? <Icon className="size-4" /> : null}
-                          <span>{item.label}</span>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={isActive}
+                        className={cn(
+                          styles.menuButton,
+                          !Icon && styles.menuButtonNoIcon
+                        )}
+                      >
+                        <Link href={item.fullHref}>
+                          {Icon ? <Icon className={styles.menuButtonIcon} /> : null}
+                          <span className={styles.menuButtonLabel}>{item.label}</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -138,23 +167,21 @@ export function DashboardShell({
           </SidebarContent>
           <SidebarSeparator />
           <SidebarFooter>
-            <div className="rounded-lg border border-dashed p-3 text-xs text-muted-foreground">
+            {/* <div className="rounded-lg border border-dashed p-3 text-xs text-muted-foreground">
               Add quick links or shortcuts here.
-            </div>
+            </div> */}
           </SidebarFooter>
           <SidebarRail />
         </Sidebar>
         <SidebarInset>
-          <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
-            <SidebarTrigger className="-ml-1" />
-            <div className="flex-1 truncate text-sm font-medium text-muted-foreground">
+          <header className={styles.mainHeader}>
+            <SidebarTrigger className={styles.sidebarTrigger} />
+            <div className={styles.mainTitle}>
               {activeItem?.label ?? "Dashboard"}
             </div>
             {headerAddon}
           </header>
-          <div className="flex flex-1 flex-col gap-6 p-6">
-            {children}
-          </div>
+          <div className={styles.mainContent}>{children}</div>
         </SidebarInset>
       </div>
     </SidebarProvider>

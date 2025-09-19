@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import LanguageSwitcher from "../language-switcher";
 import { getBillingInfo, getBillingPlans } from "@/lib/api";
 
-export default function SubscriptionScreen() {
+export default function SubscriptionsScreen() {
   const [info, setInfo] = React.useState<BillingInfo | null>(null);
   const [plans, setPlans] = React.useState<PlanInfo[] | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -32,22 +31,12 @@ export default function SubscriptionScreen() {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 12,
-        }}
-      >
-        <h1>Subscription</h1>
-        <LanguageSwitcher />
-      </div>
+      <h1 style={{ marginBottom: 12 }}>Subscriptions</h1>
       {loading && <p>Loading…</p>}
       {error && <p style={{ color: "crimson" }}>{error}</p>}
       {!loading && !error && info && (
         <section style={{ marginBottom: 16 }}>
-          <h2 style={{ margin: 0, fontSize: 18 }}>Your subscription</h2>
+          <h2 style={{ margin: 0, fontSize: 18 }}>Your subscriptions</h2>
           <div style={{ marginTop: 8, lineHeight: 1.6 }}>
             <div>
               <strong>Plan:</strong> {info.currentPlan ?? "none"}

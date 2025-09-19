@@ -1,34 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useI18n, type Locale } from "./I18n-provider";
+import { useEffect, useMemo, useState } from "react";
 
-type Dict = Record<string, string>;
+import { useI18n } from "./I18n-provider";
+import {
+  createTranslator,
+  loadNamespaces,
+  type TranslationDict,
+} from "./translation-loader";
 
-// Register JSON namespaces here
-const loaders: Record<string, () => Promise<any>> = {
-  "sign-in": () => import("@/text/sign-in.json"),
-  "sign-up": () => import("@/text/sign-up.json"),
-  auth: () => import("@/text/auth.json"),
-};
-
-async function loadNamespace(ns: string, locale: Locale): Promise<Dict> {
-  const loader = loaders[ns];
-  if (!loader) return {};
-  const mod = await loader();
-  const data = mod.default || mod;
-  return (data?.[locale] as Dict) || {};
-}
-
-export function useTranslations(ns: string) {
+export function useTranslations(namespaces: string | string[]) {
   const { locale } = useI18n();
-  const [dict, setDict] = useState<Dict>({});
+  const [dict, setDict] = useState<TranslationDict>({});
+
+  const namespaceList = useMemo(
+    () => (Array.isArray(namespaces) ? namespaces : [namespaces]),
+    [namespaces]
+  );
 
   useEffect(() => {
     let mounted = true;
-    loadNamespace(ns, locale)
-      .then((d) => {
-        if (mounted) setDict(d);
+    loadNamespaces(locale, namespaceList)
+      .then((merged) => {
+        if (mounted) setDict(merged);
       })
       .catch(() => {
         if (mounted) setDict({});
@@ -36,11 +30,9 @@ export function useTranslations(ns: string) {
     return () => {
       mounted = false;
     };
-  }, [ns, locale]);
+  }, [locale, namespaceList]);
 
-  function t(key: string, fallback?: string) {
-    return dict[key] ?? fallback ?? key;
-  }
+  const t = useMemo(() => createTranslator(dict), [dict]);
 
-  return { t, locale };
+  return { t, locale, dict };
 }
