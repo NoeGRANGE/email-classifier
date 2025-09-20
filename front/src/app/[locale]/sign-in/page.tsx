@@ -2,7 +2,7 @@
 
 import AuthButtons from "@/components/auth-buttons";
 import { useTranslations } from "@/i18n/use-translations";
-import LanguageSwitcher from "@/components/language-switcher";
+import LanguageSwitcher from "@/components/ui/language-switcher";
 
 export default function SignInPage() {
   const { t } = useTranslations("sign-in");

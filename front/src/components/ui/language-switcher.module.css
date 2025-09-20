@@ -1,0 +1,42 @@
+.container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.container svg {
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.container:focus-within {
+  outline: 2px solid var(--focus-ring-color, #3b82f6);
+  outline-offset: 2px;
+}
+
+.container > select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  transform: translateZ(0);
+}
+
+.container:hover {
+  background: rgba(0, 0, 0, 0.06);
+}

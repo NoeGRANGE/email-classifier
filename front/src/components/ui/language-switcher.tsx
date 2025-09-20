@@ -2,6 +2,8 @@
 
 import { useI18n } from "@/i18n/I18n-provider";
 import { usePathname, useRouter } from "next/navigation";
+import { Globe } from "lucide-react";
+import styles from "./language-switcher.module.css";
 
 export default function LanguageSwitcher() {
   const { locale, setLocale } = useI18n();
@@ -11,30 +13,28 @@ export default function LanguageSwitcher() {
   function switchTo(newLocale: string) {
     if (!pathname) return;
     const segments = pathname.split("/").filter(Boolean);
-    // Replace first segment (current locale) with the new one
-    if (segments.length > 0) {
-      segments[0] = newLocale;
-    } else {
-      segments.push(newLocale);
-    }
+    segments[0] = newLocale;
     const newPath = "/" + segments.join("/");
     setLocale(newLocale as any);
     router.push(newPath);
   }
 
   return (
-    <div style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
-      <label htmlFor="locale" style={{ opacity: 0.7 }}>
-        Language
-      </label>
+    <label
+      htmlFor="locale"
+      className={styles.container}
+      title="Change language"
+    >
+      <Globe aria-hidden="true" />
       <select
         id="locale"
+        aria-label="Change language"
         value={locale}
         onChange={(e) => switchTo(e.target.value)}
       >
         <option value="en">English</option>
         <option value="fr">Français</option>
       </select>
-    </div>
+    </label>
   );
 }

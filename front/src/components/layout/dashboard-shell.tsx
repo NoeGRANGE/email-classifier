@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useTranslations } from "@/i18n/use-translations";
 import { cn } from "@/lib/utils";
-import LanguageSwitcher from "@/components/language-switcher";
+import LanguageSwitcher from "@/components/ui/language-switcher";
 import styles from "./dashboard-shell.module.css";
 
 export type DashboardNavItem = {
