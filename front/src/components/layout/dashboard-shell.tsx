@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useMemo } from "react";
+import { type ReactNode, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
@@ -22,6 +22,7 @@ import {
   SidebarSeparator,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useTranslations } from "@/i18n/use-translations";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from "@/components/language-switcher";
 import styles from "./dashboard-shell.module.css";
@@ -31,7 +32,9 @@ export type DashboardNavItem = {
   id: string;
   /** Text displayed inside the sidebar button. */
   label: string;
-  /** Path without the locale prefix, e.g. `"organisation"` or `"/subscription"`. */
+  /** Optional translation key for the label. */
+  labelKey?: string;
+  /** Path without the locale prefix, e.g. `"organisations"` or `"/subscriptions"`. */
   href: string;
   /** Optional icon from lucide-react. */
   icon?: LucideIcon;
@@ -45,30 +48,35 @@ export const DEFAULT_DASHBOARD_NAV: DashboardNavItem[] = [
   {
     id: "organisation",
     label: "Organisation",
+    labelKey: "sidebar.nav.organisation",
     href: "organisation",
     icon: Building2,
   },
   {
     id: "emails",
     label: "Emails",
+    labelKey: "sidebar.nav.emails",
     href: "emails",
     icon: Mails,
   },
   {
     id: "configurations",
     label: "Configurations",
+    labelKey: "sidebar.nav.configurations",
     href: "configurations",
     icon: Wrench,
   },
   {
     id: "subscriptions",
     label: "Subscriptions",
+    labelKey: "sidebar.nav.subscriptions",
     href: "subscriptions",
     icon: CreditCard,
   },
   {
     id: "settings",
     label: "Settings",
+    labelKey: "sidebar.nav.settings",
     href: "settings",
     icon: Settings,
   },
@@ -95,6 +103,7 @@ export function DashboardShell({
   baseHref = "",
   headerAddon,
 }: DashboardShellProps) {
+  const { t } = useTranslations("dashboard");
   const pathname = usePathname();
 
   const normalizedItems = useMemo<NormalizedNavItem[]>(() => {
@@ -109,6 +118,14 @@ export function DashboardShell({
     });
   }, [items, baseHref]);
 
+  const getItemLabel = useCallback(
+    (item: NormalizedNavItem) =>
+      item.labelKey
+        ? t(item.labelKey, item.label ?? item.id)
+        : item.label ?? item.id,
+    [t]
+  );
+
   const activeItem = useMemo(() => {
     const current = pathname?.replace(/\/$/, "");
     return normalizedItems.find((item) => {
@@ -118,13 +135,20 @@ export function DashboardShell({
     });
   }, [normalizedItems, pathname]);
 
+  const activeLabel = useMemo(
+    () => (activeItem ? getItemLabel(activeItem) : undefined),
+    [activeItem, getItemLabel]
+  );
+
   return (
     <SidebarProvider>
       <div className={styles.dashboardShell}>
         <Sidebar className={styles.sidebar}>
           <SidebarHeader className={styles.sidebarHeader}>
             <div className={styles.sidebarHeaderContent}>
-              <span className={styles.brand}>Taggly</span>
+              <span className={styles.brand}>
+                {t("sidebar.brand", "Taggly")}
+              </span>
               <div
                 className={cn(
                   styles.languageSwitcher,
@@ -138,12 +162,13 @@ export function DashboardShell({
           <SidebarContent className={styles.sidebarContent}>
             <SidebarGroup>
               <SidebarGroupLabel className={styles.groupLabel}>
-                Workspace
+                {t("sidebar.workspace", "Workspace")}
               </SidebarGroupLabel>
               <SidebarMenu>
                 {normalizedItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = activeItem?.id === item.id;
+                  const displayLabel = getItemLabel(item);
                   return (
                     <SidebarMenuItem key={item.id}>
                       <SidebarMenuButton
@@ -155,8 +180,12 @@ export function DashboardShell({
                         )}
                       >
                         <Link href={item.fullHref}>
-                          {Icon ? <Icon className={styles.menuButtonIcon} /> : null}
-                          <span className={styles.menuButtonLabel}>{item.label}</span>
+                          {Icon ? (
+                            <Icon className={styles.menuButtonIcon} />
+                          ) : null}
+                          <span className={styles.menuButtonLabel}>
+                            {displayLabel}
+                          </span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -177,7 +206,7 @@ export function DashboardShell({
           <header className={styles.mainHeader}>
             <SidebarTrigger className={styles.sidebarTrigger} />
             <div className={styles.mainTitle}>
-              {activeItem?.label ?? "Dashboard"}
+              {activeLabel ?? t("sidebar.dashboardFallback", "Dashboard")}
             </div>
             {headerAddon}
           </header>

@@ -1,0 +1,22 @@
+{
+  "en": {
+    "sidebar.brand": "Taggly",
+    "sidebar.workspace": "Workspace",
+    "sidebar.dashboardFallback": "Dashboard",
+    "sidebar.nav.organisation": "Organisation",
+    "sidebar.nav.emails": "Emails",
+    "sidebar.nav.configurations": "Configurations",
+    "sidebar.nav.subscriptions": "Subscriptions",
+    "sidebar.nav.settings": "Settings"
+  },
+  "fr": {
+    "sidebar.brand": "Taggly",
+    "sidebar.workspace": "Espace de travail",
+    "sidebar.dashboardFallback": "Tableau de bord",
+    "sidebar.nav.organisation": "Organisation",
+    "sidebar.nav.emails": "E-mails",
+    "sidebar.nav.configurations": "Configurations",
+    "sidebar.nav.subscriptions": "Abonnements",
+    "sidebar.nav.settings": "Paramètres"
+  }
+}
