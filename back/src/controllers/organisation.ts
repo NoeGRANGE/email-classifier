@@ -24,11 +24,11 @@ export class OrganisationController {
   async get(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
     const user = await this.registerService.getMe(req.user.id);
     if (!user) {
-      res.status(404).send({ error: "User not found" });
+      res.status(403).send({ error: "User not found" });
       return;
     }
     if (user.org_id === null) {
-      res.status(404).send({ error: "User not registered in an organisation" });
+      res.status(403).send({ error: "User not registered in an organisation" });
       return;
     }
 
@@ -36,7 +36,7 @@ export class OrganisationController {
       user.auth_user_id
     );
     if (!organisation) {
-      res.status(404).send({ error: "Organisation not found" });
+      res.status(403).send({ error: "Organisation not found" });
       return;
     }
     const members = await this.organisationService.getMembersForOrg(
@@ -75,12 +75,12 @@ export class OrganisationController {
 
     const user = await this.registerService.getMe(req.user.id);
     if (!user) {
-      res.status(404).send({ error: "User not found" });
+      res.status(403).send({ error: "User not found" });
       return;
     }
     if (user.org_id !== null) {
       res
-        .status(404)
+        .status(403)
         .send({ error: "User already registered in an organisation" });
       return;
     }
@@ -107,7 +107,7 @@ export class OrganisationController {
     const user = await this.registerService.getMe(req.user.id);
     if (!user.org_id === null) {
       res
-        .status(404)
+        .status(403)
         .send({ error: "User already registered in an organisation" });
       return;
     }
@@ -140,7 +140,7 @@ export class OrganisationController {
     const member = await this.organisationService.getMember(req.user.id);
     if (!member || (member.role !== "owner" && member.role !== "admin")) {
       res
-        .status(404)
+        .status(403)
         .send({ error: "Member doesn't have the right permission" });
       return;
     }
