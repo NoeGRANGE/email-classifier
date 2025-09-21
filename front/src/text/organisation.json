@@ -1,8 +1,32 @@
 {
   "en": {
-    "title": "My organization"
+    "noOrga.badge": "Getting started",
+    "noOrga.title": "Set up your workspace",
+    "noOrga.subtitle": "We couldn't find an organisation attached to your account yet. Create one to unlock collaboration, shared inbox triage, and team-level insights.",
+    "noOrga.highlight.title": "All your email operations in one place",
+    "noOrga.highlight.description": "Centralise routing rules, categories, and labels so the whole team understands what needs attention next.",
+    "noOrga.steps.pick.title": "Pick a subscription",
+    "noOrga.steps.pick.description": "Choose the plan that matches your team size and expected mailbox usage.",
+    "noOrga.steps.create.title": "Create your organisation",
+    "noOrga.steps.create.description": "Give it a name, customise the workspace, and connect your primary mailbox.",
+    "noOrga.steps.invite.title": "Invite collaborators",
+    "noOrga.steps.invite.description": "Share the workspace with teammates so everyone can start triaging emails together.",
+    "noOrga.actions.primary": "Choose a subscription",
+    "noOrga.actions.secondary": "Explore demo inbox"
   },
   "fr": {
-    "title": "Mon organisation"
+    "noOrga.badge": "Premiers pas",
+    "noOrga.title": "Configurez votre espace de travail",
+    "noOrga.subtitle": "Nous n'avons pas encore trouvé d'organisation liée à votre compte. Créez-en une pour débloquer la collaboration, le tri de boîte partagée et les statistiques d'équipe.",
+    "noOrga.highlight.title": "Toutes vos opérations e-mail au même endroit",
+    "noOrga.highlight.description": "Centralisez règles de routage, catégories et labels afin que toute l'équipe sache ce qui mérite de l'attention.",
+    "noOrga.steps.pick.title": "Choisissez un abonnement",
+    "noOrga.steps.pick.description": "Sélectionnez l'offre adaptée à la taille de votre équipe et au volume de boîtes e-mail.",
+    "noOrga.steps.create.title": "Créez votre organisation",
+    "noOrga.steps.create.description": "Nommez-la, personnalisez l'espace et connectez votre boîte principale.",
+    "noOrga.steps.invite.title": "Invitez des collaborateurs",
+    "noOrga.steps.invite.description": "Partagez l'espace avec vos coéquipiers pour trier les e-mails ensemble.",
+    "noOrga.actions.primary": "Choisir un abonnement",
+    "noOrga.actions.secondary": "Explorer la boîte démo"
   }
 }

@@ -11,6 +11,7 @@ const namespaceLoaders: Record<string, LoaderFn> = {
   auth: () => import("@/text/auth.json"),
   dashboard: () => import("@/text/dashboard.json"),
   subscriptions: () => import("@/text/subscriptions.json"),
+  organisation: () => import("@/text/organisation.json"),
 };
 
 export function registerTranslationNamespace(namespace: string, loader: LoaderFn) {

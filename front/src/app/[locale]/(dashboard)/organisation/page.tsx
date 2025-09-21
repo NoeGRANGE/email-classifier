@@ -1,6 +1,7 @@
 import * as API from "@/lib/api";
 import OrganisationScreen from "@/components/organisation/screen";
 import { headers } from "next/headers";
+import NoOrganisationPage from "./no-orga";
 
 export default async function OrganisationPage({
   searchParams,
@@ -22,6 +23,6 @@ export default async function OrganisationPage({
       </main>
     );
   } catch {
-    return <div>TODO: crash</div>;
+    return <NoOrganisationPage />;
   }
 }
