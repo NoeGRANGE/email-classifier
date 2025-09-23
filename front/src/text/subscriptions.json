@@ -47,7 +47,7 @@
     "subscriptions.plan.status.locked.note": "Reduce your usage to drop into this plan.",
     "subscriptions.plan.status.contact.note": "Let's tailor the right package for your team.",
     "subscriptions.plan.actions.contact": "Contact sales",
-    "subscriptions.plan.actions.select": "Select plan",
+    "subscriptions.plan.actions.select": "Try For Free",
     "subscriptions.plan.actions.current": "Current plan",
     "subscriptions.plan.actions.unavailable": "Unavailable"
   },
@@ -99,7 +99,7 @@
     "subscriptions.plan.status.locked.note": "Réduisez votre usage pour revenir sur cette offre.",
     "subscriptions.plan.status.contact.note": "Construisons ensemble la formule idéale pour votre équipe.",
     "subscriptions.plan.actions.contact": "Contacter le service commercial",
-    "subscriptions.plan.actions.select": "Choisir cette offre",
+    "subscriptions.plan.actions.select": "Essayer gratuitement",
     "subscriptions.plan.actions.current": "Offre actuelle",
     "subscriptions.plan.actions.unavailable": "Indisponible"
   }

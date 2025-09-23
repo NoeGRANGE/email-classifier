@@ -102,7 +102,7 @@ export class OrganisationController {
   async create(
     @Req() req: FastifyRequest,
     @Res() res: FastifyReply,
-    @Body() name: string
+    @Body("name") name: string
   ) {
     const user = await this.registerService.getMe(req.user.id);
     if (!user.org_id === null) {
@@ -133,12 +133,16 @@ export class OrganisationController {
   async invite(
     @Req() req: FastifyRequest,
     @Res() res: FastifyReply,
-    @Body() email: string,
-    @Body() role: OrganisationRole,
-    @Body() reservedSeats: number
+    @Body("email") email: string,
+    @Body("role") role: OrganisationRole,
+    @Body("reservedSeats") reservedSeats: number
   ) {
     const member = await this.organisationService.getMember(req.user.id);
-    if (!member || (member.role !== "owner" && member.role !== "admin")) {
+    if (
+      role === "owner" ||
+      !member ||
+      (member.role !== "owner" && member.role !== "admin")
+    ) {
       res
         .status(403)
         .send({ error: "Member doesn't have the right permission" });

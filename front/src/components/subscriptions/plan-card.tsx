@@ -74,19 +74,22 @@ export default function PlanCard({ plan, t }: PlanCardProps) {
 
   return (
     <div className={cardClassName}>
-      <div className={styles.planHeader}>
-        <p className={styles.planTitle}>{planTitle}</p>
-        <span className={styles.planStatusChip} data-status={planStatus}>
-          {planStatusLabel}
-        </span>
-      </div>
-      <p className={styles.planDescription}>{planDescription}</p>
-      <div className={styles.planDetails}>
-        <div className={styles.planDetailRow}>
-          <span>{t("subscriptions.labels.mailboxes", "Mailboxes")}</span>
-          <span className={styles.planDetailValue}>{limitLabel}</span>
+      <div className={styles.planContent}>
+        <div className={styles.planHeader}>
+          <p className={styles.planTitle}>{planTitle}</p>
+          <span className={styles.planStatusChip} data-status={planStatus}>
+            {planStatusLabel}
+          </span>
         </div>
-        {/* {!plan.isEnterprise && (
+        <p className={styles.planDescription}>{planDescription}</p>
+      </div>
+      <div className={styles.planContent}>
+        <div className={styles.planDetails}>
+          <div className={styles.planDetailRow}>
+            <span>{t("subscriptions.labels.mailboxes", "Mailboxes")}</span>
+            <span className={styles.planDetailValue}>{limitLabel}</span>
+          </div>
+          {/* {!plan.isEnterprise && (
           <div className={styles.planDetailRow}>
             <span>
               {t("subscriptions.plan.labels.availability", "Availability")}
@@ -94,28 +97,29 @@ export default function PlanCard({ plan, t }: PlanCardProps) {
             <span className={styles.planDetailValue}>{availabilityText}</span>
           </div>
         )} */}
-      </div>
-      <div className={styles.planFooter}>
-        {planStatus === "contact" ? (
-          <Button asChild>
-            <a href={plan.contactHref ?? ENTERPRISE_CONTACT}>
-              {t("subscriptions.plan.actions.contact", "Contact sales")}
-            </a>
-          </Button>
-        ) : planStatus === "available" ? (
-          <Button disabled={!plan.isAvailable} variant="primary">
-            {t("subscriptions.plan.actions.select", "Select plan")}
-          </Button>
-        ) : planStatus === "current" ? (
-          <Button variant="outline" disabled>
-            {t("subscriptions.plan.actions.current", "Current plan")}
-          </Button>
-        ) : (
-          <Button variant="outline" disabled>
-            {t("subscriptions.plan.actions.unavailable", "Unavailable")}
-          </Button>
-        )}
-        {/* <span className={styles.planNote}>{planStatusNote}</span> */}
+        </div>
+        <div className={styles.planFooter}>
+          {planStatus === "contact" ? (
+            <Button asChild>
+              <a href={plan.contactHref ?? ENTERPRISE_CONTACT}>
+                {t("subscriptions.plan.actions.contact", "Contact sales")}
+              </a>
+            </Button>
+          ) : planStatus === "available" ? (
+            <Button disabled={!plan.isAvailable} variant="primary">
+              {t("subscriptions.plan.actions.select", "Try For Free")}
+            </Button>
+          ) : planStatus === "current" ? (
+            <Button variant="outline" disabled>
+              {t("subscriptions.plan.actions.current", "Current plan")}
+            </Button>
+          ) : (
+            <Button variant="outline" disabled>
+              {t("subscriptions.plan.actions.unavailable", "Unavailable")}
+            </Button>
+          )}
+          {/* <span className={styles.planNote}>{planStatusNote}</span> */}
+        </div>
       </div>
     </div>
   );

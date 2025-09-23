@@ -1,0 +1,157 @@
+.tableSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tableHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.tableTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tableDescription {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.emailValue {
+  display: inline-block;
+  max-width: clamp(6.5rem, 28vw, 16rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.membersTable {
+  width: 100%;
+  max-width: 100%;
+}
+
+.membersTable :global([data-slot="table"]) {
+  width: max(640px, 100%);
+}
+
+.membersTable :global([data-slot="table-container"]) {
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: inherit;
+}
+
+.membersTable :global([data-slot="table-head"]),
+.membersTable :global([data-slot="table-cell"]) {
+  padding-left: 0.85rem;
+  padding-right: 0.85rem;
+}
+
+.membersTable > div:last-child {
+  margin-top: 0.75rem;
+}
+
+@media (min-width: 768px) and (max-width: 1000px) {
+  :global(
+      [data-slot="sidebar"][data-state="expanded"] ~ [data-slot="sidebar-inset"]
+    )
+    .membersTable {
+    max-width: calc(100vw - 254px - 48px);
+  }
+
+  .membersTable :global([data-slot="table-head"]:first-child),
+  .membersTable :global([data-slot="table-cell"]:first-child) {
+    position: sticky;
+    left: 0;
+    padding-left: 1rem;
+    background: color-mix(in srgb, var(--surface) 94%, white 6%);
+    backdrop-filter: saturate(165%) blur(6px);
+    z-index: 2;
+    border-right: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  }
+
+  .membersTable :global([data-slot="table-head"]:first-child) {
+    z-index: 3;
+  }
+}
+
+.roleChip,
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: capitalize;
+}
+
+.roleChip[data-role="owner"] {
+  background: color-mix(in srgb, var(--secondary-color-alpha) 25%, transparent);
+  color: var(--secondary-color);
+}
+
+.roleChip[data-role="admin"] {
+  background: color-mix(in srgb, var(--accent-color) 15%, transparent);
+  color: color-mix(in srgb, var(--accent-color) 85%, #0b3c48 15%);
+}
+
+.roleChip[data-role="member"] {
+  background: color-mix(in srgb, var(--primary-color-alpha) 40%, transparent);
+  color: color-mix(in srgb, var(--primary-color) 90%, #6f1f00 10%);
+}
+
+.statusPill[data-status="accepted"] {
+  background: rgba(34, 197, 94, 0.12);
+  color: rgb(22, 101, 52);
+}
+
+.statusPill[data-status="pending"] {
+  background: rgba(234, 179, 8, 0.15);
+  color: rgb(120, 63, 4);
+}
+
+.statusPill[data-status="suspended"] {
+  background: rgba(248, 113, 113, 0.15);
+  color: rgb(153, 27, 27);
+}
+
+.actionsCell {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .membersTable {
+    max-width: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .emailValue {
+    max-width: clamp(6rem, 35vw, 12rem);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .statusPill[data-status="accepted"] {
+    background: rgba(34, 197, 94, 0.2);
+    color: rgba(187, 247, 208, 0.95);
+  }
+
+  .statusPill[data-status="pending"] {
+    background: rgba(234, 179, 8, 0.2);
+    color: rgba(254, 240, 138, 0.95);
+  }
+
+  .statusPill[data-status="suspended"] {
+    background: rgba(248, 113, 113, 0.25);
+    color: rgba(254, 202, 202, 0.95);
+  }
+}

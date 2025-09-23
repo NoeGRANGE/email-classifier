@@ -1,0 +1,41 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.filtersGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.searchInput {
+  padding-inline-start: 0.5rem;
+  padding-inline-end: 0.5rem;
+}
+
+.selectTrigger {
+  padding-inline-start: 0.5rem !important;
+}
+
+.inviteButton {
+  white-space: nowrap;
+  justify-self: flex-end;
+}
+
+@media (max-width: 720px) {
+  .filters {
+    align-items: stretch;
+  }
+
+  .filtersGroup {
+    width: 100%;
+  }
+
+  .filtersGroup > * {
+    flex: 1 1 140px;
+  }
+}

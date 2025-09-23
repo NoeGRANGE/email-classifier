@@ -3,8 +3,8 @@
   align-items: center;
   justify-content: center;
   min-height: calc(100svh - 3.5rem);
-  padding: clamp(1.5rem, 3vw, 3rem);
-  background: var(--background-image);
+  /* padding: clamp(1.5rem, 3vw, 3rem); */
+  /* background: var(--background-image); */
 }
 
 .card {
@@ -70,7 +70,8 @@
     color-mix(in srgb, var(--primary-color-alpha) 70%, transparent) 0%,
     color-mix(in srgb, var(--secondary-color-alpha) 65%, transparent) 100%
   );
-  border: 1px solid color-mix(in srgb, var(--primary-color-alpha) 65%, var(--border) 35%);
+  border: 1px solid
+    color-mix(in srgb, var(--primary-color-alpha) 65%, var(--border) 35%);
 }
 
 .highlightIcon {
@@ -80,7 +81,11 @@
   width: 3rem;
   height: 3rem;
   border-radius: 1rem;
-  background: color-mix(in srgb, var(--surface) 75%, var(--primary-color-alpha) 25%);
+  background: color-mix(
+    in srgb,
+    var(--surface) 75%,
+    var(--primary-color-alpha) 25%
+  );
   color: var(--primary-color);
 }
 
@@ -123,7 +128,11 @@
   gap: 0.9rem;
   padding: 0.85rem 1rem;
   border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--surface) 88%, var(--primary-color-alpha) 12%);
+  background: color-mix(
+    in srgb,
+    var(--surface) 88%,
+    var(--primary-color-alpha) 12%
+  );
   border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
 }
 
@@ -193,7 +202,11 @@
   }
 
   .stepItem {
-    background: color-mix(in srgb, var(--surface) 65%, var(--primary-color-alpha) 18%);
+    background: color-mix(
+      in srgb,
+      var(--surface) 65%,
+      var(--primary-color-alpha) 18%
+    );
     border-color: color-mix(in srgb, var(--border) 55%, transparent);
   }
 }

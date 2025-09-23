@@ -12,14 +12,15 @@ export default async function OrganisationPage({
   const rawInvite = sp?.inviteToken ?? undefined;
   const inviteToken = Array.isArray(rawInvite) ? rawInvite[0] : rawInvite;
   try {
-    if (inviteToken) await API.joinOrganisation(inviteToken);
+    const cookieHeader = (await headers()).get("cookie") ?? "";
+    if (inviteToken) await API.joinOrganisation(inviteToken, cookieHeader);
   } catch {}
   try {
     const cookieHeader = (await headers()).get("cookie") ?? "";
     const data = await API.getOrganisationData(cookieHeader);
     return (
       <main>
-        <OrganisationScreen data={data} />
+        <OrganisationScreen data={data.organisation} />
       </main>
     );
   } catch {

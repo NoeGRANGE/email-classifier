@@ -126,10 +126,22 @@ export async function joinOrganisation(token: string, cookieHeader?: string) {
 
 export async function getOrganisationData(
   cookieHeader?: string
-): Promise<OrganisationData> {
-  return fetchWithAuth<OrganisationData>({
+): Promise<{ ok: boolean; organisation: OrganisationData }> {
+  return fetchWithAuth<{ ok: boolean; organisation: OrganisationData }>({
     path: "/organisation",
     cookieHeader,
+  });
+}
+
+export async function inviteToOrganisation(
+  email: string,
+  role: string,
+  reservedSeats: number
+): Promise<PlanInfo[]> {
+  return fetchWithAuth<PlanInfo[]>({
+    path: "/organisation/invite",
+    method: "POST",
+    body: { email, role, reservedSeats },
   });
 }
 

@@ -66,9 +66,6 @@ export default function SubscriptionsScreen() {
       mounted = false;
     };
   }, []);
-  console.log({ plans });
-  console.log("info");
-  console.log(info);
 
   const planCards = React.useMemo<PlanCardData[] | null>(
     () => buildPlanCards(plans, info?.currentPlan ?? null),
