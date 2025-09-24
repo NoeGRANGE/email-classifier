@@ -1,7 +1,11 @@
 import type { ReactNode } from "react";
 
-import { DashboardShell, DEFAULT_DASHBOARD_NAV } from "@/components/layout/dashboard-shell";
+import {
+  DashboardShell,
+  DEFAULT_DASHBOARD_NAV,
+} from "@/components/layout/dashboard-shell";
 import type { Locale } from "@/i18n/I18n-provider";
+import ReactQueryProvider from "@/query-provider";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -16,7 +20,7 @@ export default async function DashboardLayout({
 
   return (
     <DashboardShell baseHref={`/${locale}`} items={DEFAULT_DASHBOARD_NAV}>
-      {children}
+      <ReactQueryProvider>{children}</ReactQueryProvider>
     </DashboardShell>
   );
 }

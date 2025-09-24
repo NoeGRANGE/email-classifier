@@ -76,8 +76,41 @@ async function fetchWithAuth<T = any>({
     });
   }
 
-  if (!res.ok) throw new Error(`${method} ${path} failed: ${res.status}`);
   const contentType = res.headers.get("content-type") || "";
+
+  if (!res.ok) {
+    let serverMessage = "";
+    try {
+      if (contentType.includes("application/json")) {
+        const data: any = await res.json();
+        serverMessage =
+          (typeof data?.message === "string" && data.message) ||
+          (typeof data?.error === "string" && data.error) ||
+          (typeof data?.detail === "string" && data.detail) ||
+          (Array.isArray(data?.errors) &&
+            typeof data.errors[0]?.message === "string" &&
+            data.errors[0].message) ||
+          (typeof data?.title === "string" && data.title) ||
+          "";
+        if (!serverMessage) {
+          // fallback to a compact JSON string if we couldn't pick a field
+          serverMessage = JSON.stringify(data);
+        }
+      } else {
+        serverMessage = await res.text();
+      }
+    } catch {
+      // ignore parse errors and fall back to generic message
+    }
+
+    const statusText = res.statusText || "";
+    const errorPayload = {
+      status: res.status,
+      message: serverMessage || statusText || "Request failed",
+    };
+    throw new Error(JSON.stringify(errorPayload));
+  }
+
   if (contentType.includes("application/json")) {
     return res.json() as Promise<T>;
   }
@@ -156,4 +189,24 @@ export async function getBillingPlans(
   cookieHeader?: string
 ): Promise<PlanInfo[]> {
   return fetchWithAuth<PlanInfo[]>({ path: "/billing/plans", cookieHeader });
+}
+
+export async function removeOrganisationMember(memberId: number) {
+  return fetchWithAuth({
+    path: `/organisation/remove-member`,
+    method: "DELETE",
+    body: { memberId },
+  });
+}
+
+export async function manageOrganisationMember(
+  memberId: number,
+  role: string,
+  authorizedEmails: number
+) {
+  return fetchWithAuth({
+    path: `/organisation/update-member`,
+    method: "POST",
+    body: { memberId, role, reservedSeats: authorizedEmails },
+  });
 }

@@ -801,7 +801,7 @@ declare global {
             org_id: number;
             role: string;
             status: string;
-            token: string;
+            token: string | null;
             user_auth_user_id: string | null;
           };
           Insert: {
@@ -813,7 +813,7 @@ declare global {
             org_id: number;
             role?: string;
             status?: string;
-            token: string;
+            token?: string | null;
             user_auth_user_id?: string | null;
           };
           Update: {
@@ -825,7 +825,7 @@ declare global {
             org_id?: number;
             role?: string;
             status?: string;
-            token?: string;
+            token?: string | null;
             user_auth_user_id?: string | null;
           };
           Relationships: [

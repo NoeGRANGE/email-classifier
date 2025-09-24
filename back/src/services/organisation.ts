@@ -57,7 +57,7 @@ export class OrganisationService {
     if (userErr) throw userErr;
   }
 
-  async getMember(userId: string): Promise<{
+  async getMemberFromUserId(userId: string): Promise<{
     accepted_at: string;
     authorized_emails: number;
     created_at: string;
@@ -76,6 +76,68 @@ export class OrganisationService {
       .single();
     if (userErr) throw userErr;
     return data;
+  }
+
+  async getMemberFromId(memberId: number): Promise<{
+    accepted_at: string;
+    authorized_emails: number;
+    created_at: string;
+    email: string;
+    id: number;
+    org_id: number;
+    role: string;
+    status: string;
+    token: string;
+    user_auth_user_id: string;
+  } | null> {
+    const { error: userErr, data } = await this.supabase
+      .from("members")
+      .select("*")
+      .eq("id", memberId)
+      .single();
+    if (userErr) throw userErr;
+    return data;
+  }
+
+  async getOrganisationById(
+    orgId: number
+  ): Promise<Tables<"organisations"> | null> {
+    const { data, error } = await this.supabase
+      .from("organisations")
+      .select("*")
+      .eq("id", orgId)
+      .single();
+    if (error) throw error;
+
+    return data;
+  }
+
+  async setSeatsUsed(orgId: number, seats: number): Promise<void> {
+    const { error } = await this.supabase
+      .from("organisations")
+      .update({ seats_used: seats })
+      .eq("id", orgId);
+    if (error) throw error;
+  }
+
+  async removeMember(memberId: number): Promise<void> {
+    const { error } = await this.supabase
+      .from("members")
+      .delete()
+      .eq("id", memberId);
+    if (error) throw error;
+  }
+
+  async updateMember(
+    memberId: number,
+    role: OrganisationRole,
+    reservedSeats: number
+  ): Promise<void> {
+    const { error } = await this.supabase
+      .from("members")
+      .update({ role, authorized_emails: reservedSeats })
+      .eq("id", memberId);
+    if (error) throw error;
   }
 
   async createInvite(

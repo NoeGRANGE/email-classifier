@@ -122,11 +122,6 @@
   color: rgb(153, 27, 27);
 }
 
-.actionsCell {
-  display: flex;
-  justify-content: flex-end;
-}
-
 @media (max-width: 768px) {
   .membersTable {
     max-width: none;

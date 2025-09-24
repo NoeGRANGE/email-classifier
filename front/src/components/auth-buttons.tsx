@@ -30,6 +30,11 @@ export default function AuthButtons({ mode = "sign-in" }: Props) {
     const params = new URLSearchParams(window.location.search);
     const inviteToken = params.get("inviteToken");
     if (inviteToken) {
+      // get locale from current path
+      const locale = window.location.pathname.split("/")[1];
+      console.log("locale");
+      console.log(locale);
+
       router.replace(`/organisation/accept?inviteToken=${inviteToken}`);
     }
     router.replace(`/subscriptions`);

@@ -1,25 +1,24 @@
-"use client";
+import * as API from "@/lib/api";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import SignInScreen from "@/components/sign-in/screen";
 
-import AuthButtons from "@/components/auth-buttons";
-import { useTranslations } from "@/i18n/use-translations";
-import LanguageSwitcher from "@/components/ui/language-switcher";
+export default async function SignInPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const cookieHeader = (await headers()).get("cookie") ?? "";
+  const me = await API.apiMe(cookieHeader).catch(() => null);
 
-export default function SignInPage() {
-  const { t } = useTranslations("sign-in");
+  if (me?.ok) {
+    const { locale } = await params;
+    redirect(`/${locale}/organisation`);
+  }
+
   return (
     <main>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 12,
-        }}
-      >
-        <h1>{t("title", "Login")}</h1>
-        <LanguageSwitcher />
-      </div>
-      <AuthButtons mode="sign-in" />
+      <SignInScreen />
     </main>
   );
 }

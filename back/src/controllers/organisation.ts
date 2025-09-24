@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Req,
@@ -137,7 +138,9 @@ export class OrganisationController {
     @Body("role") role: OrganisationRole,
     @Body("reservedSeats") reservedSeats: number
   ) {
-    const member = await this.organisationService.getMember(req.user.id);
+    const member = await this.organisationService.getMemberFromUserId(
+      req.user.id
+    );
     if (
       role === "owner" ||
       !member ||
@@ -146,6 +149,21 @@ export class OrganisationController {
       res
         .status(403)
         .send({ error: "Member doesn't have the right permission" });
+      return;
+    }
+
+    const organisation = await this.organisationService.getOrganisationById(
+      member.org_id
+    );
+    if (!organisation) {
+      res.status(403).send({ error: "Organisation not found" });
+      return;
+    }
+    if (
+      organisation.seats_used + reservedSeats >
+      organisation.seats_purchased
+    ) {
+      res.status(403).send({ error: "Not enough seats available" });
       return;
     }
 
@@ -158,8 +176,107 @@ export class OrganisationController {
       role,
       reservedSeats
     );
+    await this.organisationService.setSeatsUsed(
+      member.org_id,
+      organisation.seats_used + reservedSeats
+    );
     // TODO: send email to the user with a link to join the org
 
+    res.status(200).send({ ok: true });
+  }
+
+  @UseGuards(SupabaseAuthGuard)
+  @Delete("/remove-member")
+  async removeMember(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Body("memberId") memberId: number
+  ) {
+    const member = await this.organisationService.getMemberFromUserId(
+      req.user.id
+    );
+    if (!member || (member.role !== "owner" && member.role !== "admin")) {
+      res
+        .status(403)
+        .send({ error: "Member doesn't have the right permission" });
+      return;
+    }
+
+    const [memberToRemove, organisation] = await Promise.all([
+      this.organisationService.getMemberFromId(memberId),
+      this.organisationService.getOrganisationById(member.org_id),
+    ]);
+    if (!memberToRemove || !organisation || memberToRemove.role === "owner") {
+      res.status(404).send({ error: "Member not found or is owner" });
+      return;
+    }
+    await this.organisationService.setSeatsUsed(
+      member.org_id,
+      organisation.seats_used - memberToRemove.authorized_emails
+    );
+    await this.organisationService.removeMember(memberId);
+    // TODO: handle the emails for the user (deactivate)
+    res.status(200).send({ ok: true });
+  }
+
+  @UseGuards(SupabaseAuthGuard)
+  @Post("/update-member")
+  async updateMember(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Body("memberId") memberId: number,
+    @Body("role") role: OrganisationRole,
+    @Body("reservedSeats") reservedSeats: number
+  ) {
+    const member = await this.organisationService.getMemberFromUserId(
+      req.user.id
+    );
+    if (
+      reservedSeats < 1 ||
+      !member ||
+      (member.role !== "owner" && member.role !== "admin")
+    ) {
+      res
+        .status(403)
+        .send({ error: "Member doesn't have the right permission" });
+      return;
+    }
+
+    const [memberToUpdate, organisation] = await Promise.all([
+      this.organisationService.getMemberFromId(memberId),
+      this.organisationService.getOrganisationById(member.org_id),
+    ]);
+    if (
+      !memberToUpdate ||
+      !organisation ||
+      (memberToUpdate.role === "owner" && member.role !== "owner") ||
+      (role === "owner" &&
+        memberToUpdate.user_auth_user_id !== organisation.owner_user_id) ||
+      (role !== "owner" &&
+        memberToUpdate.user_auth_user_id === organisation.owner_user_id)
+    ) {
+      res
+        .status(404)
+        .send({ error: "Member doesn't have the right permission" });
+      return;
+    }
+    const diffSeats = reservedSeats - memberToUpdate.authorized_emails;
+    if (organisation.seats_used + diffSeats > organisation.seats_purchased) {
+      res.status(403).send({ error: "Not enough seats available" });
+      return;
+    }
+    await Promise.all([
+      this.organisationService.updateMember(
+        memberToUpdate.id,
+        role,
+        reservedSeats
+      ),
+      this.organisationService.setSeatsUsed(
+        member.org_id,
+        organisation.seats_used + diffSeats
+      ),
+    ]);
+    // TODO: handle the emails for the user if he had obtain the limit and has less emails now (deactivate)
     res.status(200).send({ ok: true });
   }
 }

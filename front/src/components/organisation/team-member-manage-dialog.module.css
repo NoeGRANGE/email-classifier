@@ -1,0 +1,42 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .form {
+    padding: 2rem;
+  }
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.compactInput {
+  padding-left: 0.625rem !important;
+  padding-right: 0.625rem !important;
+}
+
+.compactSelectTrigger {
+  padding-left: 0.625rem !important;
+}
+
+.compactSelectItem {
+  padding-left: 0.625rem !important;
+}
+
+.helperText {
+  font-size: 0.875rem;
+  color: var(--muted-foreground, rgb(107 114 128));
+}
