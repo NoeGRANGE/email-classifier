@@ -6,6 +6,7 @@ import { SupabaseModule } from "./supabase";
 import { RegisterModule } from "./register";
 import { OrganisationModule } from "./organisation";
 import { BillingModule } from "./billing";
+import { EmailModule } from "./email";
 
 @Module({
   providers: [],
@@ -26,6 +27,7 @@ import { BillingModule } from "./billing";
     OutlookAuthModule,
     OrganisationModule,
     BillingModule,
+    EmailModule,
   ],
 })
 export class AppModule {}

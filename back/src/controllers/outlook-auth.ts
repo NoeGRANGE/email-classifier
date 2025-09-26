@@ -14,7 +14,9 @@ export class OutlookAuthController {
   @UseGuards(SupabaseAuthGuard)
   @Get()
   async start(@Res() res: FastifyReply, @Req() req: FastifyRequest) {
-    const state = req?.user?.id.toString() || "";
+    const userId = req?.user?.id.toString() || "";
+    const flow = (req.query as any)?.flow === "redirect" ? "redirect" : "popup";
+    const state = `${userId}|${flow}`;
     // TODO: replace the userId with something more secure (temporary value)
     const url = this.outlookService.buildAuthUrl(state);
     res.status(302).redirect(url);
@@ -45,7 +47,8 @@ export class OutlookAuthController {
       return;
     }
 
-    const user = await this.registerService.getMe(state);
+    const [userId, flow = "popup"] = (state || "").split("|");
+    const user = await this.registerService.getMe(userId);
     if (!user) {
       res.status(404).send({ error: "User not found" });
       return;
@@ -67,8 +70,36 @@ export class OutlookAuthController {
     //   user.auth_user_id,
     //   user.email
     // );
-    // link user to orga
+    const FRONT_URL =
+      process.env.FRONTEND_URL ?? "http://localhost:3000/en/emails";
+    const doneUrl = `${FRONT_URL}/en/emails/inbox?connected=outlook`;
+    if (flow === "redirect") {
+      // 🔵 Cas redirection plein écran → on NE ferme PAS la page
+      return res.status(302).redirect(doneUrl);
+    }
+    const origin = new URL(FRONT_URL).origin;
 
-    res.status(200).send({ ok: true, userId: user.auth_user_id, accountId });
+    const html = `
+<!doctype html><meta charset="utf-8"><title>Connexion Outlook</title>
+<script>
+(function () {
+  try {
+    if (window.opener) {
+      try { window.opener.postMessage("Login successful", "${origin}"); } catch (e) {}
+      try { window.opener.location = "${doneUrl}"; } catch (e) {}
+    }
+  } catch (e) {}
+  try { window.close(); } catch (e) {}
+  setTimeout(function () {
+    // Fallback si close bloqué
+    location.replace("${doneUrl}");
+  }, 500);
+})();
+</script>`.trim();
+
+    return res
+      .header("content-type", "text/html; charset=utf-8")
+      .status(200)
+      .send(html);
   }
 }

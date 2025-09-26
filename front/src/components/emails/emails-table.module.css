@@ -1,0 +1,97 @@
+.tableSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.tableHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.tableTitle {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tableDescription {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.table {
+  width: 100%;
+  max-width: 100%;
+}
+
+.table :global([data-slot="table"]) {
+  width: max(640px, 100%);
+}
+
+.table :global([data-slot="table-container"]) {
+  max-width: 100%;
+  overflow-x: auto;
+  border-radius: inherit;
+}
+
+.table :global([data-slot="table-head"]),
+.table :global([data-slot="table-cell"]) {
+  padding-left: 0.85rem;
+  padding-right: 0.85rem;
+}
+
+.table > div:last-child {
+  margin-top: 0.75rem;
+}
+
+.emailValue {
+  display: inline-block;
+  max-width: clamp(7rem, 32vw, 20rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.statusPill[data-status="activated"] {
+  background: rgba(34, 197, 94, 0.14);
+  color: rgb(21, 128, 61);
+}
+
+.statusPill[data-status="deactivated"] {
+  background: rgba(107, 114, 128, 0.18);
+  color: rgb(55, 65, 81);
+}
+
+@media (max-width: 720px) {
+  .emailValue {
+    max-width: clamp(6rem, 45vw, 14rem);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .statusPill[data-status="activated"] {
+    background: rgba(34, 197, 94, 0.22);
+    color: rgba(187, 247, 208, 0.95);
+  }
+
+  .statusPill[data-status="deactivated"] {
+    background: rgba(75, 85, 99, 0.32);
+    color: rgba(209, 213, 219, 0.92);
+  }
+}

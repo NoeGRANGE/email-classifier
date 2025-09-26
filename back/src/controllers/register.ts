@@ -1,4 +1,3 @@
-/// <reference path="../@types/fastify-cookie.d.ts" />
 import {
   Body,
   Controller,

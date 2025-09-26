@@ -210,3 +210,11 @@ export async function manageOrganisationMember(
     body: { memberId, role, reservedSeats: authorizedEmails },
   });
 }
+
+// Emails
+
+export async function listUserEmails(
+  cookieHeader?: string
+): Promise<{ ok: true; emails: string[] }> {
+  return fetchWithAuth({ path: "/email/list", cookieHeader });
+}

@@ -1,0 +1,38 @@
+{
+  "en": {
+    "title": "Email connections",
+    "lead": "Review and manage the email accounts linked to your workspace.",
+    "table.title": "Connected email addresses",
+    "table.description": "Check which addresses are active and manage each connection.",
+    "table.columns.email": "Email",
+    "table.columns.status": "Status",
+    "table.columns.actions": "Actions",
+    "status.activated": "Activated",
+    "status.deactivated": "Deactivated",
+    "actions.open": "Open email actions menu",
+    "actions.activate": "Activate",
+    "actions.deactivate": "Deactivate",
+    "actions.remove": "Remove",
+    "connect.cta": "Connect Outlook email",
+    "connect.ctaBusy": "Connecting...",
+    "connect.note": "Authorize Microsoft Outlook in the popup, then close it to refresh your list."
+  },
+  "fr": {
+    "title": "Connexions e-mail",
+    "lead": "Consultez et gérez les comptes e-mail liés à votre espace de travail.",
+    "table.title": "Adresses e-mail connectées",
+    "table.description": "Vérifiez quelles adresses sont actives et gérez chaque connexion.",
+    "table.columns.email": "E-mail",
+    "table.columns.status": "Statut",
+    "table.columns.actions": "Actions",
+    "status.activated": "Activé",
+    "status.deactivated": "Désactivé",
+    "actions.open": "Ouvrir le menu des actions e-mail",
+    "actions.activate": "Activer",
+    "actions.deactivate": "Désactiver",
+    "actions.remove": "Supprimer",
+    "connect.cta": "Connecter une adresse Outlook",
+    "connect.ctaBusy": "Connexion...",
+    "connect.note": "Autorisez Outlook dans la fenêtre qui s'ouvre, puis fermez-la pour rafraîchir la liste."
+  }
+}

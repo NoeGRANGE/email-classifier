@@ -1,0 +1,158 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 3vw, 3rem);
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.headerRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.headerContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  flex: 1;
+  min-width: min(22rem, 100%);
+}
+
+.headerActions {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
+
+.title {
+  font-size: clamp(1.75rem, 1.5vw + 1.25rem, 2.35rem);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.lead {
+  max-width: 48rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.85rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .headerActions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+.refreshBar {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--border) 40%, transparent);
+  overflow: hidden;
+  z-index: 4;
+}
+
+.refreshBar::after {
+  content: "";
+  display: block;
+  width: 40%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--primary-color) 65%, white 35%) 0%,
+    color-mix(in srgb, var(--secondary-color) 65%, white 35%) 100%
+  );
+  animation: refreshBarSweep 1s ease-in-out infinite;
+}
+
+@keyframes refreshBarSweep {
+  0% {
+    transform: translateX(-120%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(140%);
+  }
+}
+
+.skeletonStack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 3vw, 3rem);
+}
+
+.headerSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.headerSkeletonContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  flex: 1;
+  min-width: min(22rem, 100%);
+}
+
+.actionSkeleton {
+  width: clamp(10rem, 16vw, 13rem);
+  height: 2.75rem;
+  border-radius: var(--radius-md);
+}
+
+.titleSkeleton {
+  width: clamp(14rem, 32vw, 22rem);
+  height: 2.45rem;
+  border-radius: 0.75rem;
+}
+
+.leadSkeleton {
+  width: clamp(18rem, 44vw, 40rem);
+  height: 1.1rem;
+  border-radius: 0.5rem;
+}
+
+.leadSkeleton:last-child {
+  width: clamp(16rem, 36vw, 30rem);
+}
+
+.tableSkeleton {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: clamp(1rem, 2vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+}
+
+.tableSkeletonRow {
+  width: 100%;
+  height: 2.2rem;
+  border-radius: var(--radius-md);
+}

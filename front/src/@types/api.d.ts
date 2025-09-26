@@ -44,4 +44,8 @@ declare global {
     mailboxLimit: number;
     mailboxUsed: number;
   };
+  type Email = {
+    email: string;
+    activated: boolean;
+  };
 }
