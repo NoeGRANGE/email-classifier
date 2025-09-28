@@ -11,11 +11,13 @@ import { useTranslations } from "@/i18n/use-translations";
 type OutlookConnectProps = {
   className?: string;
   setUpdate: () => void;
+  disabled?: boolean;
 };
 
 export default function OutlookConnect({
   className,
   setUpdate,
+  disabled,
 }: OutlookConnectProps) {
   const { t } = useTranslations("emails");
   const [isConnecting, setIsConnecting] = React.useState(false);
@@ -81,7 +83,7 @@ export default function OutlookConnect({
     <div className={cn(styles.root, className)}>
       <Button
         onClick={handleClick}
-        disabled={isConnecting}
+        disabled={isConnecting || disabled}
         startIcon={
           isConnecting ? <Loader2 className="animate-spin" /> : <MailPlus />
         }

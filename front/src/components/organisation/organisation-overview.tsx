@@ -2,11 +2,7 @@ import * as React from "react";
 import { Building2, Mailbox, ShieldCheck, Users2 } from "lucide-react";
 
 import styles from "./organisation-overview.module.css";
-import {
-  formatTemplate,
-  type NormalisedMember,
-  type TranslateFn,
-} from "./utils";
+import { formatTemplate, type NormalisedMember } from "./utils";
 
 type OrganisationOverviewProps = {
   seatsPurchased: number;
@@ -22,17 +18,19 @@ export default function OrganisationOverview({
   t,
 }: OrganisationOverviewProps) {
   const totalMembers = members.length;
-  const pendingMembers = members.filter((member) => member._statusKey !== "accepted")
-    .length;
+  const pendingMembers = members.filter(
+    (member) => member._statusKey !== "accepted"
+  ).length;
   const activeMembers = totalMembers - pendingMembers;
 
   const usagePercent = seatsPurchased
     ? Math.round(Math.min(1, Math.max(0, seatsUsed / seatsPurchased)) * 100)
     : null;
 
-  const usageStyle = usagePercent != null
-    ? ({ "--usage-percent": `${usagePercent}%` } as React.CSSProperties)
-    : undefined;
+  const usageStyle =
+    usagePercent != null
+      ? ({ "--usage-percent": `${usagePercent}%` } as React.CSSProperties)
+      : undefined;
 
   const membersSummary = formatTemplate(
     t("summary.members", "{count} members"),
@@ -47,11 +45,12 @@ export default function OrganisationOverview({
     }
   );
 
-  const usagePercentLabel = usagePercent != null
-    ? formatTemplate(t("summary.usage.percent", "{percent}% used"), {
-        percent: usagePercent,
-      })
-    : t("summary.usage.unlimited", "Tracking usage");
+  const usagePercentLabel =
+    usagePercent != null
+      ? formatTemplate(t("summary.usage.percent", "{percent}% used"), {
+          percent: usagePercent,
+        })
+      : t("summary.usage.unlimited", "Tracking usage");
 
   const usageNoteCopy = seatsPurchased
     ? formatTemplate(
@@ -77,11 +76,17 @@ export default function OrganisationOverview({
         </p>
         <div className={styles.summaryMeta}>
           <span>
-            <Building2 className="inline-block size-4 align-middle" aria-hidden="true" />
+            <Building2
+              className="inline-block size-4 align-middle"
+              aria-hidden="true"
+            />
             <span className="ml-2 align-middle">{membersSummary}</span>
           </span>
           <span>
-            <Mailbox className="inline-block size-4 align-middle" aria-hidden="true" />
+            <Mailbox
+              className="inline-block size-4 align-middle"
+              aria-hidden="true"
+            />
             <span className="ml-2 align-middle">{seatsSummary}</span>
           </span>
         </div>
@@ -95,7 +100,9 @@ export default function OrganisationOverview({
               {t("summary.metrics.active", "Active members")}
             </span>
           </div>
-          <span className={styles.statValue}>{activeMembers.toLocaleString()}</span>
+          <span className={styles.statValue}>
+            {activeMembers.toLocaleString()}
+          </span>
         </div>
 
         <div className={styles.statCard}>
@@ -105,7 +112,9 @@ export default function OrganisationOverview({
               {t("summary.metrics.pending", "Pending invites")}
             </span>
           </div>
-          <span className={styles.statValue}>{pendingMembers.toLocaleString()}</span>
+          <span className={styles.statValue}>
+            {pendingMembers.toLocaleString()}
+          </span>
         </div>
 
         <div className={styles.statCard}>
@@ -115,7 +124,9 @@ export default function OrganisationOverview({
               {t("summary.metrics.capacity", "Seats purchased")}
             </span>
           </div>
-          <span className={styles.statValue}>{seatsPurchased.toLocaleString()}</span>
+          <span className={styles.statValue}>
+            {seatsPurchased.toLocaleString()}
+          </span>
         </div>
       </div>
 

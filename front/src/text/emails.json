@@ -15,7 +15,22 @@
     "actions.remove": "Remove",
     "connect.cta": "Connect Outlook email",
     "connect.ctaBusy": "Connecting...",
-    "connect.note": "Authorize Microsoft Outlook in the popup, then close it to refresh your list."
+    "connect.note": "Authorize Microsoft Outlook in the popup, then close it to refresh your list.",
+    "toast.activate.success.title": "Email activated",
+    "toast.activate.success.description": "{email} is active now.",
+    "toast.activate.error.title": "Activation failed",
+    "toast.activate.error.description": "We couldn't activate the email. {reason}",
+    "toast.activate.error.reasonFallback": "Something went wrong.",
+    "toast.deactivate.success.title": "Email deactivated",
+    "toast.deactivate.success.description": "{email} is inactive now.",
+    "toast.deactivate.error.title": "Deactivation failed",
+    "toast.deactivate.error.description": "We couldn't deactivate the email. {reason}",
+    "toast.deactivate.error.reasonFallback": "Something went wrong.",
+    "toast.remove.success.title": "Email removed",
+    "toast.remove.success.description": "{email} was disconnected.",
+    "toast.remove.error.title": "Removal failed",
+    "toast.remove.error.description": "We couldn't remove the email. {reason}",
+    "toast.remove.error.reasonFallback": "Something went wrong."
   },
   "fr": {
     "title": "Connexions e-mail",
@@ -33,6 +48,21 @@
     "actions.remove": "Supprimer",
     "connect.cta": "Connecter une adresse Outlook",
     "connect.ctaBusy": "Connexion...",
-    "connect.note": "Autorisez Outlook dans la fenêtre qui s'ouvre, puis fermez-la pour rafraîchir la liste."
+    "connect.note": "Autorisez Outlook dans la fenêtre qui s'ouvre, puis fermez-la pour rafraîchir la liste.",
+    "toast.activate.success.title": "E-mail activé",
+    "toast.activate.success.description": "{email} est désormais actif.",
+    "toast.activate.error.title": "Activation impossible",
+    "toast.activate.error.description": "Impossible d'activer l'e-mail. {reason}",
+    "toast.activate.error.reasonFallback": "Une erreur est survenue.",
+    "toast.deactivate.success.title": "E-mail désactivé",
+    "toast.deactivate.success.description": "{email} est désormais inactif.",
+    "toast.deactivate.error.title": "Désactivation impossible",
+    "toast.deactivate.error.description": "Impossible de désactiver l'e-mail. {reason}",
+    "toast.deactivate.error.reasonFallback": "Une erreur est survenue.",
+    "toast.remove.success.title": "E-mail supprimé",
+    "toast.remove.success.description": "{email} a été déconnecté.",
+    "toast.remove.error.title": "Suppression impossible",
+    "toast.remove.error.description": "Impossible de supprimer l'e-mail. {reason}",
+    "toast.remove.error.reasonFallback": "Une erreur est survenue."
   }
 }

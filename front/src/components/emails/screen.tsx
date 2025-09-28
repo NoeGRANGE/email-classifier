@@ -9,65 +9,147 @@ import * as API from "@/lib/api";
 import EmailsTable from "./emails-table";
 import layoutStyles from "./screen.module.css";
 import { Skeleton } from "@/components/ui/skeleton";
-import { normaliseEmails } from "./utils";
+import { toast } from "sonner";
 
 type Props = {
   emails: Email[];
+  hasMaxMailboxes: boolean;
 };
 
-export default function EmailsScreen({ emails: initialEmails }: Props) {
+export default function EmailsScreen({
+  emails: initialEmails,
+  hasMaxMailboxes: initialHasMaxMailboxes,
+}: Props) {
   const { t } = useTranslations("emails");
   const [update, setUpdate] = React.useReducer((x) => x + 1, 0);
 
-  const {
-    data: fetchedEmails,
-    isLoading,
-    isFetching,
-  } = useQuery({
+  const { data, isLoading, isFetching } = useQuery({
     queryKey: ["user emails", update],
     queryFn: async () => {
-      console.log("Fetching user emails...");
       const res = await API.listUserEmails();
-      return normaliseEmails(res.emails);
+      return { emails: res.emails, hasMaxMailboxes: res.hasMaxMailboxes };
     },
-    initialData: update === 0 ? initialEmails : undefined,
+    initialData:
+      update === 0
+        ? { emails: initialEmails, hasMaxMailboxes: initialHasMaxMailboxes }
+        : undefined,
     placeholderData: keepPreviousData,
   });
 
-  const latestEmails = React.useMemo(
-    () => fetchedEmails ?? initialEmails,
-    [fetchedEmails, initialEmails]
+  const formatTemplate = React.useCallback(
+    (template: string, replacements: Record<string, string | number>) => {
+      return Object.entries(replacements).reduce((acc, [key, value]) => {
+        const pattern = new RegExp(`\\{${key}\\}`, "g");
+        return acc.replace(pattern, String(value));
+      }, template);
+    },
+    []
   );
 
-  const [emails, setEmails] = React.useState<Email[]>(latestEmails);
+  const extractErrorReason = React.useCallback(
+    (error: unknown, fallback: string) => {
+      if (error instanceof Error) {
+        const trimmed = error.message.trim();
+        if (trimmed) {
+          try {
+            const parsed = JSON.parse(trimmed);
+            if (typeof parsed?.message === "string" && parsed.message.trim()) {
+              return parsed.message.trim();
+            }
+          } catch {}
+          return trimmed;
+        }
+      }
+      return fallback;
+    },
+    []
+  );
 
-  React.useEffect(() => {
-    setEmails(latestEmails);
-  }, [latestEmails]);
-
-  const handleActivate = React.useCallback((email: Email) => {
-    setEmails((current) =>
-      current.map((item) =>
-        item.email === email.email ? { ...item, activated: true } : item
-      )
+  const handleDeactivate = async (email: Email) => {
+    const fallbackReason = t(
+      "toast.deactivate.error.reasonFallback",
+      "Something went wrong."
     );
-  }, []);
+    try {
+      await API.activateOrDeactivateUserEmails(email.id);
+      setUpdate();
+      toast.success(t("toast.deactivate.success.title", "Email deactivated"), {
+        description: formatTemplate(
+          t("toast.deactivate.success.description", "{email} is inactive now."),
+          { email: email.email }
+        ),
+      });
+    } catch (error) {
+      const errorReason = extractErrorReason(error, fallbackReason);
+      toast.error(t("toast.deactivate.error.title", "Deactivation failed"), {
+        description: formatTemplate(
+          t(
+            "toast.deactivate.error.description",
+            "We couldn't deactivate the email. {reason}"
+          ),
+          { reason: errorReason }
+        ),
+      });
+    }
+  };
 
-  const handleDeactivate = React.useCallback((email: Email) => {
-    setEmails((current) =>
-      current.map((item) =>
-        item.email === email.email ? { ...item, activated: false } : item
-      )
+  const handleActivate = async (email: Email) => {
+    const fallbackReason = t(
+      "toast.activate.error.reasonFallback",
+      "Something went wrong."
     );
-  }, []);
+    try {
+      await API.activateOrDeactivateUserEmails(email.id);
+      setUpdate();
+      toast.success(t("toast.activate.success.title", "Email activated"), {
+        description: formatTemplate(
+          t("toast.activate.success.description", "{email} is active now."),
+          { email: email.email }
+        ),
+      });
+    } catch (error) {
+      const errorReason = extractErrorReason(error, fallbackReason);
+      toast.error(t("toast.activate.error.title", "Activation failed"), {
+        description: formatTemplate(
+          t(
+            "toast.activate.error.description",
+            "We couldn't activate the email. {reason}"
+          ),
+          { reason: errorReason }
+        ),
+      });
+    }
+  };
 
-  const handleRemove = React.useCallback((email: Email) => {
-    setEmails((current) =>
-      current.filter((item) => item.email !== email.email)
+  const handleRemove = async (email: Email) => {
+    const fallbackReason = t(
+      "toast.remove.error.reasonFallback",
+      "Something went wrong."
     );
-  }, []);
+    try {
+      await API.removeUserEmails(email.id);
+      setUpdate();
+      toast.success(t("toast.remove.success.title", "Email removed"), {
+        description: formatTemplate(
+          t("toast.remove.success.description", "{email} was disconnected."),
+          { email: email.email }
+        ),
+      });
+    } catch (error) {
+      const errorReason = extractErrorReason(error, fallbackReason);
+      toast.error(t("toast.remove.error.title", "Removal failed"), {
+        description: formatTemplate(
+          t(
+            "toast.remove.error.description",
+            "We couldn't remove the email. {reason}"
+          ),
+          { reason: errorReason }
+        ),
+      });
+    }
+  };
 
-  const isInitialLoading = isLoading && !fetchedEmails && !initialEmails.length;
+  const isInitialLoading = isLoading && !data && !initialEmails.length;
   const isBackgroundFetching = isFetching && !isLoading;
 
   return (
@@ -124,14 +206,17 @@ export default function EmailsScreen({ emails: initialEmails }: Props) {
             </div>
           </header>
 
-          <EmailsTable
-            emails={emails}
-            t={t}
-            onActivate={handleActivate}
-            onDeactivate={handleDeactivate}
-            onRemove={handleRemove}
-            setUpdate={setUpdate}
-          />
+          {data && data.emails && (
+            <EmailsTable
+              emails={data.emails}
+              t={t}
+              onActivate={handleActivate}
+              onDeactivate={handleDeactivate}
+              onRemove={handleRemove}
+              setUpdate={setUpdate}
+              hasMaxMailboxes={data.hasMaxMailboxes}
+            />
+          )}
         </>
       )}
     </div>

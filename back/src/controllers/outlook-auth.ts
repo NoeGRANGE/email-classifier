@@ -15,6 +15,14 @@ export class OutlookAuthController {
   @Get()
   async start(@Res() res: FastifyReply, @Req() req: FastifyRequest) {
     const userId = req?.user?.id.toString() || "";
+    const { maximum, used } =
+      await this.outlookService.getMailboxesLimit(userId);
+    if (used >= maximum) {
+      res
+        .status(403)
+        .send({ error: "Mailbox limit reached. Please upgrade your plan." });
+      return;
+    }
     const flow = (req.query as any)?.flow === "redirect" ? "redirect" : "popup";
     const state = `${userId}|${flow}`;
     // TODO: replace the userId with something more secure (temporary value)
@@ -74,7 +82,6 @@ export class OutlookAuthController {
       process.env.FRONTEND_URL ?? "http://localhost:3000/en/emails";
     const doneUrl = `${FRONT_URL}/en/emails/inbox?connected=outlook`;
     if (flow === "redirect") {
-      // 🔵 Cas redirection plein écran → on NE ferme PAS la page
       return res.status(302).redirect(doneUrl);
     }
     const origin = new URL(FRONT_URL).origin;

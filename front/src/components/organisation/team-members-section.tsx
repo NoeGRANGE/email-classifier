@@ -9,12 +9,7 @@ import TeamMemberInviteDialog from "./team-member-invite-dialog";
 import TeamMemberManageDialog from "./team-member-manage-dialog";
 import TeamMembersOptions from "./team-members-options";
 import TeamMembersTable from "./team-members-table";
-import {
-  ROLE_PRIORITY,
-  prettifyLabel,
-  type NormalisedMember,
-  type TranslateFn,
-} from "./utils";
+import { ROLE_PRIORITY, prettifyLabel, type NormalisedMember } from "./utils";
 
 type TeamMembersSectionProps = {
   members: NormalisedMember[];

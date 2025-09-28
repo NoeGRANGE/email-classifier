@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 
 import EmailActions from "./email-actions";
 import styles from "./emails-table.module.css";
-import { type TranslateFn } from "./utils";
 import OutlookConnect from "./outlook-connect";
 import layoutStyles from "./screen.module.css";
 
@@ -20,6 +19,7 @@ type EmailsTableProps = {
   onDeactivate?: (email: Email) => void;
   onRemove?: (email: Email) => void;
   setUpdate: () => void;
+  hasMaxMailboxes: boolean;
 };
 
 export default function EmailsTable({
@@ -30,6 +30,7 @@ export default function EmailsTable({
   onDeactivate,
   onRemove,
   setUpdate,
+  hasMaxMailboxes,
 }: EmailsTableProps) {
   const columns = React.useMemo<ColumnDef<Email>[]>(
     () => [
@@ -94,6 +95,7 @@ export default function EmailsTable({
       <OutlookConnect
         className={layoutStyles.headerActions}
         setUpdate={setUpdate}
+        disabled={hasMaxMailboxes}
       />
       <DataTable
         data={emails}

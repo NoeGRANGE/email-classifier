@@ -213,8 +213,32 @@ export async function manageOrganisationMember(
 
 // Emails
 
-export async function listUserEmails(
-  cookieHeader?: string
-): Promise<{ ok: true; emails: string[] }> {
+export async function listUserEmails(cookieHeader?: string): Promise<{
+  ok: true;
+  emails: { id: number; email: string; activated: boolean }[];
+  hasMaxMailboxes: boolean;
+}> {
   return fetchWithAuth({ path: "/email/list", cookieHeader });
+}
+
+export async function removeUserEmails(
+  emailId: number,
+  cookieHeader?: string
+): Promise<{ ok: true }> {
+  return fetchWithAuth({
+    path: `/email/remove/${emailId}`,
+    method: "DELETE",
+    cookieHeader,
+  });
+}
+
+export async function activateOrDeactivateUserEmails(
+  emailId: number,
+  cookieHeader?: string
+): Promise<{ ok: true }> {
+  return fetchWithAuth({
+    path: `/email/activate/${emailId}`,
+    method: "POST",
+    cookieHeader,
+  });
 }

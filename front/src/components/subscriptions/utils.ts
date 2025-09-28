@@ -1,24 +1,7 @@
-export type TranslateFn = (key: string, fallback?: string) => string;
-
-export type PlanKey = PlanInfo["plan"];
-
-export type PlanStatus = "current" | "available" | "locked" | "contact";
-
-export type AvailabilityKey = "match" | "over_limit";
-
-export type StatusVariant = "success" | "warning" | "danger" | "neutral";
-
-export type PlanCardData = {
-  id: string;
-  plan: PlanKey;
-  mailboxLimit: number | null;
-  isCurrent: boolean;
-  isAvailable: boolean;
-  isEnterprise: boolean;
-  contactHref?: string;
-};
-
-export const PLAN_META_FALLBACK: Record<PlanKey, { title: string; description: string }> = {
+export const PLAN_META_FALLBACK: Record<
+  PlanKey,
+  { title: string; description: string }
+> = {
   solo: {
     title: "Solo",
     description:

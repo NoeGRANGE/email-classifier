@@ -22,12 +22,7 @@ import {
 } from "@/components/ui/select";
 
 import styles from "./team-member-manage-dialog.module.css";
-import {
-  formatTemplate,
-  prettifyLabel,
-  type NormalisedMember,
-  type TranslateFn,
-} from "./utils";
+import { formatTemplate, prettifyLabel, type NormalisedMember } from "./utils";
 import { toast } from "sonner";
 import * as API from "@/lib/api";
 

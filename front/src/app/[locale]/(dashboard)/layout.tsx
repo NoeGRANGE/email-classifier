@@ -6,6 +6,7 @@ import {
 } from "@/components/layout/dashboard-shell";
 import type { Locale } from "@/i18n/I18n-provider";
 import ReactQueryProvider from "@/query-provider";
+import { Toaster } from "sonner";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -19,8 +20,11 @@ export default async function DashboardLayout({
   const { locale } = await params;
 
   return (
-    <DashboardShell baseHref={`/${locale}`} items={DEFAULT_DASHBOARD_NAV}>
-      <ReactQueryProvider>{children}</ReactQueryProvider>
-    </DashboardShell>
+    <>
+      <DashboardShell baseHref={`/${locale}`} items={DEFAULT_DASHBOARD_NAV}>
+        <ReactQueryProvider>{children}</ReactQueryProvider>
+      </DashboardShell>
+      <Toaster richColors />
+    </>
   );
 }

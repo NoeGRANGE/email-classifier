@@ -45,7 +45,26 @@ declare global {
     mailboxUsed: number;
   };
   type Email = {
+    id: number;
     email: string;
     activated: boolean;
+  };
+  type TranslateFn = (key: string, fallback?: string) => string;
+  type PlanKey = PlanInfo["plan"];
+
+  type PlanStatus = "current" | "available" | "locked" | "contact";
+
+  type AvailabilityKey = "match" | "over_limit";
+
+  type StatusVariant = "success" | "warning" | "danger" | "neutral";
+
+  type PlanCardData = {
+    id: string;
+    plan: PlanKey;
+    mailboxLimit: number | null;
+    isCurrent: boolean;
+    isAvailable: boolean;
+    isEnterprise: boolean;
+    contactHref?: string;
   };
 }

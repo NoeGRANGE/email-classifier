@@ -1,7 +1,5 @@
 export const ROLE_PRIORITY = ["member", "admin"] as const;
 
-export type TranslateFn = (key: string, fallback?: string) => string;
-
 export function normaliseKey(value: string | null | undefined) {
   return (value ?? "").toLowerCase();
 }

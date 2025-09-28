@@ -100,4 +100,25 @@ export class OutlookAuthService {
       });
     if (userErr) throw userErr;
   }
+
+  async getMailboxesLimit(
+    userId: string
+  ): Promise<{ maximum: number; used: number }> {
+    const [{ data: maximum, error }, { data: used, error: usedError }] =
+      await Promise.all([
+        this.supabase
+          .from("members")
+          .select("authorized_emails")
+          .eq("user_auth_user_id", userId)
+          .single(),
+        this.supabase
+          .from("outlook_credentials")
+          .select("account_id")
+          .eq("user_auth_user_id", userId)
+          .eq("activated", true),
+      ]);
+    if (usedError || error) throw usedError || error;
+
+    return { maximum: maximum?.authorized_emails || 0, used: used.length };
+  }
 }

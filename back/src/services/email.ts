@@ -5,12 +5,47 @@ import { Supa } from "../lib/supabase";
 export class EmailService {
   constructor(@Inject("SUPABASE") private supabase: Supa) {}
 
-  async listUserEmails(userId: string): Promise<string[]> {
+  async listUserEmails(
+    userId: string
+  ): Promise<{ id: number; email: string; activated: boolean }[]> {
     const { data, error } = await this.supabase
       .from("outlook_credentials")
-      .select("email")
+      .select("id, email, activated")
       .eq("user_auth_user_id", userId);
     if (error) throw error;
-    return data.map((row) => row.email);
+    return data;
+  }
+
+  async removeUserEmail(userId: string, emailId: string) {
+    const { error } = await this.supabase
+      .from("outlook_credentials")
+      .delete()
+      .eq("user_auth_user_id", userId)
+      .eq("id", emailId);
+    if (error && error.code !== "PGRST116") throw error;
+  }
+
+  async activateOrDeactivateUserEmail(
+    userId: string,
+    emailId: string,
+    activated: boolean
+  ) {
+    const { error } = await this.supabase
+      .from("outlook_credentials")
+      .update({ activated: activated })
+      .eq("user_auth_user_id", userId)
+      .eq("id", emailId);
+    if (error && error.code !== "PGRST116") throw error;
+  }
+
+  async getUserEmail(userId: string, emailId: string) {
+    const { data, error } = await this.supabase
+      .from("outlook_credentials")
+      .select("*")
+      .eq("user_auth_user_id", userId)
+      .eq("id", emailId)
+      .single();
+    if (error) throw error;
+    return data;
   }
 }

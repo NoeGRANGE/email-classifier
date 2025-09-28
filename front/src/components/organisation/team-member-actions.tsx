@@ -13,11 +13,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import styles from "./team-member-actions.module.css";
-import {
-  formatTemplate,
-  type NormalisedMember,
-  type TranslateFn,
-} from "./utils";
+import { formatTemplate, type NormalisedMember } from "./utils";
 import * as API from "@/lib/api";
 import { toast } from "sonner";
 

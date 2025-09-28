@@ -9,9 +9,6 @@ import {
   PLAN_STATUS_LABEL_FALLBACK,
   PLAN_STATUS_NOTE_FALLBACK,
   formatTemplate,
-  type PlanCardData,
-  type PlanStatus,
-  type TranslateFn,
 } from "./utils";
 
 type PlanCardProps = {

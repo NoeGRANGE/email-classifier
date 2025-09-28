@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import styles from "./email-actions.module.css";
-import { type TranslateFn } from "./utils";
 
 type EmailActionsProps = {
   email: Email;

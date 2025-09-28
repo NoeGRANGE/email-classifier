@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 
 import styles from "./team-members-options.module.css";
-import { prettifyLabel, type TranslateFn } from "./utils";
+import { prettifyLabel } from "./utils";
 
 type TeamMembersOptionsProps = {
   searchQuery: string;

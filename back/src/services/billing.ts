@@ -18,7 +18,8 @@ export class BillingService {
     const { data: emails } = await this.supa
       .from("outlook_credentials")
       .select("id")
-      .eq("user_auth_user_id", userId);
+      .eq("user_auth_user_id", userId)
+      .eq("activated", true);
     const authorizedEmails = user?.organisations?.seats_purchased ?? 0;
     return {
       userId,
@@ -42,7 +43,8 @@ export class BillingService {
         this.supa
           .from("outlook_credentials")
           .select("id")
-          .eq("user_auth_user_id", userId),
+          .eq("user_auth_user_id", userId)
+          .eq("activated", true),
         this.supa
           .from("users")
           .select("current_price_id")

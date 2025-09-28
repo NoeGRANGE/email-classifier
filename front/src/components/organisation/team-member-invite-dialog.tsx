@@ -23,11 +23,7 @@ import {
 import * as API from "@/lib/api";
 
 import styles from "./team-member-invite-dialog.module.css";
-import {
-  formatTemplate,
-  prettifyLabel,
-  type TranslateFn,
-} from "./utils";
+import { formatTemplate, prettifyLabel } from "./utils";
 import { toast } from "sonner";
 
 type Props = {
@@ -187,7 +183,10 @@ export default function TeamMemberInviteDialog({
               <label htmlFor="invite-role" className="text-sm font-medium">
                 {t("members.inviteDialog.roleLabel", "Role")}
               </label>
-              <Select value={inviteRole} onValueChange={(value) => setInviteRole(value)}>
+              <Select
+                value={inviteRole}
+                onValueChange={(value) => setInviteRole(value)}
+              >
                 <SelectTrigger
                   id="invite-role"
                   className={styles.compactSelectTrigger}
