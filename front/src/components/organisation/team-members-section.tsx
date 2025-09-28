@@ -10,6 +10,7 @@ import TeamMemberManageDialog from "./team-member-manage-dialog";
 import TeamMembersOptions from "./team-members-options";
 import TeamMembersTable from "./team-members-table";
 import { ROLE_PRIORITY, prettifyLabel, type NormalisedMember } from "./utils";
+import * as API from "@/lib/api";
 
 type TeamMembersSectionProps = {
   members: NormalisedMember[];
@@ -85,16 +86,6 @@ export default function TeamMembersSection({
     setUpdate();
   }, [setUpdate]);
 
-  const handleMemberRemoved = React.useCallback(
-    (member: NormalisedMember) => {
-      if (managedMember?.id === member.id) {
-        handleManageDialogOpenChange(false);
-      }
-      setUpdate();
-    },
-    [handleManageDialogOpenChange, managedMember, setUpdate]
-  );
-
   const filteredMembers = React.useMemo(() => {
     const roleKey = roleFilter === "all" ? null : roleFilter;
     const statusKey = statusFilter === "all" ? null : statusFilter;
@@ -166,12 +157,12 @@ export default function TeamMembersSection({
             member={row.original}
             t={t}
             onManage={handleManageMember}
-            onRemove={handleMemberRemoved}
+            onRemove={setUpdate}
           />
         ),
       },
     ],
-    [handleManageMember, handleMemberRemoved, t]
+    [handleManageMember, setUpdate, t]
   );
 
   return (

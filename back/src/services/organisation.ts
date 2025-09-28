@@ -128,6 +128,22 @@ export class OrganisationService {
     if (error) throw error;
   }
 
+  async removeOrganisationFromUser(userId: string) {
+    const { error } = await this.supabase
+      .from("users")
+      .update({ org_id: null })
+      .eq("auth_user_id", userId);
+    if (error) throw error;
+  }
+
+  async deactivateUserEmails(userId: string) {
+    const { error } = await this.supabase
+      .from("outlook_credentials")
+      .update({ activated: false })
+      .eq("user_auth_user_id", userId);
+    if (error) throw error;
+  }
+
   async updateMember(
     memberId: number,
     role: OrganisationRole,

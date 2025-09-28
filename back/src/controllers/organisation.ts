@@ -210,12 +210,19 @@ export class OrganisationController {
       res.status(404).send({ error: "Member not found or is owner" });
       return;
     }
-    await this.organisationService.setSeatsUsed(
-      member.org_id,
-      organisation.seats_used - memberToRemove.authorized_emails
-    );
-    await this.organisationService.removeMember(memberId);
-    // TODO: handle the emails for the user (deactivate)
+    await Promise.all([
+      this.organisationService.setSeatsUsed(
+        member.org_id,
+        organisation.seats_used - memberToRemove.authorized_emails
+      ),
+      this.organisationService.removeMember(memberId),
+      this.organisationService.removeOrganisationFromUser(
+        memberToRemove.user_auth_user_id
+      ),
+      this.organisationService.deactivateUserEmails(
+        memberToRemove.user_auth_user_id
+      ),
+    ]);
     res.status(200).send({ ok: true });
   }
 
