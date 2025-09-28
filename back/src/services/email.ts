@@ -16,7 +16,7 @@ export class EmailService {
     return data;
   }
 
-  async removeUserEmail(userId: string, emailId: string) {
+  async removeUserEmail(userId: string, emailId: number) {
     const { error } = await this.supabase
       .from("outlook_credentials")
       .delete()
@@ -27,7 +27,7 @@ export class EmailService {
 
   async activateOrDeactivateUserEmail(
     userId: string,
-    emailId: string,
+    emailId: number,
     activated: boolean
   ) {
     const { error } = await this.supabase
@@ -38,7 +38,7 @@ export class EmailService {
     if (error && error.code !== "PGRST116") throw error;
   }
 
-  async getUserEmail(userId: string, emailId: string) {
+  async getUserEmail(userId: string, emailId: number) {
     const { data, error } = await this.supabase
       .from("outlook_credentials")
       .select("*")

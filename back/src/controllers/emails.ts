@@ -42,7 +42,7 @@ export class EmailController {
   async removeEmail(
     @Req() req: FastifyRequest,
     @Res() res: FastifyReply,
-    @Param("id") emailId: string
+    @Param("id") emailId: number
   ) {
     await this.emailService.removeUserEmail(req.user.id, emailId);
     res.status(200).send({ ok: true });
@@ -53,7 +53,7 @@ export class EmailController {
   async activateOrDeactivateEmail(
     @Req() req: FastifyRequest,
     @Res() res: FastifyReply,
-    @Param("id") emailId: string
+    @Param("id") emailId: number
   ) {
     const email = await this.emailService.getUserEmail(req.user.id, emailId);
     if (!email) {
