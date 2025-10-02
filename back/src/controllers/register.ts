@@ -89,14 +89,12 @@ export class RegisterController {
         .status(400)
         .send({ ok: false, error: "Missing accessToken" });
     }
-
     const { data, error } = await this.supabase.auth.getUser(accessToken);
     if (error || !data?.user) {
       return reply
         .status(401)
         .send({ ok: false, error: "Invalid accessToken" });
     }
-
     const isProd = (process.env.NODE_ENV || "production") === "production";
     const cookieOpts = {
       path: "/",
@@ -115,7 +113,6 @@ export class RegisterController {
         maxAge: 60 * 24 * 60 * 60,
       });
     }
-
     return reply.send({ ok: true });
   }
 

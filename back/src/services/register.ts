@@ -43,7 +43,7 @@ export class RegisterService {
       .from("users")
       .select("auth_user_id,email,org_id")
       .eq("auth_user_id", authUserId)
-      .maybeSingle();
+      .single();
     return (data as RegisterResult) || null;
   }
 }

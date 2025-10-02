@@ -12,7 +12,10 @@ export class EmailService {
       .from("outlook_credentials")
       .select("id, email, activated")
       .eq("user_auth_user_id", userId);
-    if (error) throw error;
+    if (error) {
+      console.log("Error listing user emails", error);
+      throw error;
+    }
     return data;
   }
 

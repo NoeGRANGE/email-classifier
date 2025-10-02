@@ -9,6 +9,10 @@ export const SupabaseProvider = {
   useFactory: (cfg: ConfigService): Supa =>
     createClient<Database>(
       cfg.get<string>("SUPABASE_URL")!,
-      cfg.get<string>("SUPABASE_SERVICE_KEY")!
+      cfg.get<string>("SUPABASE_SERVICE_KEY")!,
+      {
+        auth: { persistSession: false },
+        global: { headers: { "x-admin-client": "true" } },
+      }
     ),
 };

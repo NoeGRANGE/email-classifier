@@ -29,8 +29,7 @@ export class EmailController {
     ]);
 
     const usedEmails = emails.filter((e) => e.activated).length;
-
-    res.status(200).send({
+    return res.status(200).send({
       ok: true,
       emails,
       hasMaxMailboxes: usedEmails >= limit.maximum,
@@ -45,7 +44,7 @@ export class EmailController {
     @Param("id") emailId: number
   ) {
     await this.emailService.removeUserEmail(req.user.id, emailId);
-    res.status(200).send({ ok: true });
+    return res.status(200).send({ ok: true });
   }
 
   @UseGuards(SupabaseAuthGuard)
@@ -72,6 +71,6 @@ export class EmailController {
       emailId,
       !email.activated
     );
-    res.status(200).send({ ok: true });
+    return res.status(200).send({ ok: true });
   }
 }

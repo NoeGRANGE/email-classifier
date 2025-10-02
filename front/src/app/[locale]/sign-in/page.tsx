@@ -11,7 +11,7 @@ export default async function SignInPage({
   const cookieHeader = (await headers()).get("cookie") ?? "";
   const me = await API.apiMe(cookieHeader).catch(() => null);
 
-  if (me?.ok) {
+  if (me?.ok && me?.user) {
     const { locale } = await params;
     redirect(`/${locale}/organisation`);
   }

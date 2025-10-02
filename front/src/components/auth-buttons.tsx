@@ -78,10 +78,12 @@ export default function AuthButtons({ mode = "sign-in" }: Props) {
         });
         if (error) throw error;
         if (!data.session?.access_token) throw new Error(t("err_no_session"));
+        console.log("Got session", data);
         await apiLogin(
           data.session.access_token,
           data.session.refresh_token || undefined
         );
+        console.log("Logged in, redirecting…");
         redirectAfterSign();
       }
     } catch (err: any) {

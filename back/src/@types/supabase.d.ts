@@ -791,6 +791,38 @@ declare global {
           };
           Relationships: [];
         };
+        configurations: {
+          Row: {
+            created_at: string;
+            description: string;
+            id: number;
+            name: string;
+            user_auth_user_id: string;
+          };
+          Insert: {
+            created_at?: string;
+            description: string;
+            id?: number;
+            name: string;
+            user_auth_user_id: string;
+          };
+          Update: {
+            created_at?: string;
+            description?: string;
+            id?: number;
+            name?: string;
+            user_auth_user_id?: string;
+          };
+          Relationships: [
+            {
+              foreignKeyName: "configurations_user_auth_user_id_fkey";
+              columns: ["user_auth_user_id"];
+              isOneToOne: false;
+              referencedRelation: "users";
+              referencedColumns: ["auth_user_id"];
+            },
+          ];
+        };
         members: {
           Row: {
             accepted_at: string | null;
@@ -888,6 +920,7 @@ declare global {
             access_token: string;
             account_id: string;
             activated: boolean;
+            configuration_id: number | null;
             created_at: string;
             email: string;
             expires_at: string | null;
@@ -901,6 +934,7 @@ declare global {
             access_token: string;
             account_id: string;
             activated?: boolean;
+            configuration_id?: number | null;
             created_at?: string;
             email: string;
             expires_at?: string | null;
@@ -914,6 +948,7 @@ declare global {
             access_token?: string;
             account_id?: string;
             activated?: boolean;
+            configuration_id?: number | null;
             created_at?: string;
             email?: string;
             expires_at?: string | null;
@@ -930,6 +965,13 @@ declare global {
               isOneToOne: false;
               referencedRelation: "users";
               referencedColumns: ["auth_user_id"];
+            },
+            {
+              foreignKeyName: "outlook_credentials_configuration_id_fkey";
+              columns: ["configuration_id"];
+              isOneToOne: false;
+              referencedRelation: "configurations";
+              referencedColumns: ["id"];
             },
           ];
         };
@@ -1302,6 +1344,10 @@ declare global {
           };
           Returns: undefined;
         };
+        delete_leaf_prefixes: {
+          Args: { bucket_ids: string[]; names: string[] };
+          Returns: undefined;
+        };
         delete_prefix: {
           Args: { _bucket_id: string; _name: string };
           Returns: boolean;
@@ -1367,6 +1413,10 @@ declare global {
             name: string;
             updated_at: string;
           }[];
+        };
+        lock_top_prefixes: {
+          Args: { bucket_ids: string[]; names: string[] };
+          Returns: undefined;
         };
         operation: {
           Args: Record<PropertyKey, never>;
@@ -1438,12 +1488,16 @@ declare global {
             levels?: number;
             limits?: number;
             prefix: string;
+            sort_column?: string;
+            sort_column_after?: string;
+            sort_order?: string;
             start_after?: string;
           };
           Returns: {
             created_at: string;
             id: string;
             key: string;
+            last_accessed_at: string;
             metadata: Json;
             name: string;
             updated_at: string;
