@@ -791,24 +791,85 @@ declare global {
           };
           Relationships: [];
         };
+        category: {
+          Row: {
+            configuration_id: number;
+            created_at: string;
+            description: string;
+            id: number;
+            name: string;
+          };
+          Insert: {
+            configuration_id: number;
+            created_at?: string;
+            description: string;
+            id?: number;
+            name: string;
+          };
+          Update: {
+            configuration_id?: number;
+            created_at?: string;
+            description?: string;
+            id?: number;
+            name?: string;
+          };
+          Relationships: [
+            {
+              foreignKeyName: "category_configuration_id_fkey";
+              columns: ["configuration_id"];
+              isOneToOne: false;
+              referencedRelation: "configurations";
+              referencedColumns: ["id"];
+            },
+          ];
+        };
+        category_actions: {
+          Row: {
+            category_id: number;
+            created_at: string;
+            id: number;
+            props: Json;
+            type: string;
+          };
+          Insert: {
+            category_id: number;
+            created_at?: string;
+            id?: number;
+            props: Json;
+            type: string;
+          };
+          Update: {
+            category_id?: number;
+            created_at?: string;
+            id?: number;
+            props?: Json;
+            type?: string;
+          };
+          Relationships: [
+            {
+              foreignKeyName: "category_actions_category_id_fkey";
+              columns: ["category_id"];
+              isOneToOne: false;
+              referencedRelation: "category";
+              referencedColumns: ["id"];
+            },
+          ];
+        };
         configurations: {
           Row: {
             created_at: string;
-            description: string;
             id: number;
             name: string;
             user_auth_user_id: string;
           };
           Insert: {
             created_at?: string;
-            description: string;
             id?: number;
             name: string;
             user_auth_user_id: string;
           };
           Update: {
             created_at?: string;
-            description?: string;
             id?: number;
             name?: string;
             user_auth_user_id?: string;

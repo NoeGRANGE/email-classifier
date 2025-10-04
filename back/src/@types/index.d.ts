@@ -26,4 +26,27 @@ declare global {
     mailboxLimit: number;
     mailboxUsed: number;
   };
+  type ActionPropsTag = {
+    categories: string[];
+  };
+  type ActionPropsFolder = {
+    destinationFolderId: string;
+  };
+  type ActionPropsForward = {
+    to: string[];
+    comment?: string;
+  };
+  type ActionPropsReply = {
+    replyAll?: boolean;
+    messageText: string;
+    includeOriginal?: boolean;
+  };
+  type ApiCategoryAction = {
+    type: string;
+    props:
+      | ActionPropsTag
+      | ActionPropsFolder
+      | ActionPropsForward
+      | ActionPropsReply;
+  };
 }
