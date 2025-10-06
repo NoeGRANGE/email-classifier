@@ -6,17 +6,13 @@ export class ConfigService {
   constructor(@Inject("SUPABASE") private supabase: Supa) {}
 
   async getConfig(configIg: number, userId: string) {
-    console.log("OK Fetching config", configIg, "for user", userId);
     const { data, error } = await this.supabase
       .from("configurations")
       .select()
       .eq("id", configIg)
       .eq("user_auth_user_id", userId)
       .single();
-    if (error) {
-      console.log("Error fetching config:", error);
-      return null;
-    }
+    if (error) return null;
     return data;
   }
 
