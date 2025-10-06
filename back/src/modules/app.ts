@@ -7,6 +7,7 @@ import { RegisterModule } from "./register";
 import { OrganisationModule } from "./organisation";
 import { BillingModule } from "./billing";
 import { EmailModule } from "./email";
+import { ConfigsModule } from "./config";
 
 @Module({
   providers: [],
@@ -28,6 +29,7 @@ import { EmailModule } from "./email";
     OrganisationModule,
     BillingModule,
     EmailModule,
+    ConfigsModule,
   ],
 })
 export class AppModule {}

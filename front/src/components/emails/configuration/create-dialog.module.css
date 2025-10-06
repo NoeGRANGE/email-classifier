@@ -1,0 +1,37 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .form {
+    padding: 1.85rem;
+  }
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.nameInput {
+  padding-inline: 0.75rem !important;
+}
+
+.dialogContent {
+  padding: 0;
+}
+
+.helperText {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}

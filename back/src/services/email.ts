@@ -5,12 +5,17 @@ import { Supa } from "../lib/supabase";
 export class EmailService {
   constructor(@Inject("SUPABASE") private supabase: Supa) {}
 
-  async listUserEmails(
-    userId: string
-  ): Promise<{ id: number; email: string; activated: boolean }[]> {
+  async listUserEmails(userId: string): Promise<
+    {
+      id: number;
+      email: string;
+      activated: boolean;
+      configurationId: number | null;
+    }[]
+  > {
     const { data, error } = await this.supabase
       .from("outlook_credentials")
-      .select("id, email, activated")
+      .select("id, email, activated, configurationId:configuration_id")
       .eq("user_auth_user_id", userId);
     if (error) {
       console.log("Error listing user emails", error);

@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
+  Param,
   Post,
   Req,
   Res,
@@ -14,6 +16,37 @@ import { SupabaseAuthGuard } from "src/lib/supabase-auth-guard";
 @Controller("config")
 export class ConfigController {
   constructor(private readonly configService: ConfigService) {}
+
+  @UseGuards(SupabaseAuthGuard)
+  @Get("list")
+  async listConfigs(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
+    const configs = await this.configService.listConfigs(req.user.id);
+    return res.status(200).send({
+      ok: true,
+      configurations: configs.map((config) => ({
+        id: config.id,
+        name: config.name,
+      })),
+    });
+  }
+
+  @UseGuards(SupabaseAuthGuard)
+  @Get(":id")
+  async getConfig(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Param("id") id: number
+  ) {
+    const config = await this.configService.getConfig(id, req.user.id);
+    if (!config) {
+      return res.status(404).send({ ok: false, error: "Config not found" });
+    }
+    const categories = await this.configService.getCategoriesFromConfig(id);
+    return res.status(200).send({
+      ok: true,
+      configuration: { id: config.id, name: config.name, categories },
+    });
+  }
 
   @UseGuards(SupabaseAuthGuard)
   @Post("create")
@@ -94,6 +127,28 @@ export class ConfigController {
       })
     );
     return res.status(200).send({ ok: true });
+  }
+
+  @UseGuards(SupabaseAuthGuard)
+  @Get("category/:id")
+  async getCategory(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Param("id") id: number
+  ) {
+    const category = await this.configService.getCategory(id);
+    if (!category || category.configuration.user_auth_user_id !== req.user.id) {
+      return res.status(404).send({ ok: false, error: "Category not found" });
+    }
+    return res.status(200).send({
+      ok: true,
+      category: {
+        id: category.id,
+        name: category.name,
+        description: category.description,
+        actions: category.actions || [],
+      },
+    });
   }
 
   @UseGuards(SupabaseAuthGuard)

@@ -215,7 +215,12 @@ export async function manageOrganisationMember(
 
 export async function listUserEmails(cookieHeader?: string): Promise<{
   ok: true;
-  emails: { id: number; email: string; activated: boolean }[];
+  emails: {
+    id: number;
+    email: string;
+    activated: boolean;
+    configurationId: number | null;
+  }[];
   hasMaxMailboxes: boolean;
 }> {
   return fetchWithAuth({ path: "/email/list", cookieHeader });
@@ -239,6 +244,52 @@ export async function activateOrDeactivateUserEmails(
   return fetchWithAuth({
     path: `/email/activate/${emailId}`,
     method: "POST",
+    cookieHeader,
+  });
+}
+
+// configurations
+
+export async function getConfigurations(
+  cookieHeader?: string
+): Promise<{ ok: boolean; configurations: Configuration[] }> {
+  return fetchWithAuth<{ ok: boolean; configurations: Configuration[] }>({
+    path: "/config/list",
+    cookieHeader,
+  });
+}
+
+export async function createConfiguration(
+  name: string,
+  emailId?: number
+): Promise<{ ok: boolean; configId: number }> {
+  const body: { name: string; emailId?: number } = { name };
+  if (typeof emailId === "number") {
+    body.emailId = emailId;
+  }
+  return fetchWithAuth<{ ok: boolean; configId: number }>({
+    path: "/config/create",
+    method: "POST",
+    body,
+  });
+}
+
+export async function getConfiguration(
+  configId: string,
+  cookieHeader?: string
+): Promise<{ ok: boolean; configuration: ConfigurationDetail }> {
+  return fetchWithAuth<{ ok: boolean; configuration: ConfigurationDetail }>({
+    path: `/config/${configId}`,
+    cookieHeader,
+  });
+}
+
+export async function getCategory(
+  categoryId: string,
+  cookieHeader?: string
+): Promise<{ ok: boolean; category: CategoryDetail }> {
+  return fetchWithAuth<{ ok: boolean; category: CategoryDetail }>({
+    path: `/config/category/${categoryId}`,
     cookieHeader,
   });
 }

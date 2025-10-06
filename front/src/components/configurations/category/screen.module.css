@@ -1,0 +1,36 @@
+@layer components {
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 3vw, 3.25rem);
+    margin: 0 auto;
+    padding-block: clamp(1.5rem, 2vw, 3rem);
+    width: min(68rem, 100%);
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .breadcrumb {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .title {
+    font-size: clamp(1.85rem, 2.4vw + 1.25rem, 2.8rem);
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 2.5vw, 3rem);
+  }
+}

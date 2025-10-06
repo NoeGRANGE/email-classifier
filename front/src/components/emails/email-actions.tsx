@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { MoreHorizontal, Power, PowerOff, Trash2 } from "lucide-react";
+import { MoreHorizontal, Power, PowerOff, Settings, Trash2 } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -21,6 +21,7 @@ type EmailActionsProps = {
   onActivate?: (email: Email) => void;
   onDeactivate?: (email: Email) => void;
   onRemove?: (email: Email) => void;
+  onConfigure?: (email: Email) => void;
 };
 
 export default function EmailActions({
@@ -30,7 +31,12 @@ export default function EmailActions({
   onActivate,
   onDeactivate,
   onRemove,
+  onConfigure,
 }: EmailActionsProps) {
+  const handleConfigure = React.useCallback(() => {
+    onConfigure?.(email);
+  }, [email, onConfigure]);
+
   const handleActivate = React.useCallback(() => {
     onActivate?.(email);
   }, [email, onActivate]);
@@ -57,6 +63,13 @@ export default function EmailActions({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className={styles.menu}>
+          <DropdownMenuItem
+            onSelect={handleConfigure}
+            className={styles.menuItem}
+          >
+            <Settings className="size-4" aria-hidden="true" />
+            {t("actions.configure", "Configure")}
+          </DropdownMenuItem>
           {email.activated ? (
             <DropdownMenuItem
               onSelect={handleDeactivate}

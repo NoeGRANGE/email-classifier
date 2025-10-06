@@ -18,6 +18,7 @@ type EmailsTableProps = {
   onActivate?: (email: Email) => void;
   onDeactivate?: (email: Email) => void;
   onRemove?: (email: Email) => void;
+  onConfigure?: (email: Email) => void;
   setUpdate: () => void;
   hasMaxMailboxes: boolean;
 };
@@ -29,6 +30,7 @@ export default function EmailsTable({
   onActivate,
   onDeactivate,
   onRemove,
+  onConfigure,
   setUpdate,
   hasMaxMailboxes,
 }: EmailsTableProps) {
@@ -72,11 +74,12 @@ export default function EmailsTable({
             onActivate={onActivate}
             onDeactivate={onDeactivate}
             onRemove={onRemove}
+            onConfigure={onConfigure}
           />
         ),
       },
     ],
-    [onActivate, onDeactivate, onRemove, t]
+    [onActivate, onConfigure, onDeactivate, onRemove, t]
   );
 
   return (

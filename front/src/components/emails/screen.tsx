@@ -2,11 +2,13 @@
 
 import * as React from "react";
 import { useTranslations } from "@/i18n/use-translations";
+import { useRouter } from "next/navigation";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import * as API from "@/lib/api";
 
 import EmailsTable from "./emails-table";
+import ConfigurationCreateDialog from "./configuration/create-dialog";
 import layoutStyles from "./screen.module.css";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
@@ -20,8 +22,13 @@ export default function EmailsScreen({
   emails: initialEmails,
   hasMaxMailboxes: initialHasMaxMailboxes,
 }: Props) {
-  const { t } = useTranslations("emails");
+  const { t, locale } = useTranslations("emails");
+  const router = useRouter();
   const [update, setUpdate] = React.useReducer((x) => x + 1, 0);
+  const [isCreateDialogOpen, setCreateDialogOpen] = React.useState(false);
+  const [isCreatingConfiguration, setCreatingConfiguration] =
+    React.useState(false);
+  const [pendingEmail, setPendingEmail] = React.useState<Email | null>(null);
 
   const { data, isLoading, isFetching } = useQuery({
     queryKey: ["user emails", update],
@@ -149,6 +156,79 @@ export default function EmailsScreen({
     }
   };
 
+  const handleConfigure = React.useCallback(
+    (email: Email) => {
+      if (email.configurationId) {
+        router.push(
+          `/${locale}/configurations/update/${email.configurationId}`
+        );
+        return;
+      }
+      setPendingEmail(email);
+      setCreateDialogOpen(true);
+    },
+    [locale, router, setCreateDialogOpen, setPendingEmail]
+  );
+
+  const handleCreateDialogChange = React.useCallback(
+    (nextOpen: boolean) => {
+      if (!nextOpen && isCreatingConfiguration) {
+        return;
+      }
+      setCreateDialogOpen(nextOpen);
+      if (!nextOpen) {
+        setPendingEmail(null);
+      }
+    },
+    [isCreatingConfiguration, setCreateDialogOpen, setPendingEmail]
+  );
+
+  const handleCreateSubmit = React.useCallback(
+    async (name: string) => {
+      setCreatingConfiguration(true);
+      const emailId = pendingEmail?.id;
+      try {
+        const result = await API.createConfiguration(name, emailId);
+        setCreateDialogOpen(false);
+        setPendingEmail(null);
+        router.push(`/${locale}/configurations/update/${result.configId}`);
+      } catch (error) {
+        const fallbackReason = t(
+          "configure.create.error.reasonFallback",
+          "Something went wrong."
+        );
+        const errorReason = extractErrorReason(error, fallbackReason);
+        toast.error(
+          t(
+            "configure.create.error.title",
+            "Configuration creation failed"
+          ),
+          {
+            description: formatTemplate(
+              t(
+                "configure.create.error.description",
+                "We couldn't create the configuration. {reason}"
+              ),
+              { reason: errorReason }
+            ),
+          }
+        );
+      } finally {
+        setCreatingConfiguration(false);
+      }
+    },
+    [
+      extractErrorReason,
+      formatTemplate,
+      locale,
+      pendingEmail,
+      router,
+      setCreateDialogOpen,
+      setPendingEmail,
+      t,
+    ]
+  );
+
   const isInitialLoading = isLoading && !data && !initialEmails.length;
   const isBackgroundFetching = isFetching && !isLoading;
 
@@ -213,12 +293,21 @@ export default function EmailsScreen({
               onActivate={handleActivate}
               onDeactivate={handleDeactivate}
               onRemove={handleRemove}
+              onConfigure={handleConfigure}
               setUpdate={setUpdate}
               hasMaxMailboxes={data.hasMaxMailboxes}
             />
           )}
         </>
       )}
+
+      <ConfigurationCreateDialog
+        open={isCreateDialogOpen}
+        onOpenChange={handleCreateDialogChange}
+        onSubmit={handleCreateSubmit}
+        isSubmitting={isCreatingConfiguration}
+        t={t}
+      />
     </div>
   );
 }

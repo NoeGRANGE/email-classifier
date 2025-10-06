@@ -10,6 +10,7 @@
     "status.activated": "Activated",
     "status.deactivated": "Deactivated",
     "actions.open": "Open email actions menu",
+    "actions.configure": "Configure",
     "actions.activate": "Activate",
     "actions.deactivate": "Deactivate",
     "actions.remove": "Remove",
@@ -30,7 +31,10 @@
     "toast.remove.success.description": "{email} was disconnected.",
     "toast.remove.error.title": "Removal failed",
     "toast.remove.error.description": "We couldn't remove the email. {reason}",
-    "toast.remove.error.reasonFallback": "Something went wrong."
+    "toast.remove.error.reasonFallback": "Something went wrong.",
+    "configure.create.error.title": "Configuration creation failed",
+    "configure.create.error.description": "We couldn't create the configuration. {reason}",
+    "configure.create.error.reasonFallback": "Something went wrong."
   },
   "fr": {
     "title": "Connexions e-mail",
@@ -43,6 +47,7 @@
     "status.activated": "Activé",
     "status.deactivated": "Désactivé",
     "actions.open": "Ouvrir le menu des actions e-mail",
+    "actions.configure": "Configurer",
     "actions.activate": "Activer",
     "actions.deactivate": "Désactiver",
     "actions.remove": "Supprimer",
@@ -63,6 +68,9 @@
     "toast.remove.success.description": "{email} a été déconnecté.",
     "toast.remove.error.title": "Suppression impossible",
     "toast.remove.error.description": "Impossible de supprimer l'e-mail. {reason}",
-    "toast.remove.error.reasonFallback": "Une erreur est survenue."
+    "toast.remove.error.reasonFallback": "Une erreur est survenue.",
+    "configure.create.error.title": "Création de configuration impossible",
+    "configure.create.error.description": "Impossible de créer la configuration. {reason}",
+    "configure.create.error.reasonFallback": "Une erreur est survenue."
   }
 }

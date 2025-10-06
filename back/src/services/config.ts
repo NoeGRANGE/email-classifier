@@ -6,13 +6,37 @@ export class ConfigService {
   constructor(@Inject("SUPABASE") private supabase: Supa) {}
 
   async getConfig(configIg: number, userId: string) {
+    console.log("OK Fetching config", configIg, "for user", userId);
     const { data, error } = await this.supabase
       .from("configurations")
       .select()
       .eq("id", configIg)
       .eq("user_auth_user_id", userId)
       .single();
-    if (error) null;
+    if (error) {
+      console.log("Error fetching config:", error);
+      return null;
+    }
+    return data;
+  }
+
+  async getCategoriesFromConfig(configId: number) {
+    const { data, error } = await this.supabase
+      .from("category")
+      .select(
+        `id, name, description, actions:category_actions(id, type, props)`
+      )
+      .eq("configuration_id", configId);
+    if (error) throw error;
+    return data;
+  }
+
+  async listConfigs(userId: string) {
+    const { data, error } = await this.supabase
+      .from("configurations")
+      .select()
+      .eq("user_auth_user_id", userId);
+    if (error) throw error;
     return data;
   }
 
@@ -103,6 +127,18 @@ export class ConfigService {
         category_id: categoryId,
       })
       .select()
+      .single();
+    if (error) throw error;
+    return data;
+  }
+
+  async getCategory(categoryId: number) {
+    const { data, error } = await this.supabase
+      .from("category")
+      .select(
+        `id, name, description, configuration:configuration_id(*), actions:category_actions(id, type, props)`
+      )
+      .eq("id", categoryId)
       .single();
     if (error) throw error;
     return data;

@@ -48,6 +48,7 @@ declare global {
     id: number;
     email: string;
     activated: boolean;
+    configurationId: number | null;
   };
   type TranslateFn = (key: string, fallback?: string) => string;
   type PlanKey = PlanInfo["plan"];
@@ -66,5 +67,31 @@ declare global {
     isAvailable: boolean;
     isEnterprise: boolean;
     contactHref?: string;
+  };
+
+  type Configuration = { id: number; name: string };
+
+  type CategoryActionType =
+    | "assign_categories"
+    | "move_to_folder"
+    | "forward_to"
+    | "reply_with_message";
+  type CategoryAction = {
+    id: number;
+    type: CategoryActionType;
+    props: Json;
+  };
+
+  type CategoryDetail = {
+    id: number;
+    name: string;
+    description: string;
+    actions: CategoryAction[];
+  };
+
+  type ConfigurationDetail = {
+    id: number;
+    name: string;
+    categories: CategoryDetail[];
   };
 }

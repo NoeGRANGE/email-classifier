@@ -1,0 +1,96 @@
+@layer components {
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem !important;
+    padding: 0.75rem 1.25rem !important;
+  }
+
+  .card :global([data-slot="card-header"]),
+  .card :global([data-slot="card-content"]) {
+    padding: 0;
+  }
+
+  .header {
+    row-gap: 0.5rem;
+  }
+
+  .description {
+    color: var(--muted-foreground);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    /* gap: 0.75rem; */
+  }
+
+  .empty {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .tagList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tag {
+    --badge-background: color-mix(
+      in srgb,
+      var(--primary-color-alpha) 55%,
+      white 45%
+    );
+    --badge-border: color-mix(
+      in srgb,
+      var(--primary-color) 35%,
+      transparent 65%
+    );
+    --badge-foreground: color-mix(
+      in srgb,
+      var(--primary-color) 85%,
+      #4a1d07 15%
+    );
+
+    align-items: center;
+    background: var(--badge-background);
+    border: 1px solid var(--badge-border);
+    border-radius: 999px;
+    color: var(--badge-foreground);
+    display: inline-flex;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    min-height: 1.75rem;
+    padding: 0.25rem 0.65rem !important;
+    text-transform: capitalize;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .tag {
+    --badge-background: color-mix(
+      in srgb,
+      var(--primary-color-alpha) 35%,
+      transparent 65%
+    );
+    --badge-border: color-mix(
+      in srgb,
+      var(--primary-color) 45%,
+      transparent 55%
+    );
+    --badge-foreground: color-mix(in srgb, var(--primary-color) 75%, white 25%);
+  }
+}
