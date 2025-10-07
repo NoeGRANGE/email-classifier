@@ -3,7 +3,14 @@
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
-import { ReplyAll, Tag, Send, FolderInput } from "lucide-react";
+import {
+  ReplyAll,
+  Tag,
+  Send,
+  FolderInput,
+  Settings2,
+  Trash2,
+} from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
   DropdownMenu,
@@ -69,8 +76,11 @@ export default function CategoryUpdateActions({ actions, setActions }: Props) {
   const emptyLabel = t("category.actions.empty", "No actions configured yet.");
   const addLabel = t("category.actions.add", "Add action");
   const addAriaLabel = t("category.actions.add.aria", "Add a new action");
-  const manageLabel = t("category.actions.manage", "Manage");
   const manageAriaLabel = t("category.actions.manage.aria", "Manage action");
+  const removeAriaLabel = t(
+    "category.actions.removeAction",
+    "Remove action"
+  );
 
   const handleManageClick = React.useCallback((actionId: number) => {
     setDraftAction(null);
@@ -139,6 +149,19 @@ export default function CategoryUpdateActions({ actions, setActions }: Props) {
       setOpenedActionId(nextId);
     },
     [actions, draftAction]
+  );
+
+  const handleDeleteAction = React.useCallback(
+    (actionId: number) => {
+      setActions((prev) => prev.filter((action) => action.id !== actionId));
+      if (draftAction && draftAction.id === actionId) {
+        setDraftAction(null);
+      }
+      if (openedActionId === actionId) {
+        setOpenedActionId(null);
+      }
+    },
+    [draftAction, openedActionId, setActions]
   );
 
   const dialogContent = React.useMemo(() => {
@@ -224,14 +247,26 @@ export default function CategoryUpdateActions({ actions, setActions }: Props) {
             return (
               <div key={action.id} className={styles.item}>
                 <span className={styles.type}>{typeLabel}</span>
-                <Button
-                  variant="outline"
-                  onClick={() => handleManageClick(action.id)}
-                  aria-label={`${manageAriaLabel}: ${typeLabel}`}
-                  type="button"
-                >
-                  {manageLabel}
-                </Button>
+                <div className={styles.actionButtons}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleManageClick(action.id)}
+                    aria-label={`${manageAriaLabel}: ${typeLabel}`}
+                    type="button"
+                  >
+                    <Settings2 className="h-4 w-4" aria-hidden="true" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDeleteAction(action.id)}
+                    aria-label={`${removeAriaLabel}: ${typeLabel}`}
+                    type="button"
+                  >
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+                  </Button>
+                </div>
               </div>
             );
           })

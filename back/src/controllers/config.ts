@@ -110,21 +110,17 @@ export class ConfigController {
     @Body("configId") configId: number,
     @Body("actions") actions: ApiCategoryAction[]
   ) {
-    console.log("ok1s", configId);
     const config = await this.configService.getConfig(configId, req.user.id);
-    console.log("ok2s");
     if (!config) {
       return res
         .status(404)
         .send({ ok: false, error: "Category not found for user" });
     }
-    console.log("ok3s");
     const category = await this.configService.createCategory(
       name,
       description,
       configId
     );
-    console.log("ok4s");
     await Promise.all(
       actions.map(async (action) => {
         return await this.configService.createAction(
@@ -134,7 +130,6 @@ export class ConfigController {
         );
       })
     );
-    console.log("ok5s");
     return res.status(200).send({ ok: true });
   }
 
