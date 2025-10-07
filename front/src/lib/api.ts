@@ -293,3 +293,35 @@ export async function getCategory(
     cookieHeader,
   });
 }
+
+export async function getEmailTags(
+  configurationId: number,
+  cookieHeader?: string
+): Promise<{
+  ok: boolean;
+  tags: Array<{ id: string; displayName: string; color?: string }>;
+}> {
+  return fetchWithAuth<{
+    ok: boolean;
+    tags: Array<{ id: string; displayName: string; color?: string }>;
+  }>({
+    path: `/config/tags/${configurationId}`,
+    cookieHeader,
+  });
+}
+
+export async function getEmailFolders(
+  configurationId: number,
+  cookieHeader?: string
+): Promise<{
+  ok: boolean;
+  folders: { id: string; displayName: string }[];
+}> {
+  return fetchWithAuth<{
+    ok: boolean;
+    folders: { id: string; displayName: string }[];
+  }>({
+    path: `/config/folders/${configurationId}`,
+    cookieHeader,
+  });
+}

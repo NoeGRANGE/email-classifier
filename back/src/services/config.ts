@@ -140,11 +140,135 @@ export class ConfigService {
     return data;
   }
 
+  async getEmailWithConfiguration(configurationId: number) {
+    const { data, error } = await this.supabase
+      .from("outlook_credentials")
+      .select(
+        "id, user_auth_user_id, email, accountId:account_id, tokenType:token_type, expiresAt:expires_at, accessToken:access_token, refreshToken:refresh_token, configurationId:configuration_id"
+      )
+      .eq("configuration_id", configurationId)
+      .single();
+    if (error) throw error;
+    return data;
+  }
+
   async removeActionsFromCategory(categoryId: number) {
     const { error } = await this.supabase
       .from("category_actions")
       .delete()
       .eq("category_id", categoryId);
     if (error) throw error;
+  }
+
+  async getEmailTags(
+    accessToken: string
+  ): Promise<Array<{ id: string; displayName: string; color?: string }>> {
+    if (!accessToken) {
+      throw new Error("Missing access token for Outlook Graph");
+    }
+
+    const url = "https://graph.microsoft.com/v1.0/me/outlook/masterCategories";
+
+    const resp = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+      },
+    });
+
+    if (!resp.ok) {
+      const text = await resp.text().catch(() => "");
+      // Common case: 401 -> token expired/invalid. Let caller decide to refresh.
+      throw new Error(
+        `Failed to fetch Outlook categories (${resp.status}): ${text}`
+      );
+    }
+
+    const data: any = await resp.json();
+    const items = Array.isArray(data?.value) ? data.value : [];
+
+    return items.map((c: any) => ({
+      id: String(c.id ?? ""),
+      displayName: String(c.displayName ?? ""),
+      color: c.color,
+    }));
+  }
+
+  async getEmailFolders(
+    accessToken: string
+  ): Promise<{ id: string; displayName: string }[]> {
+    if (!accessToken) {
+      throw new Error("Missing access token for Outlook Graph");
+    }
+
+    // Microsoft Graph endpoint for mail folders (supports pagination via @odata.nextLink)
+    const baseUrl = "https://graph.microsoft.com/v1.0/me/mailFolders";
+    const params = new URLSearchParams({
+      includeHiddenFolders: "true",
+      $top: "50",
+      $select:
+        "id,displayName,parentFolderId,childFolderCount,totalItemCount,unreadItemCount,isHidden",
+    });
+
+    let url = `${baseUrl}?${params.toString()}`;
+    const flat: any[] = [];
+
+    while (url) {
+      const resp = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          Accept: "application/json",
+        },
+      });
+
+      if (!resp.ok) {
+        const text = await resp.text().catch(() => "");
+        throw new Error(
+          `Failed to fetch Outlook folders (${resp.status}): ${text}`
+        );
+      }
+
+      const data: any = await resp.json();
+      const page = Array.isArray(data?.value) ? data.value : [];
+
+      for (const f of page) {
+        flat.push({
+          id: String(f.id ?? ""),
+          displayName: String(f.displayName ?? ""),
+          name: String(f.displayName ?? ""), // alias
+          parentFolderId: f.parentFolderId ?? null,
+          childFolderCount: Number(f.childFolderCount ?? 0),
+          totalItemCount: Number(f.totalItemCount ?? 0),
+          unreadItemCount: Number(f.unreadItemCount ?? 0),
+          isHidden: Boolean(f.isHidden ?? false),
+        });
+      }
+
+      url = data && data["@odata.nextLink"] ? data["@odata.nextLink"] : "";
+    }
+
+    // Build a tree so the UI can present a folder picker
+    const byId = new Map<string, any>();
+    for (const f of flat) byId.set(f.id, { ...f, children: [] as any[] });
+
+    const roots: any[] = [];
+    for (const f of byId.values()) {
+      if (f.parentFolderId && byId.has(f.parentFolderId)) {
+        byId.get(f.parentFolderId)!.children.push(f);
+      } else {
+        roots.push(f);
+      }
+    }
+
+    // Optional: sort alphabetically for nicer display
+    const sortRec = (nodes: any[]) => {
+      nodes.sort((a, b) => a.displayName.localeCompare(b.displayName));
+      for (const n of nodes) sortRec(n.children);
+    };
+    sortRec(roots);
+
+    return roots; // tree with {id, displayName, ... , children: []}
   }
 }

@@ -26,7 +26,7 @@ type Props = {
 };
 
 const FALLBACK_TYPE_LABELS: Record<CategoryActionType, string> = {
-  assign_categories: "Assign categories",
+  assign_categories: "Assign category",
   move_to_folder: "Move to folder",
   forward_to: "Forward to",
   reply_with_message: "Reply with a message",
@@ -44,10 +44,21 @@ export default function CategoryUpdateActions({ actions, setActions }: Props) {
   const [openedActionId, setOpenedActionId] = React.useState<number | null>(
     null
   );
+  const [draftAction, setDraftAction] = React.useState<CategoryAction | null>(
+    null
+  );
 
   const activeAction = React.useMemo(
-    () => actions.find((action) => action.id === openedActionId) ?? null,
-    [actions, openedActionId]
+    () => {
+      if (draftAction && draftAction.id === openedActionId) {
+        return draftAction;
+      }
+
+      if (openedActionId === null) return null;
+
+      return actions.find((action) => action.id === openedActionId) ?? null;
+    },
+    [actions, draftAction, openedActionId]
   );
 
   const title = t("category.actions.title", "Configured actions");
@@ -62,11 +73,13 @@ export default function CategoryUpdateActions({ actions, setActions }: Props) {
   const manageAriaLabel = t("category.actions.manage.aria", "Manage action");
 
   const handleManageClick = React.useCallback((actionId: number) => {
+    setDraftAction(null);
     setOpenedActionId(actionId);
   }, []);
 
   const handleDialogClose = React.useCallback(() => {
     setOpenedActionId(null);
+    setDraftAction(null);
   }, []);
 
   const handleDialogOpenChange = React.useCallback(
@@ -80,11 +93,19 @@ export default function CategoryUpdateActions({ actions, setActions }: Props) {
 
   const handleDialogSubmit = React.useCallback(
     (nextAction: CategoryAction) => {
-      setActions((prev) =>
-        prev.map((action) =>
+      setActions((prev) => {
+        const existingIndex = prev.findIndex(
+          (action) => action.id === nextAction.id
+        );
+
+        if (existingIndex === -1) {
+          return [...prev, nextAction];
+        }
+
+        return prev.map((action) =>
           action.id === nextAction.id ? nextAction : action
-        )
-      );
+        );
+      });
       handleDialogClose();
     },
     [handleDialogClose, setActions]
@@ -101,19 +122,23 @@ export default function CategoryUpdateActions({ actions, setActions }: Props) {
 
   const handleCreateAction = React.useCallback(
     (actionType: CategoryActionType) => {
-      setActions((prev) => {
-        const minId = prev.reduce((acc, item) => Math.min(acc, item.id), 0);
-        const nextId = minId > 0 ? -1 : minId - 1;
-        const nextAction: CategoryAction = {
-          id: nextId,
-          type: actionType,
-          props: {},
-        };
-        setOpenedActionId(nextId);
-        return [...prev, nextAction];
-      });
+      const existingActions = draftAction
+        ? [...actions, draftAction]
+        : actions;
+      const minId = existingActions.reduce(
+        (acc, item) => Math.min(acc, item.id),
+        0
+      );
+      const nextId = minId > 0 ? -1 : minId - 1;
+      const nextAction: CategoryAction = {
+        id: nextId,
+        type: actionType,
+        props: {},
+      };
+      setDraftAction(nextAction);
+      setOpenedActionId(nextId);
     },
-    [setActions, setOpenedActionId]
+    [actions, draftAction]
   );
 
   const dialogContent = React.useMemo(() => {

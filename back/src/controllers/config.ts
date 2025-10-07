@@ -12,10 +12,14 @@ import {
 import { ConfigService } from "src/services/config";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { SupabaseAuthGuard } from "src/lib/supabase-auth-guard";
+import { OutlookAuthService } from "src/services/outlook-auth";
 
 @Controller("config")
 export class ConfigController {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly outlookService: OutlookAuthService
+  ) {}
 
   @UseGuards(SupabaseAuthGuard)
   @Get("list")
@@ -201,5 +205,41 @@ export class ConfigController {
     }
     await this.configService.removeCategory(id);
     return res.status(200).send({ ok: true });
+  }
+
+  @UseGuards(SupabaseAuthGuard)
+  @Get("tags/:id")
+  async getEmailTags(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Param("id") configId: number
+  ) {
+    const email = await this.configService.getEmailWithConfiguration(configId);
+    if (!email || email.user_auth_user_id !== req.user.id) {
+      return res
+        .status(404)
+        .send({ ok: false, error: "Configuration not found" });
+    }
+    const accessToken = await this.outlookService.getValidAccessToken(email);
+    const tags = await this.configService.getEmailTags(accessToken);
+    return res.status(200).send({ ok: true, tags });
+  }
+
+  @UseGuards(SupabaseAuthGuard)
+  @Get("folders/:id")
+  async getEmailFolders(
+    @Req() req: FastifyRequest,
+    @Res() res: FastifyReply,
+    @Param("id") configId: number
+  ) {
+    const email = await this.configService.getEmailWithConfiguration(configId);
+    if (!email || email.user_auth_user_id !== req.user.id) {
+      return res
+        .status(404)
+        .send({ ok: false, error: "Configuration not found" });
+    }
+    const accessToken = await this.outlookService.getValidAccessToken(email);
+    const folders = await this.configService.getEmailFolders(accessToken);
+    return res.status(200).send({ ok: true, folders });
   }
 }

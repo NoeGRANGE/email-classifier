@@ -21,7 +21,7 @@ const ACTION_LABEL_FALLBACKS: Record<
   CategoryDetail["actions"][number]["type"],
   string
 > = {
-  assign_categories: "Assign categories",
+  assign_categories: "Assign category",
   move_to_folder: "Move to folder",
   forward_to: "Forward to",
   reply_with_message: "Reply with a message",

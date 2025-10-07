@@ -121,4 +121,106 @@ export class OutlookAuthService {
 
     return { maximum: maximum?.authorized_emails || 0, used: used.length };
   }
+
+  async getValidAccessToken(email: {
+    id: number;
+    user_auth_user_id: string;
+    email: string;
+    accountId: string;
+    tokenType: string;
+    expiresAt: string;
+    accessToken: string;
+    refreshToken: string;
+  }): Promise<string> {
+    // We refresh if the token is missing/invalid or will expire in < 5 minutes
+    const SAFETY_WINDOW_SECONDS = 300;
+
+    // If no access token, try to refresh directly
+    if (!email.accessToken) {
+      const refreshed = await this.refreshAccessToken(email.refreshToken);
+      await this.persistTokens(email.id, email.user_auth_user_id, refreshed);
+      return refreshed.access_token;
+    }
+
+    // Check expiry
+    try {
+      const expiry = new Date(email.expiresAt).getTime();
+      const now = Date.now();
+      if (isNaN(expiry) || expiry - now <= SAFETY_WINDOW_SECONDS * 1000) {
+        const refreshed = await this.refreshAccessToken(email.refreshToken);
+        await this.persistTokens(email.id, email.user_auth_user_id, refreshed);
+        return refreshed.access_token;
+      }
+      // Still valid
+      return email.accessToken;
+    } catch {
+      // Any parsing error -> try refresh
+      const refreshed = await this.refreshAccessToken(email.refreshToken);
+      await this.persistTokens(email.id, email.user_auth_user_id, refreshed);
+      return refreshed.access_token;
+    }
+  }
+
+  private async refreshAccessToken(
+    refreshToken: string
+  ): Promise<TokenResponse> {
+    if (!refreshToken) {
+      throw new Error("No refresh token available for this Outlook account");
+    }
+
+    const tenant = this.config.get<string>("MS_AUTH_TENANT", "common");
+    const clientId = this.config.get<string>("MS_CLIENT_ID");
+    const clientSecret = this.config.get<string>("MS_CLIENT_SECRET");
+
+    const tokenUrl = `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token`;
+
+    const body = new URLSearchParams({
+      client_id: clientId || "",
+      client_secret: clientSecret || "",
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+    });
+
+    const { data } = await firstValueFrom(
+      this.http.post<TokenResponse>(tokenUrl, body.toString(), {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      })
+    );
+
+    if (!data || !data.access_token) {
+      throw new Error("Failed to refresh Outlook access token");
+    }
+
+    return data;
+  }
+
+  private async persistTokens(
+    credentialRowId: number,
+    userId: string,
+    tokens: TokenResponse
+  ): Promise<void> {
+    const now = new Date();
+    now.setSeconds(now.getSeconds() + (tokens.expires_in || 0));
+
+    const updatePayload: any = {
+      access_token: tokens.access_token,
+      token_type: tokens.token_type,
+      expires_at: now.toISOString(),
+    };
+
+    // MS may or may not return a new refresh_token on refresh
+    if (tokens.refresh_token) {
+      updatePayload.refresh_token = tokens.refresh_token;
+    }
+
+    const { error } = await this.supabase
+      .from("outlook_credentials")
+      .update(updatePayload)
+      .eq("id", credentialRowId)
+      .eq("user_auth_user_id", userId);
+
+    if (error) {
+      throw error;
+    }
+  }
 }

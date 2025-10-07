@@ -27,7 +27,7 @@ declare global {
     mailboxUsed: number;
   };
   type ActionPropsTag = {
-    categories: string[];
+    categories: string;
   };
   type ActionPropsFolder = {
     destinationFolderId: string;

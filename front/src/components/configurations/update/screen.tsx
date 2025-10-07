@@ -94,6 +94,7 @@ export default function ConfigurationUpdateScreen({ data }: Props) {
       <CategoryCreateDrawer
         open={isCreateDrawerOpen}
         onOpenChange={handleDrawerChange}
+        configurationId={data.id}
         title={drawerTitle}
         description={drawerDescription}
         closeLabel={drawerCloseLabel}

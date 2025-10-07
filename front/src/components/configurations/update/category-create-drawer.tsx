@@ -87,19 +87,20 @@ export default function CategoryCreateDrawer({
           <RightDrawerTitle>{title}</RightDrawerTitle>
           <RightDrawerDescription>{description}</RightDrawerDescription>
         </RightDrawerHeader>
-        <div className={styles.container}>
-          <CategoryUpdateInfos
-            name={categoryName}
-            description={categoryDescription}
-            setName={setCategoryName}
-            setDescription={setCategoryDescription}
-          />
-          <CategoryUpdateActions
-            actions={categoryActions}
-            setActions={setCategoryActions}
-          />
+        <div className={styles.content}>
+          <div className={styles.container}>
+            <CategoryUpdateInfos
+              name={categoryName}
+              description={categoryDescription}
+              setName={setCategoryName}
+              setDescription={setCategoryDescription}
+            />
+            <CategoryUpdateActions
+              actions={categoryActions}
+              setActions={setCategoryActions}
+            />
+          </div>
         </div>
-        <div className="flex-1" />
         <RightDrawerFooter className="px-0 gap-2 sm:flex-row sm:justify-end">
           <RightDrawerClose asChild>
             <Button variant="outline">{closeLabel}</Button>
