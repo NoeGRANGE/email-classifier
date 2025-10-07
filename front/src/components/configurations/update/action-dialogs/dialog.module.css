@@ -1,0 +1,12 @@
+.input {
+  padding-left: 0.625rem !important;
+  padding-right: 0.625rem !important;
+}
+
+.select {
+  padding-left: 0.625rem !important;
+}
+
+.textarea {
+  padding: 0.625rem !important;
+}
