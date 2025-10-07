@@ -84,6 +84,11 @@ export default function ForwardToActionDialog({
     "Separate addresses with commas."
   );
 
+  const hasRecipients = React.useMemo(
+    () => recipientsValue.trim().length > 0,
+    [recipientsValue]
+  );
+
   const handleSave = React.useCallback(() => {
     const recipients = recipientsValue
       .split(",")
@@ -122,7 +127,12 @@ export default function ForwardToActionDialog({
         <Button variant="outline" onClick={onCancel} type="button">
           {cancelLabel}
         </Button>
-        <Button variant="primary" onClick={handleSave} type="button">
+        <Button
+          variant="primary"
+          onClick={handleSave}
+          type="button"
+          disabled={!hasRecipients}
+        >
           {saveLabel}
         </Button>
       </DialogFooter>

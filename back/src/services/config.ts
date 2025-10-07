@@ -67,12 +67,12 @@ export class ConfigService {
   async getConfigFromCategory(categoryId: number) {
     const { data, error } = await this.supabase
       .from("category")
-      .select("id, configuration:configuration_id(*)")
+      .select("id, configurations:configuration_id(*)")
       .eq("id", categoryId)
       .single();
     if (error) throw error;
 
-    return data.configuration;
+    return data.configurations;
   }
 
   async createCategory(name: string, description: string, configId: number) {
@@ -132,7 +132,7 @@ export class ConfigService {
     const { data, error } = await this.supabase
       .from("category")
       .select(
-        `id, name, description, configuration:configuration_id(*), actions:category_actions(id, type, props)`
+        `id, name, description, configurations:configuration_id(*), actions:category_actions(id, type, props)`
       )
       .eq("id", categoryId)
       .single();

@@ -4,12 +4,13 @@ import { headers } from "next/headers";
 import ConfigurationUpdateScreen from "@/components/configurations/update/screen";
 
 type PageProps = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export default async function ConfigurationUpdatePage({ params }: PageProps) {
+  const id = (await params).id;
   const cookieHeader = (await headers()).get("cookie") ?? "";
-  const configuration = await API.getConfiguration(params.id, cookieHeader);
+  const configuration = await API.getConfiguration(id, cookieHeader);
 
   return (
     <main>

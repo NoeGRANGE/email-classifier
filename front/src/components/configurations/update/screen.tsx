@@ -8,6 +8,7 @@ import CategoriesSection from "./categories-section";
 import CategoryCreateDrawer from "./category-create-drawer";
 import ConfigurationHeader from "./configuration-header";
 import layoutStyles from "./screen.module.css";
+import * as API from "@/lib/api";
 
 type Props = {
   data: ConfigurationDetail;
@@ -66,15 +67,47 @@ export default function ConfigurationUpdateScreen({ data }: Props) {
   }, []);
 
   const handleSubmitCategory = React.useCallback(
-    (payload: {
+    async (payload: {
       id?: number;
       name: string;
       description: string;
       isNew: boolean;
+      actions: CategoryAction[];
     }) => {
-      console.log("Category submit", payload);
+      const apiActions = payload.actions.map((action) => {
+        const props =
+          action.props && typeof action.props === "object"
+            ? action.props
+            : {};
+      return {
+        type: action.type,
+        props,
+      };
+    });
+
+    try {
+      if (payload.id) {
+        await API.updateCategory(
+          payload.id,
+          payload.name,
+          payload.description,
+          data.id,
+          apiActions
+        );
+      } else {
+        await API.createCategory(
+          payload.name,
+          payload.description,
+          data.id,
+          apiActions
+        );
+      }
+      handleDrawerChange(false);
+    } catch (error) {
+      console.error("Failed to submit category", error);
+    }
     },
-    []
+    [data.id, handleDrawerChange]
   );
 
   return (
@@ -94,7 +127,6 @@ export default function ConfigurationUpdateScreen({ data }: Props) {
       <CategoryCreateDrawer
         open={isCreateDrawerOpen}
         onOpenChange={handleDrawerChange}
-        configurationId={data.id}
         title={drawerTitle}
         description={drawerDescription}
         closeLabel={drawerCloseLabel}

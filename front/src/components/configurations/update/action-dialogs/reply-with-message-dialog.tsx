@@ -3,8 +3,8 @@
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   DialogDescription,
   DialogFooter,
@@ -27,10 +27,11 @@ type Props = CategoryActionDialogComponentProps<"reply_with_message">;
 type ReplyWithMessageProps = {
   subject?: unknown;
   message?: unknown;
+  messageText?: unknown;
+  replyAll?: unknown;
 };
 
 const FALLBACK_DESCRIPTION = "Craft the automatic reply that will be sent.";
-const SUBJECT_PLACEHOLDER = "Thanks for reaching out";
 const MESSAGE_PLACEHOLDER =
   "Write the automatic reply that will be sent to the sender.";
 
@@ -40,33 +41,41 @@ export default function ReplyWithMessageActionDialog({
   onCancel,
 }: Props) {
   const { t } = useTranslations("configurations");
-  const subjectId = React.useId();
   const messageId = React.useId();
+  const replyAllId = React.useId();
   const baseProps = React.useMemo<ReplyWithMessageProps>(
     () => getActionProps(action) as ReplyWithMessageProps,
     [action]
   );
 
-  const initialSubject = React.useMemo(() => {
-    const rawValue = baseProps.subject;
-    return typeof rawValue === "string" ? rawValue : "";
-  }, [baseProps]);
-
   const initialMessage = React.useMemo(() => {
-    const rawValue = baseProps.message;
+    const rawValue =
+      typeof baseProps.messageText === "string"
+        ? baseProps.messageText
+        : baseProps.message;
     return typeof rawValue === "string" ? rawValue : "";
   }, [baseProps]);
 
-  const [subjectValue, setSubjectValue] = React.useState(initialSubject);
-  const [messageValue, setMessageValue] = React.useState(initialMessage);
+  const preservedSubject = React.useMemo(() => {
+    const rawValue = baseProps.subject;
+    return typeof rawValue === "string" ? rawValue : undefined;
+  }, [baseProps]);
 
-  React.useEffect(() => {
-    setSubjectValue(initialSubject);
-  }, [initialSubject, action.id]);
+  const initialReplyAll = React.useMemo(() => {
+    const rawValue = baseProps.replyAll;
+    return typeof rawValue === "boolean" ? rawValue : false;
+  }, [baseProps]);
+
+  const [messageValue, setMessageValue] = React.useState(initialMessage);
+  const [replyAll, setReplyAll] = React.useState(initialReplyAll);
 
   React.useEffect(() => {
     setMessageValue(initialMessage);
   }, [initialMessage, action.id]);
+
+  React.useEffect(() => {
+    setReplyAll(initialReplyAll);
+  }, [initialReplyAll, action.id]);
 
   const cancelLabel = t("category.actions.dialog.cancel", "Cancel");
   const saveLabel = t("category.actions.dialog.save", "Save changes");
@@ -77,14 +86,6 @@ export default function ReplyWithMessageActionDialog({
   const description = t(
     "category.actions.dialog.reply_with_message.description",
     FALLBACK_DESCRIPTION
-  );
-  const subjectLabel = t(
-    "category.actions.dialog.reply_with_message.subjectLabel",
-    "Subject"
-  );
-  const subjectPlaceholder = t(
-    "category.actions.dialog.reply_with_message.subjectPlaceholder",
-    SUBJECT_PLACEHOLDER
   );
   const messageLabel = t(
     "category.actions.dialog.reply_with_message.bodyLabel",
@@ -98,19 +99,37 @@ export default function ReplyWithMessageActionDialog({
     "category.actions.dialog.reply_with_message.helper",
     "Plain text only for now."
   );
+  const replyAllLabel = t(
+    "category.actions.dialog.reply_with_message.replyAll",
+    "Reply to all recipients"
+  );
+
+  const hasMessage = React.useMemo(
+    () => messageValue.trim().length > 0,
+    [messageValue]
+  );
 
   const handleSave = React.useCallback(() => {
+    const trimmedMessage = messageValue.trim();
+    const nextProps = { ...baseProps } as Record<string, unknown>;
+
+    if (preservedSubject !== undefined) {
+      nextProps.subject = preservedSubject;
+    } else {
+      delete nextProps.subject;
+    }
+
+    nextProps.messageText = trimmedMessage;
+    delete nextProps.message;
+    nextProps.replyAll = replyAll;
+
     const nextAction: ReplyWithMessageAction = {
       ...action,
-      props: {
-        ...baseProps,
-        subject: subjectValue.trim(),
-        message: messageValue.trim(),
-      },
+      props: nextProps,
     };
 
     onSubmit(nextAction);
-  }, [action, baseProps, messageValue, onSubmit, subjectValue]);
+  }, [action, baseProps, messageValue, onSubmit, preservedSubject, replyAll]);
 
   return (
     <>
@@ -119,16 +138,6 @@ export default function ReplyWithMessageActionDialog({
         <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-2">
-          <Label htmlFor={subjectId}>{subjectLabel}</Label>
-          <Input
-            id={subjectId}
-            value={subjectValue}
-            onChange={(event) => setSubjectValue(event.target.value)}
-            placeholder={subjectPlaceholder}
-            className={styles.input}
-          />
-        </div>
         <div className="flex flex-col gap-2">
           <Label htmlFor={messageId}>{messageLabel}</Label>
           <Textarea
@@ -141,12 +150,27 @@ export default function ReplyWithMessageActionDialog({
           />
           <p className="text-muted-foreground text-xs">{helperText}</p>
         </div>
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id={replyAllId}
+            checked={replyAll}
+            onCheckedChange={(checked) => setReplyAll(Boolean(checked))}
+          />
+          <Label htmlFor={replyAllId} className="text-sm font-medium">
+            {replyAllLabel}
+          </Label>
+        </div>
       </div>
       <DialogFooter>
         <Button variant="outline" onClick={onCancel} type="button">
           {cancelLabel}
         </Button>
-        <Button variant="primary" onClick={handleSave} type="button">
+        <Button
+          variant="primary"
+          onClick={handleSave}
+          type="button"
+          disabled={!hasMessage}
+        >
           {saveLabel}
         </Button>
       </DialogFooter>

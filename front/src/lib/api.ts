@@ -325,3 +325,34 @@ export async function getEmailFolders(
     cookieHeader,
   });
 }
+
+export async function createCategory(
+  name: string,
+  description: string,
+  configId: number,
+  actions: { type: CategoryActionType; props: any }[],
+  cookieHeader?: string
+): Promise<{ ok: boolean }> {
+  return fetchWithAuth<{ ok: boolean }>({
+    path: `/config/category/create`,
+    method: "POST",
+    body: { name, description, configId, actions },
+    cookieHeader,
+  });
+}
+
+export async function updateCategory(
+  id: number,
+  name: string,
+  description: string,
+  configId: number,
+  actions: { type: CategoryActionType; props: any }[],
+  cookieHeader?: string
+): Promise<{ ok: boolean }> {
+  return fetchWithAuth<{ ok: boolean }>({
+    path: `/config/category/update`,
+    method: "POST",
+    body: { id, name, description, configId, actions },
+    cookieHeader,
+  });
+}

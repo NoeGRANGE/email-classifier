@@ -30,6 +30,7 @@ type Props = {
     name: string;
     description: string;
     isNew: boolean;
+    actions: CategoryAction[];
   }) => void;
   className?: string;
 };
@@ -70,6 +71,7 @@ export default function CategoryCreateDrawer({
       name: categoryName.trim(),
       description: categoryDescription.trim(),
       isNew,
+      actions: categoryActions,
     });
   }, [
     category?.id,
@@ -77,6 +79,7 @@ export default function CategoryCreateDrawer({
     categoryName,
     isFormValid,
     isNew,
+    categoryActions,
     onSubmit,
   ]);
 
