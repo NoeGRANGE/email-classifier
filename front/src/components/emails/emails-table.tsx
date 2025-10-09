@@ -7,6 +7,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { cn } from "@/lib/utils";
 
 import EmailActions from "./email-actions";
+import EmailsCardList from "./emails-card-list";
 import styles from "./emails-table.module.css";
 import OutlookConnect from "./outlook-connect";
 import layoutStyles from "./screen.module.css";
@@ -100,12 +101,24 @@ export default function EmailsTable({
         setUpdate={setUpdate}
         disabled={hasMaxMailboxes}
       />
-      <DataTable
-        data={emails}
-        columns={columns}
-        className={styles.table}
-        initialSorting={[{ id: "email", desc: false }]}
-      />
+      <div className={styles.tableWrapper}>
+        <DataTable
+          data={emails}
+          columns={columns}
+          className={styles.table}
+          initialSorting={[{ id: "email", desc: false }]}
+        />
+      </div>
+      <div className={styles.cardsWrapper}>
+        <EmailsCardList
+          emails={emails}
+          t={t}
+          onActivate={onActivate}
+          onDeactivate={onDeactivate}
+          onRemove={onRemove}
+          onConfigure={onConfigure}
+        />
+      </div>
     </section>
   );
 }

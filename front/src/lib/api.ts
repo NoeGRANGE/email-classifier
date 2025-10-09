@@ -144,8 +144,23 @@ export async function apiLogin(accessToken: string, refreshToken?: string) {
   });
 }
 
+export async function apiLogout() {
+  return fetchWithAuth<{ ok: boolean }>({
+    path: "/auth/logout",
+    method: "POST",
+    retryRefresh: false,
+  });
+}
+
 export async function apiMe(cookieHeader?: string): Promise<RegisterResult> {
   return fetchWithAuth({ path: "/auth/me", cookieHeader });
+}
+
+export async function deleteAccount() {
+  return fetchWithAuth<{ ok: boolean }>({
+    path: "/auth/me",
+    method: "DELETE",
+  });
 }
 
 export async function joinOrganisation(token: string, cookieHeader?: string) {

@@ -4,7 +4,13 @@ import { type ReactNode, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { LucideIcon } from "lucide-react";
-import { Building2, CreditCard, Mails, Settings, Wrench } from "lucide-react";
+import {
+  Building2,
+  CreditCard,
+  Mails,
+  Settings,
+  // , Wrench
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -59,13 +65,13 @@ export const DEFAULT_DASHBOARD_NAV: DashboardNavItem[] = [
     href: "emails",
     icon: Mails,
   },
-  {
-    id: "configurations",
-    label: "Configurations",
-    labelKey: "sidebar.nav.configurations",
-    href: "configurations",
-    icon: Wrench,
-  },
+  // {
+  //   id: "configurations",
+  //   label: "Configurations",
+  //   labelKey: "sidebar.nav.configurations",
+  //   href: "configurations",
+  //   icon: Wrench,
+  // },
   {
     id: "subscriptions",
     label: "Subscriptions",

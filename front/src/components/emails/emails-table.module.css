@@ -78,6 +78,33 @@
   color: rgb(55, 65, 81);
 }
 
+.tableWrapper {
+  display: block;
+}
+
+.cardsWrapper {
+  display: none;
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 690px) {
+  .tableWrapper {
+    display: none;
+  }
+
+  .cardsWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .table {
+    max-width: none;
+  }
+}
+
 @media (max-width: 720px) {
   .emailValue {
     max-width: clamp(6rem, 45vw, 14rem);
