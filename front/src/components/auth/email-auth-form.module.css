@@ -1,0 +1,66 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.status {
+  font-size: 14px;
+  color: color-mix(in srgb, var(--destructive) 75%, #991b1b 25%);
+  margin: 0;
+}
+
+.statusInfo {
+  color: var(--text-secondary);
+}
+
+.passwordHints {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: color-mix(
+    in srgb,
+    var(--surface) 85%,
+    var(--primary-color-alpha) 15%
+  );
+}
+
+.hintOk {
+  color: color-mix(in srgb, var(--primary-color) 25%, #047857 75%);
+  background: color-mix(in srgb, var(--primary-color-alpha) 45%, transparent);
+}
+
+.confirmHint {
+  grid-column: 1 / -1;
+}
+
+.hintIcon {
+  font-size: 12px;
+}
+
+.submitButton {
+  width: 100%;
+  justify-content: center;
+}
+
+.input {
+  padding-left: 0.625rem !important;
+  padding-right: 0.625rem !important;
+}

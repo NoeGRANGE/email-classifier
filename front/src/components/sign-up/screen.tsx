@@ -6,20 +6,20 @@ import AuthCard from "@/components/auth/auth-card";
 import EmailAuthForm from "@/components/auth/email-auth-form";
 import { useTranslations } from "@/i18n/use-translations";
 
-export default function SignInScreen() {
+export default function SignUpScreen() {
   const { t, locale } = useTranslations("auth");
 
   return (
     <AuthCard
-      title={t("heading_sign_in")}
+      title={t("heading_sign_up")}
       footer={
         <span>
-          {t("need_account")}
-          <Link href={`/${locale}/sign-up`}>{t("go_to_sign_up")}</Link>
+          {t("already_user")}
+          <Link href={`/${locale}/sign-in`}>{t("go_to_sign_in")}</Link>
         </span>
       }
     >
-      <EmailAuthForm mode="sign-in" />
+      <EmailAuthForm mode="sign-up" />
     </AuthCard>
   );
 }
