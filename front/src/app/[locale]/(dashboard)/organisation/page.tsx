@@ -2,6 +2,7 @@ import * as API from "@/lib/api";
 import OrganisationScreen from "@/components/organisation/screen";
 import { headers } from "next/headers";
 import NoOrganisationPage from "./no-orga";
+import { cookies } from "next/headers";
 
 export default async function OrganisationPage({
   searchParams,
@@ -12,6 +13,8 @@ export default async function OrganisationPage({
   const rawInvite = sp?.inviteToken ?? undefined;
   let inviteToken = Array.isArray(rawInvite) ? rawInvite[0] : rawInvite;
   const cookieHeader = (await headers()).get("cookie") ?? "";
+  const cookieStore = await cookies();
+
   if (!inviteToken) {
     const match = cookieHeader.match(/inviteToken=([^;]+)/);
     if (match) {
@@ -20,8 +23,12 @@ export default async function OrganisationPage({
     }
   }
   try {
-    if (inviteToken) await API.joinOrganisation(inviteToken, cookieHeader);
+    if (inviteToken) {
+      await API.joinOrganisation(inviteToken, cookieHeader);
+      cookieStore.delete("inviteToken");
+    }
   } catch {}
+
   try {
     const cookieHeader = (await headers()).get("cookie") ?? "";
     const data = await API.getOrganisationData(cookieHeader);
