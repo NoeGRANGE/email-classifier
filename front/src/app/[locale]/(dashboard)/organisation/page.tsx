@@ -10,9 +10,16 @@ export default async function OrganisationPage({
 }) {
   const sp = await searchParams;
   const rawInvite = sp?.inviteToken ?? undefined;
-  const inviteToken = Array.isArray(rawInvite) ? rawInvite[0] : rawInvite;
+  let inviteToken = Array.isArray(rawInvite) ? rawInvite[0] : rawInvite;
+  const cookieHeader = (await headers()).get("cookie") ?? "";
+  if (!inviteToken) {
+    const match = cookieHeader.match(/inviteToken=([^;]+)/);
+    if (match) {
+      const tokenFromCookie = decodeURIComponent(match[1]);
+      if (tokenFromCookie) inviteToken = tokenFromCookie;
+    }
+  }
   try {
-    const cookieHeader = (await headers()).get("cookie") ?? "";
     if (inviteToken) await API.joinOrganisation(inviteToken, cookieHeader);
   } catch {}
   try {

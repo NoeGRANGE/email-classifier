@@ -11,6 +11,21 @@ function isHtmlNavigation(req: NextRequest) {
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  const url = req.nextUrl.clone();
+
+  const searchForInvite = (_url: URL, res: NextResponse) => {
+    const inviteToken = _url.searchParams.get("inviteToken");
+    if (inviteToken) {
+      _url.searchParams.delete("inviteToken");
+      res.cookies.set("inviteToken", inviteToken, {
+        path: "/",
+        httpOnly: true,
+        secure: true,
+        sameSite: "lax",
+      });
+    }
+  };
+
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
@@ -28,13 +43,14 @@ export function middleware(req: NextRequest) {
   if (maybeLocale && LOCALES.includes(maybeLocale as any)) {
     const res = NextResponse.next();
     res.cookies.set("locale", maybeLocale, { path: "/" });
+    searchForInvite(url, res);
     return res;
   }
 
-  const url = req.nextUrl.clone();
   url.pathname = `/${DEFAULT_LOCALE}${pathname}`;
   const res = NextResponse.redirect(url);
   res.cookies.set("locale", DEFAULT_LOCALE, { path: "/" });
+  searchForInvite(url, res);
   return res;
 }
 
