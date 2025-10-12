@@ -27,6 +27,7 @@
   "dependencies": {
     "@fastify/cookie": "^9",
     "@fastify/cors": "^9.0.1",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.3",

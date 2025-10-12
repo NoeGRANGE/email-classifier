@@ -8,6 +8,7 @@ import { OrganisationModule } from "./organisation";
 import { BillingModule } from "./billing";
 import { EmailModule } from "./email";
 import { ConfigsModule } from "./config";
+import { WebhookEmailModule } from "./webhook-email";
 
 @Module({
   providers: [],
@@ -30,6 +31,7 @@ import { ConfigsModule } from "./config";
     BillingModule,
     EmailModule,
     ConfigsModule,
+    WebhookEmailModule,
   ],
 })
 export class AppModule {}

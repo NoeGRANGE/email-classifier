@@ -1,14 +1,18 @@
 import { Module } from "@nestjs/common";
 import { SupabaseModule } from "./supabase";
-import { ConfigService } from "src/services/config";
-import { ConfigController } from "src/controllers/config";
 import { HttpModule } from "@nestjs/axios";
+import { WebhookEmailController } from "src/controllers/webhook-email";
+import { WebhookEmailService } from "src/services/webhook-email";
 import { OutlookAuthService } from "src/services/outlook-auth";
 import { EmailSubscriptionService } from "src/services/subscription";
 
 @Module({
   imports: [HttpModule, SupabaseModule],
-  controllers: [ConfigController],
-  providers: [ConfigService, OutlookAuthService, EmailSubscriptionService],
+  controllers: [WebhookEmailController],
+  providers: [
+    WebhookEmailService,
+    OutlookAuthService,
+    EmailSubscriptionService,
+  ],
 })
-export class ConfigsModule {}
+export class WebhookEmailModule {}

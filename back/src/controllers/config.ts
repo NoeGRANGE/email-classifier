@@ -13,12 +13,14 @@ import { ConfigService } from "src/services/config";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { SupabaseAuthGuard } from "src/lib/supabase-auth-guard";
 import { OutlookAuthService } from "src/services/outlook-auth";
+import { EmailSubscriptionService } from "src/services/subscription";
 
 @Controller("config")
 export class ConfigController {
   constructor(
     private readonly configService: ConfigService,
-    private readonly outlookService: OutlookAuthService
+    private readonly outlookService: OutlookAuthService,
+    private readonly emailSubscriptionService: EmailSubscriptionService
   ) {}
 
   @UseGuards(SupabaseAuthGuard)
@@ -62,12 +64,27 @@ export class ConfigController {
   ) {
     const config = await this.configService.createConfig(req.user.id, name);
     if (emailId) {
-      await this.configService.updateEmailConfig(
+      const email = await this.configService.updateEmailConfig(
         config.id,
         emailId,
         req.user.id
       );
+      const accessToken = await this.outlookService.getValidAccessToken({
+        id: emailId,
+        user_auth_user_id: req.user.id,
+        accessToken: email.access_token,
+        email: email.email,
+        accountId: email.account_id,
+        refreshToken: email.refresh_token,
+        expiresAt: email.expires_at,
+        tokenType: email.token_type,
+      });
+      await this.emailSubscriptionService.createSubscription(
+        accessToken,
+        emailId
+      );
     }
+    // return res.status(200).send({ ok: true, configId: 1 });
     return res.status(200).send({ ok: true, configId: config.id });
   }
 

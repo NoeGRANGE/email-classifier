@@ -55,13 +55,20 @@ export class ConfigService {
     if (error) throw error;
   }
 
-  async updateEmailConfig(configId: number, emailId: number, userId: string) {
-    const { error } = await this.supabase
+  async updateEmailConfig(
+    configId: number | null,
+    emailId: number,
+    userId: string
+  ) {
+    const { data, error } = await this.supabase
       .from("outlook_credentials")
       .update({ configuration_id: configId })
       .eq("id", emailId)
-      .eq("user_auth_user_id", userId);
+      .eq("user_auth_user_id", userId)
+      .select("*")
+      .single();
     if (error) throw error;
+    return data;
   }
 
   async getConfigFromCategory(categoryId: number) {

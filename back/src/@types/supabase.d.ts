@@ -884,6 +884,38 @@ declare global {
             },
           ];
         };
+        mail_subscriptions: {
+          Row: {
+            expires_at: string;
+            id: string;
+            notifications_received: number;
+            outlook_credentials_id: number | null;
+            renewal_errors: number;
+          };
+          Insert: {
+            expires_at: string;
+            id: string;
+            notifications_received?: number;
+            outlook_credentials_id?: number | null;
+            renewal_errors?: number;
+          };
+          Update: {
+            expires_at?: string;
+            id?: string;
+            notifications_received?: number;
+            outlook_credentials_id?: number | null;
+            renewal_errors?: number;
+          };
+          Relationships: [
+            {
+              foreignKeyName: "mail_subscriptions_outlook_credentials_id_fkey";
+              columns: ["outlook_credentials_id"];
+              isOneToOne: false;
+              referencedRelation: "outlook_credentials";
+              referencedColumns: ["id"];
+            },
+          ];
+        };
         members: {
           Row: {
             accepted_at: string | null;

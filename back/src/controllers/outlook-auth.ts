@@ -71,13 +71,6 @@ export class OutlookAuthController {
       token.expires_in,
       email
     );
-
-    // TODO: faire au moment du register ou autre
-    // rajouter une route qui quand récupère le token en query param l'attache en local storage jusqu'à ce que
-    // await this.outlookService.setInviteToAccepted(
-    //   user.auth_user_id,
-    //   user.email
-    // );
     const FRONT_URL =
       process.env.FRONTEND_URL ?? "http://localhost:3000/en/emails";
     const doneUrl = `${FRONT_URL}/en/emails/inbox?connected=outlook`;
