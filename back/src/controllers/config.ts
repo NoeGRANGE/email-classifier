@@ -62,10 +62,11 @@ export class ConfigController {
     @Body("name") name: string,
     @Body("emailId") emailId?: number
   ) {
-    const config = await this.configService.createConfig(req.user.id, name);
+    // const config = await this.configService.createConfig(req.user.id, name);
     if (emailId) {
       const email = await this.configService.updateEmailConfig(
-        config.id,
+        // config.id,
+        6,
         emailId,
         req.user.id
       );
@@ -84,8 +85,8 @@ export class ConfigController {
         emailId
       );
     }
-    // return res.status(200).send({ ok: true, configId: 1 });
-    return res.status(200).send({ ok: true, configId: config.id });
+    return res.status(200).send({ ok: true, configId: 6 });
+    // return res.status(200).send({ ok: true, configId: config.id });
   }
 
   @UseGuards(SupabaseAuthGuard)

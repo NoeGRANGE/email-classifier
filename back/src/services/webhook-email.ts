@@ -1,10 +1,19 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Supa } from "../lib/supabase";
 import { Client } from "@microsoft/microsoft-graph-client";
+import { htmlToText } from "html-to-text";
+import { LLMService } from "./llm";
+import { ConfigService } from "./config";
+import { ActionsService } from "./actions";
 
 @Injectable()
 export class WebhookEmailService {
-  constructor(@Inject("SUPABASE") private supabase: Supa) {}
+  constructor(
+    @Inject("SUPABASE") private supabase: Supa,
+    private llmService: LLMService,
+    private configService: ConfigService,
+    private readonly actionsService: ActionsService
+  ) {}
 
   async createSubscription(accessToken: string, emailId: number) {
     const client = this.getAuthenticatedClient(accessToken);
@@ -12,7 +21,7 @@ export class WebhookEmailService {
     const subscription = {
       changeType: "created",
       // notificationUrl: `${process.env.APP_URL}/webhook/email`,
-      notificationUrl: `https://1feac2a175b9.ngrok-free.app/webhook/email`,
+      notificationUrl: `https://922491cd0631.ngrok-free.app/webhook/email`,
       resource: "/me/mailFolders/inbox/messages",
       expirationDateTime: this.getExpirationDate(),
       clientState: emailId.toString(),
@@ -107,5 +116,64 @@ export class WebhookEmailService {
 
     if (error) return null;
     return data;
+  }
+
+  // Processing Part
+
+  htmlToPlainText(html: string): string {
+    return htmlToText(html, {
+      wordwrap: false,
+      selectors: [
+        { selector: "a", options: { ignoreHref: false } },
+        { selector: "img", format: "skip" },
+      ],
+    });
+  }
+
+  extractTextForClassification(message: OutlookMessage) {
+    const { body } = message;
+    let text = "";
+
+    if (body?.contentType === "Text") {
+      text = body.content ?? "";
+    } else if (body?.contentType === "HTML") {
+      text = this.htmlToPlainText(body.content ?? "");
+    } else {
+      text = message.bodyPreview ?? "";
+    }
+
+    text = text
+      .replace(/\u00A0/g, " ")
+      .replace(/\s+\n/g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+
+    return text;
+  }
+
+  async processMail(
+    message: OutlookMessage,
+    configId: number,
+    accessToken: string
+  ) {
+    const messageText = this.extractTextForClassification(message);
+    const hasAttachments = message.hasAttachments ?? false;
+    const messageSubject = message.subject ?? "(No Subject)";
+    const categories =
+      await this.configService.getCategoriesFromConfig(configId);
+    const category = await this.llmService.classifyEmail(
+      messageSubject,
+      messageText,
+      hasAttachments,
+      categories
+    );
+    if (category) {
+      console.log("email classified in category:", category.name);
+      await this.actionsService.executeActions(
+        category.actions,
+        message.id,
+        accessToken
+      );
+    }
   }
 }

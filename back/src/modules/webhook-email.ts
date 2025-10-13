@@ -5,6 +5,9 @@ import { WebhookEmailController } from "src/controllers/webhook-email";
 import { WebhookEmailService } from "src/services/webhook-email";
 import { OutlookAuthService } from "src/services/outlook-auth";
 import { EmailSubscriptionService } from "src/services/subscription";
+import { LLMService } from "src/services/llm";
+import { ConfigService } from "src/services/config";
+import { ActionsService } from "src/services/actions";
 
 @Module({
   imports: [HttpModule, SupabaseModule],
@@ -13,6 +16,9 @@ import { EmailSubscriptionService } from "src/services/subscription";
     WebhookEmailService,
     OutlookAuthService,
     EmailSubscriptionService,
+    LLMService,
+    ConfigService,
+    ActionsService,
   ],
 })
 export class WebhookEmailModule {}

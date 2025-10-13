@@ -8,6 +8,7 @@ import {
   Res,
 } from "@nestjs/common";
 import { FastifyReply, FastifyRequest } from "fastify";
+import { LLMService } from "src/services/llm";
 import { OutlookAuthService } from "src/services/outlook-auth";
 import { EmailSubscriptionService } from "src/services/subscription";
 import { WebhookEmailService } from "src/services/webhook-email";
@@ -17,8 +18,16 @@ export class WebhookEmailController {
   constructor(
     private readonly outlookService: OutlookAuthService,
     private readonly webhookEmailService: WebhookEmailService,
-    private readonly emailSubscriptionService: EmailSubscriptionService
+    private readonly emailSubscriptionService: EmailSubscriptionService,
+    private readonly llmService: LLMService
   ) {}
+
+  @Post("test")
+  async test(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
+    const { prompt } = req.body as { prompt: string };
+    const result = await this.llmService.callLLM(prompt);
+    return res.status(HttpStatus.OK).send(result);
+  }
 
   @Post()
   async handleWebhook(
@@ -79,11 +88,10 @@ export class WebhookEmailController {
     const message = (await client
       .api(`/me/messages/${messageId}`)
       .get()) as OutlookMessage;
-    console.log("Nouveau message reçu:", message);
-    // Classifier et traiter l'email
-    // await this.emailProcessingService.classifyAndProcess(
-    //   message,
-    //   subscription.userId
-    // );
+    await this.webhookEmailService.processMail(
+      message,
+      email.configuration_id,
+      accessToken
+    );
   }
 }
