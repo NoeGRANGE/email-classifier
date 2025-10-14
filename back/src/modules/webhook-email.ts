@@ -8,9 +8,10 @@ import { EmailSubscriptionService } from "src/services/subscription";
 import { LLMService } from "src/services/llm";
 import { ConfigService } from "src/services/config";
 import { ActionsService } from "src/services/actions";
+import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
-  imports: [HttpModule, SupabaseModule],
+  imports: [HttpModule, SupabaseModule, ScheduleModule.forRoot()],
   controllers: [WebhookEmailController],
   providers: [
     WebhookEmailService,

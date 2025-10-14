@@ -21,7 +21,7 @@ export class WebhookEmailService {
     const { data, error } = await this.supabase
       .from("mail_subscriptions")
       .select("*")
-      .lt("expires_at", thresholdDate);
+      .lt("expires_at", thresholdDate.toISOString());
 
     if (error) {
       console.error("Erreur récupération subscriptions:", error);
@@ -88,6 +88,7 @@ export class WebhookEmailService {
 
   extractTextForClassification(message: OutlookMessage) {
     const { body } = message;
+    console.log("Extraction de texte pour classification:", body);
     let text = "";
 
     if (body?.contentType === "Text") {
@@ -103,6 +104,8 @@ export class WebhookEmailService {
       .replace(/\s+\n/g, "\n")
       .replace(/\n{3,}/g, "\n\n")
       .trim();
+
+    console.log("Texte extrait pour classification:", text);
 
     return text;
   }

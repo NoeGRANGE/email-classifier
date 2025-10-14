@@ -7,27 +7,21 @@ import {
   Req,
   Res,
 } from "@nestjs/common";
+import { Cron } from "@nestjs/schedule";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { LLMService } from "src/services/llm";
 import { OutlookAuthService } from "src/services/outlook-auth";
 import { EmailSubscriptionService } from "src/services/subscription";
 import { WebhookEmailService } from "src/services/webhook-email";
+import { asyncMap } from "src/utils/array";
 
 @Controller("webhook/email")
 export class WebhookEmailController {
   constructor(
     private readonly outlookService: OutlookAuthService,
     private readonly webhookEmailService: WebhookEmailService,
-    private readonly emailSubscriptionService: EmailSubscriptionService,
-    private readonly llmService: LLMService
+    private readonly emailSubscriptionService: EmailSubscriptionService
   ) {}
-
-  @Post("test")
-  async test(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
-    const { prompt } = req.body as { prompt: string };
-    const result = await this.llmService.callLLM(prompt);
-    return res.status(HttpStatus.OK).send(result);
-  }
 
   @Post()
   async handleWebhook(
@@ -38,14 +32,11 @@ export class WebhookEmailController {
     if (validationToken) {
       return res.status(HttpStatus.OK).send(validationToken);
     }
-    console.log("Webhook reçu:", req.body);
-
     const { value: notifications } = req.body as {
       value: OutlookNotification[];
     };
 
     for (const notification of notifications) {
-      console.log("Notification reçu:", notification);
       const emailId = notification.clientState;
       const subscription = await this.webhookEmailService.findSubscriptionById(
         notification.subscriptionId,
@@ -57,10 +48,8 @@ export class WebhookEmailController {
         subscription === null ||
         !subscription?.outlook_credentials?.activated
       ) {
-        console.log("pas subscription trouvée ou pas activée, skip");
         continue;
       }
-      console.log("subscription trouvée, processing...");
 
       this.processNotification(notification).catch((err) =>
         console.error("Erreur traitement notification:", err)
@@ -68,6 +57,33 @@ export class WebhookEmailController {
     }
 
     return res.status(HttpStatus.ACCEPTED).send();
+  }
+
+  @Cron("0 */12 * * *")
+  async checkExpiringSubscriptions() {
+    const expiringSubscriptions =
+      await this.webhookEmailService.findExpiringSoon(24);
+    await asyncMap(expiringSubscriptions, 10, async (sub) => {
+      const email = await this.webhookEmailService.getEmailCredentials(
+        sub.outlook_credentials_id
+      );
+      if (!email.activated) return;
+      const accessToken = await this.outlookService.getValidAccessToken({
+        id: email.id,
+        user_auth_user_id: email.user_auth_user_id,
+        accessToken: email.access_token,
+        email: email.email,
+        accountId: email.account_id,
+        refreshToken: email.refresh_token,
+        expiresAt: email.expires_at,
+        tokenType: email.token_type,
+      });
+      await this.emailSubscriptionService.updateSubscription(
+        sub.id,
+        accessToken,
+        sub.outlook_credentials_id
+      );
+    });
   }
 
   private async processNotification(notification: OutlookNotification) {

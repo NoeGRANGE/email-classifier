@@ -34,6 +34,35 @@ export class EmailSubscriptionService {
     }
   }
 
+  async updateSubscription(
+    subscriptionId: string,
+    accessToken: string,
+    emailId: number
+  ) {
+    const client = this.getAuthenticatedClient(accessToken);
+
+    const updatedSubscription = {
+      expirationDateTime: this.getExpirationDate(),
+    };
+
+    try {
+      const result = await client
+        .api(`/subscriptions/${subscriptionId}`)
+        .update(updatedSubscription);
+
+      await this.saveSubscription(
+        subscriptionId,
+        emailId,
+        new Date(result.expirationDateTime)
+      );
+
+      return result;
+    } catch (error) {
+      console.error("Erreur mise à jour subscription:", error);
+      throw error;
+    }
+  }
+
   private getExpirationDate(): string {
     // Maximum 3 jours (4230 minutes) pour les messages
     const date = new Date();
