@@ -91,9 +91,9 @@ export class WebhookEmailService {
     console.log("Extraction de texte pour classification:", body);
     let text = "";
 
-    if (body?.contentType === "Text") {
+    if (body?.contentType === "text") {
       text = body.content ?? "";
-    } else if (body?.contentType === "HTML") {
+    } else if (body?.contentType === "html") {
       text = this.htmlToPlainText(body.content ?? "");
     } else {
       text = message.bodyPreview ?? "";

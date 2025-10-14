@@ -88,7 +88,7 @@ declare global {
     inferenceClassification?: "Focused" | "Other";
 
     body?: {
-      contentType: "Text" | "HTML";
+      contentType: "text" | "html";
       content: string;
     };
 
