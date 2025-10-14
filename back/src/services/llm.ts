@@ -144,7 +144,6 @@ Ta réponse JSON:`;
         hasAttachments,
         categories
       );
-      console.log("LLM prompt:", prompt);
       const response = await this.callLLM(prompt);
       if (
         response?.categoryId &&

@@ -70,7 +70,6 @@ export default function OutlookConnect({
           }
           setIsConnecting(false);
           setUpdate();
-          console.log("Outlook auth window closed");
         }
       }, 800);
     } catch (error) {

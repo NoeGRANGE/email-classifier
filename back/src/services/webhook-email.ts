@@ -88,7 +88,6 @@ export class WebhookEmailService {
 
   extractTextForClassification(message: OutlookMessage) {
     const { body } = message;
-    console.log("Extraction de texte pour classification:", body);
     let text = "";
 
     if (body?.contentType === "text") {
@@ -104,9 +103,6 @@ export class WebhookEmailService {
       .replace(/\s+\n/g, "\n")
       .replace(/\n{3,}/g, "\n\n")
       .trim();
-
-    console.log("Texte extrait pour classification:", text);
-
     return text;
   }
 

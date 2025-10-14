@@ -18,7 +18,6 @@ export class EmailService {
       .select("id, email, activated, configurationId:configuration_id")
       .eq("user_auth_user_id", userId);
     if (error) {
-      console.log("Error listing user emails", error);
       throw error;
     }
     return data;
