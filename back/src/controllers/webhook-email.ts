@@ -38,12 +38,14 @@ export class WebhookEmailController {
     if (validationToken) {
       return res.status(HttpStatus.OK).send(validationToken);
     }
+    console.log("Webhook reçu:", req.body);
 
     const { value: notifications } = req.body as {
       value: OutlookNotification[];
     };
 
     for (const notification of notifications) {
+      console.log("Notification reçu:", notification);
       const emailId = notification.clientState;
       const subscription = await this.webhookEmailService.findSubscriptionById(
         notification.subscriptionId,
@@ -55,8 +57,10 @@ export class WebhookEmailController {
         subscription === null ||
         !subscription?.outlook_credentials?.activated
       ) {
+        console.log("pas subscription trouvée ou pas activée, skip");
         continue;
       }
+      console.log("subscription trouvée, processing...");
 
       this.processNotification(notification).catch((err) =>
         console.error("Erreur traitement notification:", err)

@@ -23,6 +23,7 @@ export class LLMService {
     const pass = this.cfg.get<string>("LLM_BASIC_PASS", "");
     this.authHeader =
       "Basic " + Buffer.from(`${user}:${pass}`).toString("base64");
+    // this.defaultModel = "phi3:mini";
     this.defaultModel = "mistral:instruct";
     // this.defaultModel = "gemma3:270m";
     this.reqTimeout = Number(
@@ -143,6 +144,7 @@ Ta réponse JSON:`;
         hasAttachments,
         categories
       );
+      console.log("LLM prompt:", prompt);
       const response = await this.callLLM(prompt);
       if (
         response?.categoryId &&

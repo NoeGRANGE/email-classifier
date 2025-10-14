@@ -30,10 +30,10 @@ declare global {
     categories: string;
   };
   type ActionPropsFolder = {
-    destinationFolderId: string;
+    folder: string;
   };
   type ActionPropsForward = {
-    to: string[];
+    recipients: string[];
     comment?: string;
   };
   type ActionPropsReply = {

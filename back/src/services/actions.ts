@@ -59,18 +59,22 @@ export class ActionsService {
   ) {
     const encodedMessageId = encodeURIComponent(messageId);
 
+    // Validate that categories exist
+    if (!props.categories) {
+      console.error(`No categories provided for message ${messageId}`);
+      return;
+    }
+
     try {
-      await this.graphFetch(
-        `/me/messages/${encodedMessageId}/categories/$ref`,
-        accessToken,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            "@odata.id": `${this.graphBaseUrl}/me/outlook/masterCategories('${props.categories}')`,
-          }),
-        }
-      );
+      const categories = [props.categories];
+
+      await this.graphFetch(`/me/messages/${encodedMessageId}`, accessToken, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          categories: categories,
+        }),
+      });
     } catch (error) {
       console.error(
         `Failed to assign category ${props.categories} to message ${messageId}`,
@@ -84,7 +88,14 @@ export class ActionsService {
     messageId: string,
     accessToken: string
   ) {
-    const destinationId = props.destinationFolderId;
+    const destinationId = props.folder;
+
+    if (!destinationId) {
+      console.error(
+        `Missing destinationFolderId for moving message ${messageId}`
+      );
+      return;
+    }
 
     try {
       await this.graphFetch(
@@ -111,6 +122,13 @@ export class ActionsService {
     messageId: string,
     accessToken: string
   ) {
+    if (!props.recipients || props.recipients.length === 0) {
+      console.error(
+        `No recipients provided for forwarding message ${messageId}`
+      );
+      return;
+    }
+
     try {
       await this.graphFetch(
         `/me/messages/${encodeURIComponent(messageId)}/forward`,
@@ -120,7 +138,7 @@ export class ActionsService {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             comment: props.comment || "",
-            toRecipients: props.to.map((address) => ({
+            toRecipients: props.recipients.map((address) => ({
               emailAddress: { address },
             })),
           }),
@@ -128,7 +146,7 @@ export class ActionsService {
       );
     } catch (error) {
       console.error(
-        `Failed to forward message ${messageId} to ${props.to.join(", ")}`,
+        `Failed to forward message ${messageId} to ${props.recipients.join(", ")}`,
         error
       );
     }
@@ -140,7 +158,12 @@ export class ActionsService {
     accessToken: string
   ) {
     const endpoint = props?.replyAll ? "replyAll" : "reply";
-    const comment = props.messageText.trim();
+    const comment = props.messageText?.trim();
+
+    if (!comment) {
+      console.error(`No message text provided for reply to ${messageId}`);
+      return;
+    }
 
     try {
       await this.graphFetch(

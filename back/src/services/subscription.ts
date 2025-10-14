@@ -12,7 +12,7 @@ export class EmailSubscriptionService {
     const subscription = {
       changeType: "created",
       // notificationUrl: `${process.env.APP_URL}/webhook/email`,
-      notificationUrl: `https://e65db81627ce.ngrok-free.app/webhook/email`,
+      notificationUrl: `https://4cffcdbf62f7.ngrok-free.app/webhook/email`,
       resource: "/me/mailFolders/inbox/messages",
       expirationDateTime: this.getExpirationDate(),
       clientState: emailId.toString(),
