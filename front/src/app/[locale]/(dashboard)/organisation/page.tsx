@@ -30,7 +30,6 @@ export default async function OrganisationPage({
   } catch {}
 
   try {
-    const cookieHeader = (await headers()).get("cookie") ?? "";
     const [data, meRole] = await Promise.all([
       API.getOrganisationData(cookieHeader),
       API.getMeRole(cookieHeader),

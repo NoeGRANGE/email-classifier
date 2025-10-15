@@ -8,13 +8,7 @@ import { getBillingInfo, getBillingPlans } from "@/lib/api";
 import AvailablePlansSection from "./available-plans-section";
 import CurrentPlanSection from "./current-plan-section";
 import styles from "./screen.module.css";
-import {
-  PLAN_META_FALLBACK,
-  buildPlanCards,
-  formatTemplate,
-  type PlanCardData,
-  type StatusVariant,
-} from "./utils";
+import { PLAN_META_FALLBACK, buildPlanCards, formatTemplate } from "./utils";
 
 type SubscriptionStatus = NonNullable<BillingInfo["subscriptionStatus"]>;
 
@@ -34,7 +28,11 @@ const STATUS_VARIANTS: Record<SubscriptionStatus, StatusVariant> = {
   canceled: "neutral",
 };
 
-export default function SubscriptionsScreen() {
+type Props = {
+  meRole: { role: string; activatedEmails: number; authorizedEmails: number };
+};
+
+export default function SubscriptionsScreen({ meRole }: Props) {
   const { t } = useTranslations("subscriptions");
   const [info, setInfo] = React.useState<BillingInfo | null>(null);
   const [plans, setPlans] = React.useState<PlanInfo[] | null>(null);

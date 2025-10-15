@@ -185,8 +185,8 @@ export async function inviteToOrganisation(
   email: string,
   role: string,
   reservedSeats: number
-): Promise<PlanInfo[]> {
-  return fetchWithAuth<PlanInfo[]>({
+): Promise<{ ok: boolean; inviteLink: string }> {
+  return fetchWithAuth<{ ok: boolean; inviteLink: string }>({
     path: "/organisation/invite",
     method: "POST",
     body: { email, role, reservedSeats },

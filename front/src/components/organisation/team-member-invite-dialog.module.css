@@ -40,3 +40,22 @@
   font-size: 0.875rem;
   color: var(--muted-foreground, rgb(107 114 128));
 }
+
+.successField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.copyRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.copyInput {
+  flex: 1;
+  min-width: 0;
+  padding-left: 0.625rem !important;
+  padding-right: 0.625rem !important;
+}

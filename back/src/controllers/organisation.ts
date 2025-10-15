@@ -207,8 +207,11 @@ export class OrganisationController {
       organisation.seats_used + reservedSeats
     );
     // TODO: send email to the user with a link to join the org
-
-    res.status(200).send({ ok: true });
+    const APP_URL = process.env.APP_URL || "http://localhost:3000";
+    res.status(200).send({
+      ok: true,
+      inviteLink: `${APP_URL}/organisation?inviteToken=${token}`,
+    });
   }
 
   @UseGuards(SupabaseAuthGuard)

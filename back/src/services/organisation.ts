@@ -83,7 +83,7 @@ export class OrganisationService {
       .from("members")
       .select("*")
       .eq("user_auth_user_id", userId)
-      .single();
+      .maybeSingle();
     if (userErr) throw userErr;
     return data;
   }
