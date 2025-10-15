@@ -62,6 +62,32 @@ export class OrganisationController {
       },
     });
   }
+
+  @UseGuards(SupabaseAuthGuard)
+  @Get("/me-role")
+  async getMeRole(@Req() req: FastifyRequest, @Res() res: FastifyReply) {
+    const [member, activatedEmails] = await Promise.all([
+      this.organisationService.getMemberFromUserId(req.user.id),
+      this.organisationService.getActivatedEmailsForUser(req.user.id),
+    ]);
+    const activatedCount = activatedEmails.length;
+
+    if (!member) {
+      return res.status(200).send({
+        ok: true,
+        role: null,
+        activatedEmails: 0,
+        authorizedEmails: 0,
+      });
+    }
+    return res.status(200).send({
+      ok: true,
+      role: member.role,
+      activatedEmails: activatedCount,
+      authorizedEmails: member.authorized_emails,
+    });
+  }
+
   @UseGuards(SupabaseAuthGuard)
   @Post("/join")
   async join(

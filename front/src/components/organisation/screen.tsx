@@ -12,7 +12,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import * as API from "@/lib/api";
 
-type Props = { data: OrganisationData };
+type Props = {
+  data: OrganisationData;
+  meRole: { role: string; activatedEmails: number; authorizedEmails: number };
+};
 
 function HeaderSkeleton() {
   return (
@@ -70,7 +73,7 @@ function MembersSkeleton() {
   );
 }
 
-export default function OrganisationScreen({ data: _data }: Props) {
+export default function OrganisationScreen({ data: _data, meRole }: Props) {
   const { t } = useTranslations("organisation");
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -135,7 +138,12 @@ export default function OrganisationScreen({ data: _data }: Props) {
             t={t}
           />
 
-          <TeamMembersSection members={members} t={t} setUpdate={setUpdate} />
+          <TeamMembersSection
+            members={members}
+            t={t}
+            setUpdate={setUpdate}
+            role={meRole.role}
+          />
         </>
       )}
     </div>

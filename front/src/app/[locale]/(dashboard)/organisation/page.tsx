@@ -31,10 +31,13 @@ export default async function OrganisationPage({
 
   try {
     const cookieHeader = (await headers()).get("cookie") ?? "";
-    const data = await API.getOrganisationData(cookieHeader);
+    const [data, meRole] = await Promise.all([
+      API.getOrganisationData(cookieHeader),
+      API.getMeRole(cookieHeader),
+    ]);
     return (
       <main>
-        <OrganisationScreen data={data.organisation} />
+        <OrganisationScreen data={data.organisation} meRole={meRole} />
       </main>
     );
   } catch {

@@ -16,12 +16,14 @@ type TeamMembersSectionProps = {
   members: NormalisedMember[];
   t: TranslateFn;
   setUpdate: React.ActionDispatch<[]>;
+  role: string;
 };
 
 export default function TeamMembersSection({
   members,
   t,
   setUpdate,
+  role,
 }: TeamMembersSectionProps) {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [roleFilter, setRoleFilter] = React.useState("all");
@@ -152,14 +154,15 @@ export default function TeamMembersSection({
         id: "actions",
         header: () => null,
         enableSorting: false,
-        cell: ({ row }) => (
-          <TeamMemberActions
-            member={row.original}
-            t={t}
-            onManage={handleManageMember}
-            onRemove={setUpdate}
-          />
-        ),
+        cell: ({ row }) =>
+          role === "admin" || role === "owner" ? (
+            <TeamMemberActions
+              member={row.original}
+              t={t}
+              onManage={handleManageMember}
+              onRemove={setUpdate}
+            />
+          ) : null,
       },
     ],
     [handleManageMember, setUpdate, t]
@@ -190,6 +193,7 @@ export default function TeamMembersSection({
         uniqueStatuses={uniqueStatuses}
         t={t}
         onInvite={showInviteDialog}
+        role={role}
       />
 
       <TeamMembersTable

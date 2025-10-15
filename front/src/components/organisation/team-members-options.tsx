@@ -26,6 +26,7 @@ type TeamMembersOptionsProps = {
   uniqueStatuses: string[];
   t: TranslateFn;
   onInvite: () => void;
+  role: string;
 };
 
 export default function TeamMembersOptions({
@@ -39,6 +40,7 @@ export default function TeamMembersOptions({
   uniqueStatuses,
   t,
   onInvite,
+  role,
 }: TeamMembersOptionsProps) {
   return (
     <div className={styles.filters}>
@@ -96,14 +98,16 @@ export default function TeamMembersOptions({
           </SelectContent>
         </Select>
       </div>
-      <Button
-        type="button"
-        startIcon={<Plus aria-hidden="true" />}
-        onClick={onInvite}
-        className={styles.inviteButton}
-      >
-        {t("members.invite", "Invite member")}
-      </Button>
+      {(role === "admin" || role === "owner") && (
+        <Button
+          type="button"
+          startIcon={<Plus aria-hidden="true" />}
+          onClick={onInvite}
+          className={styles.inviteButton}
+        >
+          {t("members.invite", "Invite member")}
+        </Button>
+      )}
     </div>
   );
 }

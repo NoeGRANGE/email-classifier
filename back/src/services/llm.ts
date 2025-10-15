@@ -24,7 +24,8 @@ export class LLMService {
     this.authHeader =
       "Basic " + Buffer.from(`${user}:${pass}`).toString("base64");
     // this.defaultModel = "phi3:mini";
-    this.defaultModel = "mistral:instruct";
+    this.defaultModel = "llama3.2:fast";
+    // this.defaultModel = "mistral:instruct";
     // this.defaultModel = "gemma3:270m";
     this.reqTimeout = Number(
       this.cfg.get<string>("LLM_REQUEST_TIMEOUT", "60000")

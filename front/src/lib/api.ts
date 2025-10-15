@@ -371,3 +371,20 @@ export async function updateCategory(
     cookieHeader,
   });
 }
+
+export async function getMeRole(cookieHeader?: string): Promise<{
+  ok: boolean;
+  role: string;
+  activatedEmails: number;
+  authorizedEmails: number;
+}> {
+  return fetchWithAuth<{
+    ok: boolean;
+    role: string;
+    activatedEmails: number;
+    authorizedEmails: number;
+  }>({
+    path: `/organisation/me-role`,
+    cookieHeader,
+  });
+}

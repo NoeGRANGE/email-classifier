@@ -21,6 +21,16 @@ export class OrganisationService {
     return data.id;
   }
 
+  async getActivatedEmailsForUser(userId: string) {
+    const { error, data } = await this.supabase
+      .from("outlook_credentials")
+      .select("id")
+      .eq("user_auth_user_id", userId)
+      .eq("activated", true);
+    if (error) throw error;
+    return data;
+  }
+
   async createOwnerMember(
     userId: string,
     orgId: number,
