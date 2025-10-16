@@ -1,6 +1,6 @@
 {
   "en": {
-    "sidebar.brand": "Taggly",
+    "sidebar.brand": "LinBolt",
     "sidebar.workspace": "Workspace",
     "sidebar.dashboardFallback": "Dashboard",
     "sidebar.nav.organisation": "Organisation",
@@ -10,7 +10,7 @@
     "sidebar.nav.settings": "Settings"
   },
   "fr": {
-    "sidebar.brand": "Taggly",
+    "sidebar.brand": "LinBolt",
     "sidebar.workspace": "Espace de travail",
     "sidebar.dashboardFallback": "Tableau de bord",
     "sidebar.nav.organisation": "Organisation",

@@ -31,6 +31,7 @@ import {
 import { useTranslations } from "@/i18n/use-translations";
 import { cn } from "@/lib/utils";
 import LanguageSwitcher from "@/components/ui/language-switcher";
+import { AppBrandLink } from "./app-brand-link";
 import styles from "./dashboard-shell.module.css";
 
 export type DashboardNavItem = {
@@ -152,9 +153,10 @@ export function DashboardShell({
         <Sidebar className={styles.sidebar}>
           <SidebarHeader className={styles.sidebarHeader}>
             <div className={styles.sidebarHeaderContent}>
-              <span className={styles.brand}>
-                {t("sidebar.brand", "Taggly")}
-              </span>
+              <AppBrandLink
+                className={styles.brand}
+                label={t("sidebar.brand", "LinBolt")}
+              />
               <div
                 className={cn(
                   styles.languageSwitcher,

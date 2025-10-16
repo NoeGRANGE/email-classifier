@@ -1,6 +1,5 @@
 import PlanCard from "./plan-card";
 import styles from "./available-plans-section.module.css";
-import type { PlanCardData, TranslateFn } from "./utils";
 
 type AvailablePlansSectionProps = {
   planCards: PlanCardData[];
