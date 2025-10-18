@@ -40,7 +40,6 @@ export default function SubscriptionsScreen() {
   >(null);
   const [isPortalRedirecting, setPortalRedirecting] =
     React.useState<boolean>(false);
-
   React.useEffect(() => {
     let mounted = true;
     setLoading(true);

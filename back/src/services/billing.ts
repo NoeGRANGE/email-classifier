@@ -7,29 +7,23 @@ export class BillingService {
   constructor(@Inject("SUPABASE") private readonly supa: Supa) {}
 
   async getBillingInfo(userId: string): Promise<BillingInfo> {
-    const [{ data: user }, { data: org }, { data: emails }] = await Promise.all(
-      [
-        this.supa
-          .from("users")
-          .select(
-            "stripe_customer_id,current_plan,current_price_id,subscription_status,current_period_end"
-          )
-          .eq("auth_user_id", userId)
-          .single(),
-        this.supa
-          .from("organisations")
-          .select("seats_purchased")
-          .eq("owner_user_id", userId)
-          .maybeSingle(),
-        this.supa
-          .from("outlook_credentials")
-          .select("id")
-          .eq("user_auth_user_id", userId)
-          .eq("activated", true),
-      ]
-    );
+    const [{ data: user }, { data: org }] = await Promise.all([
+      this.supa
+        .from("users")
+        .select(
+          "stripe_customer_id,current_plan,current_price_id,subscription_status,current_period_end"
+        )
+        .eq("auth_user_id", userId)
+        .single(),
+      this.supa
+        .from("organisations")
+        .select("seats_purchased,seats_used")
+        .eq("owner_user_id", userId)
+        .single(),
+    ]);
 
     const authorizedEmails = org?.seats_purchased ?? 0;
+    const usedEmails = org?.seats_used ?? 0;
     return {
       userId,
       stripeCustomerId: user?.stripe_customer_id ?? null,
@@ -38,7 +32,7 @@ export class BillingService {
       currentPriceId: user?.current_price_id ?? null,
       currentPeriodEnd: user?.current_period_end ?? null,
       mailboxLimit: authorizedEmails,
-      mailboxUsed: emails.length ?? 0,
+      mailboxUsed: usedEmails,
     };
   }
 
