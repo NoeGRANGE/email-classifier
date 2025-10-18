@@ -193,28 +193,29 @@ export class StripeWebhookService {
   private async onSubscriptionDeleted(sub: Stripe.Subscription) {
     const customerId = sub.customer as string;
 
-    const { data: users } = await this.supa
-      .from("users")
-      .select("auth_user_id")
-      .eq("stripe_customer_id", customerId)
-      .limit(1);
-
-    if (!users?.[0]) return;
-
     const { data: user } = await this.supa
       .from("users")
       .update({
         subscription_status: "canceled",
-        // keep plan/price until end-of-period if you want to allow grace period
+        current_plan: null,
+        current_price_id: null,
+        current_period_end: null,
       })
-      .eq("auth_user_id", users[0].auth_user_id)
-      .select("org_id")
+      .eq("stripe_customer_id", customerId)
+      .select("auth_user_id, org_id")
       .single();
-    const { data: usersToUpdate } = await this.supa
-      .from("members")
-      .update({ authorized_emails: 0 })
-      .eq("org_id", user.org_id)
-      .select("user_auth_user_id");
+
+    const [{ data: usersToUpdate }, _] = await Promise.all([
+      this.supa
+        .from("members")
+        .update({ authorized_emails: 0 })
+        .eq("org_id", user.org_id)
+        .select("user_auth_user_id"),
+      this.supa
+        .from("organisations")
+        .update({ seats_purchased: 0, seats_used: 0 })
+        .eq("id", user.org_id),
+    ]);
     const usersIds = usersToUpdate.map((u) => u.user_auth_user_id);
     await this.supa
       .from("outlook_credentials")
