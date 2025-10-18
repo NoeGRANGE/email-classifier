@@ -50,8 +50,18 @@
     "subscriptions.plan.status.contact.note": "Let's tailor the right package for your team.",
     "subscriptions.plan.actions.contact": "Contact sales",
     "subscriptions.plan.actions.select": "Try For Free",
+    "subscriptions.plan.actions.select_pending": "Opening checkout…",
     "subscriptions.plan.actions.current": "Current plan",
-    "subscriptions.plan.actions.unavailable": "Unavailable"
+    "subscriptions.plan.actions.unavailable": "Unavailable",
+    "subscriptions.plan.actions.manage_billing": "Manage billing",
+    "subscriptions.plan.actions.manage_billing_pending": "Opening portal…",
+    "subscriptions.plan.actions.manage_billing_note": "Update invoices, payment method, or cancel your subscription from the Stripe customer portal.",
+    "subscriptions.toast.checkout_error.title": "Unable to start checkout",
+    "subscriptions.toast.checkout_error.description": "Checkout could not be started. {reason}",
+    "subscriptions.toast.checkout_error.reasonFallback": "Something went wrong.",
+    "subscriptions.toast.portal_error.title": "Unable to open portal",
+    "subscriptions.toast.portal_error.description": "Portal could not be opened. {reason}",
+    "subscriptions.toast.portal_error.reasonFallback": "Something went wrong."
   },
   "fr": {
     "subscriptions.title": "Abonnements",
@@ -104,7 +114,17 @@
     "subscriptions.plan.status.contact.note": "Construisons ensemble la formule idéale pour votre équipe.",
     "subscriptions.plan.actions.contact": "Contacter le service commercial",
     "subscriptions.plan.actions.select": "Essayer gratuitement",
+    "subscriptions.plan.actions.select_pending": "Ouverture de Stripe…",
     "subscriptions.plan.actions.current": "Offre actuelle",
-    "subscriptions.plan.actions.unavailable": "Indisponible"
+    "subscriptions.plan.actions.unavailable": "Indisponible",
+    "subscriptions.plan.actions.manage_billing": "Gérer la facturation",
+    "subscriptions.plan.actions.manage_billing_pending": "Ouverture du portail…",
+    "subscriptions.plan.actions.manage_billing_note": "Mettez à jour vos factures, moyen de paiement ou résiliez l'abonnement depuis le portail client Stripe.",
+    "subscriptions.toast.checkout_error.title": "Impossible de démarrer le paiement",
+    "subscriptions.toast.checkout_error.description": "Le paiement n'a pas pu être lancé. {reason}",
+    "subscriptions.toast.checkout_error.reasonFallback": "Un problème est survenu.",
+    "subscriptions.toast.portal_error.title": "Impossible d'ouvrir le portail",
+    "subscriptions.toast.portal_error.description": "Le portail n'a pas pu s'ouvrir. {reason}",
+    "subscriptions.toast.portal_error.reasonFallback": "Un problème est survenu."
   }
 }

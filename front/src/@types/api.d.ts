@@ -69,6 +69,9 @@ declare global {
     contactHref?: string;
   };
 
+  type BillingCheckoutResponse = { url: string };
+  type BillingPortalResponse = { url: string };
+
   type Configuration = { id: number; name: string };
 
   type CategoryActionType =

@@ -1,0 +1,22 @@
+{
+  "en": {
+    "billing.success.title": "Thank you for upgrading",
+    "billing.success.description": "We have received your payment. Stripe is finalising your subscription; this may take a moment.",
+    "billing.success.next_steps": "Feel free to close this tab or head back to the dashboard while we refresh your billing status.",
+    "billing.cancelled.title": "Checkout cancelled",
+    "billing.cancelled.description": "No charges were made. You can restart checkout whenever you are ready.",
+    "billing.cancelled.next_steps": "If this was accidental, return to the subscriptions page to try again.",
+    "billing.status.back_to_dashboard": "Back to dashboard",
+    "billing.status.open_support": "Need help? Contact support."
+  },
+  "fr": {
+    "billing.success.title": "Merci pour votre mise à niveau",
+    "billing.success.description": "Nous avons bien reçu votre paiement. Stripe finalise votre abonnement ; cela peut prendre quelques instants.",
+    "billing.success.next_steps": "Vous pouvez fermer cet onglet ou revenir au tableau de bord pendant que nous actualisons votre statut de facturation.",
+    "billing.cancelled.title": "Paiement annulé",
+    "billing.cancelled.description": "Aucun prélèvement n'a été réalisé. Vous pourrez relancer le paiement quand vous serez prêt.",
+    "billing.cancelled.next_steps": "Si c'était involontaire, retournez sur la page des abonnements pour réessayer.",
+    "billing.status.back_to_dashboard": "Retour au tableau de bord",
+    "billing.status.open_support": "Besoin d'aide ? Contactez le support."
+  }
+}

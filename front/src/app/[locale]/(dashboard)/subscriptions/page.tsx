@@ -20,7 +20,7 @@ export default async function SubscriptionsPage({ params }: PageProps) {
   if (meRole.role === "owner" || meRole.role === null) {
     return (
       <main>
-        <SubscriptionsScreen meRole={meRole} />
+        <SubscriptionsScreen />
       </main>
     );
   } else {

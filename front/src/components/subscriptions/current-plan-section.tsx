@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import styles from "./current-plan-section.module.css";
-import type { StatusVariant, TranslateFn } from "./utils";
+import { Button } from "@/components/ui/button";
 
 type CurrentPlanSectionProps = {
   info: BillingInfo;
@@ -16,6 +16,9 @@ type CurrentPlanSectionProps = {
   mailboxLimitLabel: string;
   usagePercent: number | null;
   usageNote: string | null;
+  canManageBillingPortal: boolean;
+  onManageBillingPortal?: () => void;
+  manageBillingPending?: boolean;
 };
 
 export default function CurrentPlanSection({
@@ -31,6 +34,9 @@ export default function CurrentPlanSection({
   mailboxLimitLabel,
   usagePercent,
   usageNote,
+  canManageBillingPortal,
+  onManageBillingPortal,
+  manageBillingPending = false,
 }: CurrentPlanSectionProps) {
   const usageStyle = React.useMemo(
     () =>
@@ -119,6 +125,32 @@ export default function CurrentPlanSection({
             <span className={styles.planNote}>{usageNote}</span>
           ) : null}
         </div>
+        {canManageBillingPortal && onManageBillingPortal ? (
+          <div className={styles.actions}>
+            <Button
+              variant="outline"
+              onClick={onManageBillingPortal}
+              disabled={manageBillingPending}
+              aria-busy={manageBillingPending || undefined}
+            >
+              {manageBillingPending
+                ? t(
+                    "subscriptions.plan.actions.manage_billing_pending",
+                    "Opening portal…"
+                  )
+                : t(
+                    "subscriptions.plan.actions.manage_billing",
+                    "Manage billing"
+                  )}
+            </Button>
+            <p className={styles.actionsNote}>
+              {t(
+                "subscriptions.plan.actions.manage_billing_note",
+                "Update invoices, payment method, or cancel your subscription from the Stripe customer portal."
+              )}
+            </p>
+          </div>
+        ) : null}
       </div>
     </section>
   );

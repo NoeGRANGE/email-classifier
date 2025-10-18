@@ -14,9 +14,16 @@ import {
 type PlanCardProps = {
   plan: PlanCardData;
   t: TranslateFn;
+  onSelectPlan?: (plan: PlanCardData) => void;
+  isPending?: boolean;
 };
 
-export default function PlanCard({ plan, t }: PlanCardProps) {
+export default function PlanCard({
+  plan,
+  t,
+  onSelectPlan,
+  isPending = false,
+}: PlanCardProps) {
   const planTitle = t(
     `subscriptions.plan.meta.${plan.plan}.title`,
     PLAN_META_FALLBACK[plan.plan].title
@@ -103,8 +110,18 @@ export default function PlanCard({ plan, t }: PlanCardProps) {
               </a>
             </Button>
           ) : planStatus === "available" ? (
-            <Button disabled={!plan.isAvailable} variant="primary">
-              {t("subscriptions.plan.actions.select", "Try For Free")}
+            <Button
+              disabled={!plan.isAvailable || isPending}
+              variant="primary"
+              onClick={() => onSelectPlan?.(plan)}
+              aria-busy={isPending || undefined}
+            >
+              {isPending
+                ? t(
+                    "subscriptions.plan.actions.select_pending",
+                    "Opening checkout…"
+                  )
+                : t("subscriptions.plan.actions.select", "Try For Free")}
             </Button>
           ) : planStatus === "current" ? (
             <Button variant="outline" disabled>

@@ -159,6 +159,18 @@
   color: var(--text-secondary);
 }
 
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.actionsNote {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  max-width: 32rem;
+}
+
 @media (min-width: 600px) {
   .cardHeader {
     flex-direction: row;

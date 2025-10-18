@@ -3,7 +3,8 @@
 import * as React from "react";
 
 import { useTranslations } from "@/i18n/use-translations";
-import { getBillingInfo, getBillingPlans } from "@/lib/api";
+import * as API from "@/lib/api";
+import { toast } from "sonner";
 
 import AvailablePlansSection from "./available-plans-section";
 import CurrentPlanSection from "./current-plan-section";
@@ -28,23 +29,24 @@ const STATUS_VARIANTS: Record<SubscriptionStatus, StatusVariant> = {
   canceled: "neutral",
 };
 
-type Props = {
-  meRole: { role: string; activatedEmails: number; authorizedEmails: number };
-};
-
-export default function SubscriptionsScreen({ meRole }: Props) {
-  const { t } = useTranslations("subscriptions");
+export default function SubscriptionsScreen() {
+  const { t, locale } = useTranslations("subscriptions");
   const [info, setInfo] = React.useState<BillingInfo | null>(null);
   const [plans, setPlans] = React.useState<PlanInfo[] | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
+  const [redirectingPlanId, setRedirectingPlanId] = React.useState<
+    string | null
+  >(null);
+  const [isPortalRedirecting, setPortalRedirecting] =
+    React.useState<boolean>(false);
 
   React.useEffect(() => {
     let mounted = true;
     setLoading(true);
     setError(null);
 
-    Promise.all([getBillingInfo(), getBillingPlans()])
+    Promise.all([API.getBillingInfo(), API.getBillingPlans()])
       .then(([billingInfo, billingPlans]) => {
         if (!mounted) return;
         setInfo(billingInfo);
@@ -64,6 +66,27 @@ export default function SubscriptionsScreen({ meRole }: Props) {
       mounted = false;
     };
   }, []);
+
+  const extractErrorReason = React.useCallback(
+    (err: unknown, fallback: string) => {
+      if (err instanceof Error) {
+        const trimmed = err.message.trim();
+        if (trimmed) {
+          try {
+            const parsed = JSON.parse(trimmed);
+            if (typeof parsed?.message === "string" && parsed.message.trim()) {
+              return parsed.message.trim();
+            }
+          } catch {
+            // ignore JSON parse errors
+          }
+          return trimmed;
+        }
+      }
+      return fallback;
+    },
+    []
+  );
 
   const planCards = React.useMemo<PlanCardData[] | null>(
     () => buildPlanCards(plans, info?.currentPlan ?? null),
@@ -148,6 +171,97 @@ export default function SubscriptionsScreen({ meRole }: Props) {
         )
     : null;
 
+  const canManageBillingPortal = Boolean(info?.stripeCustomerId);
+
+  const handleSelectPlan = React.useCallback(
+    async (plan: PlanCardData) => {
+      if (!plan.isAvailable || plan.isEnterprise || redirectingPlanId) {
+        return;
+      }
+
+      setRedirectingPlanId(plan.id);
+      const fallbackReason = t(
+        "subscriptions.toast.checkout_error.reasonFallback",
+        "Something went wrong."
+      );
+      let redirected = false;
+
+      try {
+        const checkout = await API.createBillingCheckout(
+          plan.plan as Plan,
+          locale
+        );
+        if (!checkout?.url) {
+          throw new Error("Missing checkout URL");
+        }
+        redirected = true;
+        window.location.href = checkout.url;
+      } catch (err) {
+        const reason = extractErrorReason(err, fallbackReason);
+        toast.error(
+          t(
+            "subscriptions.toast.checkout_error.title",
+            "Unable to start checkout"
+          ),
+          {
+            description: formatTemplate(
+              t(
+                "subscriptions.toast.checkout_error.description",
+                "Checkout could not be started. {reason}"
+              ),
+              { reason }
+            ),
+          }
+        );
+      } finally {
+        if (!redirected) {
+          setRedirectingPlanId(null);
+        }
+      }
+    },
+    [redirectingPlanId, t, extractErrorReason, locale]
+  );
+
+  const handleOpenBillingPortal = React.useCallback(async () => {
+    if (isPortalRedirecting) {
+      return;
+    }
+
+    setPortalRedirecting(true);
+    const fallbackReason = t(
+      "subscriptions.toast.portal_error.reasonFallback",
+      "Something went wrong."
+    );
+    let redirected = false;
+
+    try {
+      const portal = await API.openBillingPortal();
+      if (!portal?.url) {
+        throw new Error("Missing portal URL");
+      }
+      redirected = true;
+      window.location.href = portal.url;
+    } catch (err) {
+      const reason = extractErrorReason(err, fallbackReason);
+      toast.error(
+        t("subscriptions.toast.portal_error.title", "Unable to open portal"),
+        {
+          description: formatTemplate(
+            t(
+              "subscriptions.toast.portal_error.description",
+              "Portal could not be opened. {reason}"
+            ),
+            { reason }
+          ),
+        }
+      );
+    } finally {
+      if (!redirected) {
+        setPortalRedirecting(false);
+      }
+    }
+  }, [isPortalRedirecting, t, extractErrorReason]);
+
   return (
     <div className={styles.wrapper}>
       <header className={styles.header}>
@@ -186,11 +300,21 @@ export default function SubscriptionsScreen({ meRole }: Props) {
               mailboxLimitLabel={mailboxLimitLabel}
               usagePercent={usagePercent}
               usageNote={usageNote}
+              canManageBillingPortal={canManageBillingPortal}
+              onManageBillingPortal={
+                canManageBillingPortal ? handleOpenBillingPortal : undefined
+              }
+              manageBillingPending={isPortalRedirecting}
             />
           ) : null}
 
           {planCards && planCards.length > 0 ? (
-            <AvailablePlansSection planCards={planCards} t={t} />
+            <AvailablePlansSection
+              planCards={planCards}
+              t={t}
+              onSelectPlan={handleSelectPlan}
+              pendingPlanId={redirectingPlanId}
+            />
           ) : null}
         </>
       )}

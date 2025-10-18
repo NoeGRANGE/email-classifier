@@ -10,14 +10,12 @@ export class StripeWebhookService {
   constructor(@Inject("SUPABASE") private readonly supa: Supa) {}
 
   async handleEvent(event: Stripe.Event) {
-    // 1) De-dup: record event id; if already processed -> exit
     const { error: dedupErr } = await this.supa
       .from("stripe_events")
       .insert({ id: event.id, type: event.type })
       .select()
       .single();
     if (dedupErr && dedupErr.code !== "23505") {
-      // not unique-violation
       this.log.error(`Dedup insert failed: ${dedupErr.message}`);
       return;
     }
@@ -71,24 +69,40 @@ export class StripeWebhookService {
     const customerId = s.customer as string;
     const userId = s.client_reference_id as string; // you set this when creating Checkout Session
 
-    // Fetch subscription to get price and period end
     const sub = await stripe.subscriptions.retrieve(subId);
     const priceId = sub.items.data[0].price.id;
-    const status = sub.status; // trialing/active/past_due/canceled
-    const currentPeriodEnd = new Date(
-      (sub as any).current_period_end * 1000
-    ).toISOString();
+    const status = sub.status;
 
-    // Map price -> plan + mailbox_limit
+    let periodEndSec: number | undefined =
+      (sub as any).current_period_end ?? (sub as any).trial_end ?? undefined;
+
+    if (!periodEndSec && sub.latest_invoice) {
+      try {
+        const invoice = await stripe.invoices.retrieve(
+          sub.latest_invoice as string
+        );
+        const firstLine = invoice.lines?.data?.[0];
+        periodEndSec = firstLine?.period?.end;
+      } catch (e) {
+        this.log.warn(
+          `Could not retrieve invoice for period end: ${(e as Error).message}`
+        );
+      }
+    }
+
+    const currentPeriodEnd = periodEndSec
+      ? new Date(periodEndSec * 1000).toISOString()
+      : null;
+
     const { data: priceMap, error: mapErr } = await this.supa
       .from("billing_prices")
       .select("plan, mailbox_limit")
       .eq("stripe_price_id", priceId)
       .single();
+
     if (mapErr)
       throw new Error(`Unknown priceId ${priceId}: ${mapErr.message}`);
 
-    // Persist on user
     const { error: upErr } = await this.supa
       .from("users")
       .update({
@@ -106,11 +120,28 @@ export class StripeWebhookService {
     const customerId = sub.customer as string;
     const priceId = sub.items.data[0].price.id;
     const status = sub.status;
-    const currentPeriodEnd = new Date(
-      (sub as any).current_period_end * 1000
-    ).toISOString();
 
-    // Find user by customerId
+    let periodEndSec: number | undefined =
+      (sub as any).current_period_end ?? (sub as any).trial_end ?? undefined;
+
+    if (!periodEndSec && sub.latest_invoice) {
+      try {
+        const invoice = await stripe.invoices.retrieve(
+          sub.latest_invoice as string
+        );
+        const firstLine = invoice.lines?.data?.[0];
+        periodEndSec = firstLine?.period?.end;
+      } catch (e) {
+        this.log.warn(
+          `Could not retrieve invoice for period end: ${(e as Error).message}`
+        );
+      }
+    }
+
+    const currentPeriodEnd = periodEndSec
+      ? new Date(periodEndSec * 1000).toISOString()
+      : null;
+
     const { data: users, error: uErr } = await this.supa
       .from("users")
       .select("auth_user_id")
@@ -120,7 +151,6 @@ export class StripeWebhookService {
 
     const userId = users[0].auth_user_id;
 
-    // Optional: refresh plan mapping (if they upgraded/downgraded in Portal)
     const { data: priceMap } = await this.supa
       .from("billing_prices")
       .select("plan")

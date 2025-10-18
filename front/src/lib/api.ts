@@ -206,6 +206,27 @@ export async function getBillingPlans(
   return fetchWithAuth<PlanInfo[]>({ path: "/billing/plans", cookieHeader });
 }
 
+export async function createBillingCheckout(
+  plan: Plan,
+  locale?: string,
+  cookieHeader?: string
+) {
+  return fetchWithAuth<BillingCheckoutResponse>({
+    path: "/billing/checkout",
+    method: "POST",
+    body: { plan, ...(locale ? { locale } : {}) },
+    cookieHeader,
+  });
+}
+
+export async function openBillingPortal(cookieHeader?: string) {
+  return fetchWithAuth<BillingPortalResponse>({
+    path: "/billing/portal",
+    method: "POST",
+    cookieHeader,
+  });
+}
+
 export async function removeOrganisationMember(memberId: number) {
   return fetchWithAuth({
     path: `/organisation/remove-member`,

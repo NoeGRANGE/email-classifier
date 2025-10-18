@@ -37,10 +37,12 @@ export class BillingController {
   }
 
   @Post("checkout")
-  async checkout(@Req() req: FastifyRequest, @Body() body: { plan: Plan }) {
+  async checkout(
+    @Req() req: FastifyRequest,
+    @Body() body: { plan: Plan; locale?: string }
+  ) {
     const userId = req.user?.id;
     if (!userId) throw new UnauthorizedException();
-
     const { data: plan } = await this.supa
       .from("billing_prices")
       .select("stripe_price_id")
@@ -55,6 +57,13 @@ export class BillingController {
       .eq("auth_user_id", userId)
       .single();
 
+    const requestedLocale = body.locale;
+    const locale = (
+      requestedLocale && ["en", "fr"].includes(requestedLocale)
+        ? requestedLocale
+        : "auto"
+    ) as "fr" | "en" | "auto";
+
     let customerId = user?.stripe_customer_id as string | null;
     if (customerId) {
       const session = await stripe.checkout.sessions.create({
@@ -68,6 +77,7 @@ export class BillingController {
         client_reference_id: userId,
         success_url: `${APP_URL}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${APP_URL}/billing/cancelled`,
+        locale,
         custom_fields: [
           {
             key: "company_name",
@@ -77,20 +87,20 @@ export class BillingController {
           },
         ],
       });
+      // store the user's customer ID in Supabase if not already present
       return { url: session.url };
     } else {
       const session = await stripe.checkout.sessions.create({
         mode: "subscription",
         line_items: [{ price: priceId, quantity: 1 }],
         subscription_data: { trial_period_days: 14 },
-        customer_creation: "always",
         customer_email: user.email,
         billing_address_collection: "required",
         tax_id_collection: { enabled: true },
-        customer_update: { name: "auto", address: "auto" },
         client_reference_id: userId,
         success_url: `${APP_URL}/billing/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${APP_URL}/billing/cancelled`,
+        locale,
         custom_fields: [
           {
             key: "company_name",
