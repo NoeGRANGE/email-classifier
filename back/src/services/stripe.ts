@@ -187,8 +187,6 @@ export class StripeWebhookService {
         orgUpdate.data.name,
         orgUpdate.data.id
       );
-      // send an email to annonce that the customerId
-      // has exceeded his plan limit
     }
   }
 
@@ -203,14 +201,25 @@ export class StripeWebhookService {
 
     if (!users?.[0]) return;
 
-    await this.supa
+    const { data: user } = await this.supa
       .from("users")
       .update({
         subscription_status: "canceled",
         // keep plan/price until end-of-period if you want to allow grace period
       })
-      .eq("auth_user_id", users[0].auth_user_id);
-    // TODO set all to desactivated
+      .eq("auth_user_id", users[0].auth_user_id)
+      .select("org_id")
+      .single();
+    const { data: usersToUpdate } = await this.supa
+      .from("members")
+      .update({ authorized_emails: 0 })
+      .eq("org_id", user.org_id)
+      .select("user_auth_user_id");
+    const usersIds = usersToUpdate.map((u) => u.user_auth_user_id);
+    await this.supa
+      .from("outlook_credentials")
+      .update({ activated: false })
+      .in("user_auth_user_id", usersIds);
   }
 
   private async onPaymentFailed(inv: Stripe.Invoice) {
