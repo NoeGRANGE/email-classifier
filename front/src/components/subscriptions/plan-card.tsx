@@ -16,6 +16,9 @@ type PlanCardProps = {
   t: TranslateFn;
   onSelectPlan?: (plan: PlanCardData) => void;
   isPending?: boolean;
+  hasActiveSubscription?: boolean;
+  onManageBilling?: () => void;
+  manageBillingPending?: boolean;
 };
 
 export default function PlanCard({
@@ -23,6 +26,9 @@ export default function PlanCard({
   t,
   onSelectPlan,
   isPending = false,
+  hasActiveSubscription = false,
+  onManageBilling,
+  manageBillingPending = false,
 }: PlanCardProps) {
   const planTitle = t(
     `subscriptions.plan.meta.${plan.plan}.title`,
@@ -76,6 +82,12 @@ export default function PlanCard({
     PLAN_STATUS_NOTE_FALLBACK[planStatus]
   );
 
+  const shouldShowManageBilling =
+    planStatus === "available" &&
+    hasActiveSubscription &&
+    !plan.isEnterprise &&
+    typeof onManageBilling === "function";
+
   return (
     <div className={cardClassName}>
       <div className={styles.planContent}>
@@ -110,19 +122,38 @@ export default function PlanCard({
               </a>
             </Button>
           ) : planStatus === "available" ? (
-            <Button
-              disabled={!plan.isAvailable || isPending}
-              variant="primary"
-              onClick={() => onSelectPlan?.(plan)}
-              aria-busy={isPending || undefined}
-            >
-              {isPending
-                ? t(
-                    "subscriptions.plan.actions.select_pending",
-                    "Opening checkout…"
-                  )
-                : t("subscriptions.plan.actions.select", "Try For Free")}
-            </Button>
+            shouldShowManageBilling ? (
+              <Button
+                variant="primary"
+                disabled={manageBillingPending}
+                onClick={onManageBilling}
+                aria-busy={manageBillingPending || undefined}
+              >
+                {manageBillingPending
+                  ? t(
+                      "subscriptions.plan.actions.manage_billing_pending",
+                      "Opening portal…"
+                    )
+                  : t(
+                      "subscriptions.plan.actions.manage_billing",
+                      "Manage billing"
+                    )}
+              </Button>
+            ) : (
+              <Button
+                disabled={!plan.isAvailable || isPending}
+                variant="primary"
+                onClick={() => onSelectPlan?.(plan)}
+                aria-busy={isPending || undefined}
+              >
+                {isPending
+                  ? t(
+                      "subscriptions.plan.actions.select_pending",
+                      "Opening checkout…"
+                    )
+                  : t("subscriptions.plan.actions.select", "Try For Free")}
+              </Button>
+            )
           ) : planStatus === "current" ? (
             <Button variant="outline" disabled>
               {t("subscriptions.plan.actions.current", "Current plan")}

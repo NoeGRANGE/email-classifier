@@ -7,20 +7,29 @@ export class BillingService {
   constructor(@Inject("SUPABASE") private readonly supa: Supa) {}
 
   async getBillingInfo(userId: string): Promise<BillingInfo> {
-    const { data: user } = await this.supa
-      .from("users")
-      .select(
-        "stripe_customer_id,current_plan,current_price_id,subscription_status,current_period_end,organisations(seats_purchased)"
-      )
-      .eq("auth_user_id", userId)
-      .single();
+    const [{ data: user }, { data: org }, { data: emails }] = await Promise.all(
+      [
+        this.supa
+          .from("users")
+          .select(
+            "stripe_customer_id,current_plan,current_price_id,subscription_status,current_period_end"
+          )
+          .eq("auth_user_id", userId)
+          .single(),
+        this.supa
+          .from("organisations")
+          .select("seats_purchased")
+          .eq("owner_user_id", userId)
+          .maybeSingle(),
+        this.supa
+          .from("outlook_credentials")
+          .select("id")
+          .eq("user_auth_user_id", userId)
+          .eq("activated", true),
+      ]
+    );
 
-    const { data: emails } = await this.supa
-      .from("outlook_credentials")
-      .select("id")
-      .eq("user_auth_user_id", userId)
-      .eq("activated", true);
-    const authorizedEmails = user?.organisations?.seats_purchased ?? 0;
+    const authorizedEmails = org?.seats_purchased ?? 0;
     return {
       userId,
       stripeCustomerId: user?.stripe_customer_id ?? null,

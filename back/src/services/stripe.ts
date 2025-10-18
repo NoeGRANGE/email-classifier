@@ -2,14 +2,20 @@ import { Injectable, Logger, Inject } from "@nestjs/common";
 import { Supa } from "src/lib/supabase";
 import Stripe from "stripe";
 import { stripe } from "../controllers/stripe";
+import { BrevoService } from "./brevo";
 
 @Injectable()
 export class StripeWebhookService {
   private readonly log = new Logger(StripeWebhookService.name);
 
-  constructor(@Inject("SUPABASE") private readonly supa: Supa) {}
+  constructor(
+    @Inject("SUPABASE") private readonly supa: Supa,
+    private readonly brevoService: BrevoService
+  ) {}
 
   async handleEvent(event: Stripe.Event) {
+    console.log("handling stripe event:", event.type);
+    console.log(event);
     const { error: dedupErr } = await this.supa
       .from("stripe_events")
       .insert({ id: event.id, type: event.type })
@@ -153,19 +159,37 @@ export class StripeWebhookService {
 
     const { data: priceMap } = await this.supa
       .from("billing_prices")
-      .select("plan")
+      .select("plan, mailbox_limit")
       .eq("stripe_price_id", priceId)
       .single();
 
-    await this.supa
-      .from("users")
-      .update({
-        current_price_id: priceId,
-        current_plan: priceMap?.plan ?? null,
-        subscription_status: status,
-        current_period_end: currentPeriodEnd,
-      })
-      .eq("auth_user_id", userId);
+    const [_, orgUpdate] = await Promise.all([
+      this.supa
+        .from("users")
+        .update({
+          current_price_id: priceId,
+          current_plan: priceMap?.plan ?? null,
+          subscription_status: status,
+          current_period_end: currentPeriodEnd,
+        })
+        .eq("auth_user_id", userId),
+      this.supa
+        .from("organisations")
+        .update({
+          seats_purchased: priceMap?.mailbox_limit ?? 1,
+        })
+        .eq("owner_user_id", userId)
+        .select("seats_used,name,id")
+        .single(),
+    ]);
+    if (orgUpdate.data.seats_used > priceMap?.mailbox_limit!) {
+      await this.brevoService.notifyMeOfProblem(
+        orgUpdate.data.name,
+        orgUpdate.data.id
+      );
+      // send an email to annonce that the customerId
+      // has exceeded his plan limit
+    }
   }
 
   private async onSubscriptionDeleted(sub: Stripe.Subscription) {
@@ -186,6 +210,7 @@ export class StripeWebhookService {
         // keep plan/price until end-of-period if you want to allow grace period
       })
       .eq("auth_user_id", users[0].auth_user_id);
+    // TODO set all to desactivated
   }
 
   private async onPaymentFailed(inv: Stripe.Invoice) {

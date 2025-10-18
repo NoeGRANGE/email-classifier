@@ -13,6 +13,7 @@ import { FastifyRequest } from "fastify";
 import { SupabaseAuthGuard } from "src/lib/supabase-auth-guard";
 import { stripe } from "./stripe";
 import { Supa } from "src/lib/supabase";
+import { BrevoService } from "src/services/brevo";
 
 const APP_URL = process.env.APP_URL || "http://localhost:3000";
 
@@ -21,13 +22,14 @@ const APP_URL = process.env.APP_URL || "http://localhost:3000";
 export class BillingController {
   constructor(
     private readonly billing: BillingService,
+    private readonly brevo: BrevoService,
     @Inject("SUPABASE") private readonly supa: Supa
   ) {}
 
   @Get("me")
   async me(@Req() req: FastifyRequest) {
     const userId = req.user.id;
-    return this.billing.getBillingInfo(userId);
+    return await this.billing.getBillingInfo(userId);
   }
 
   @Get("plans")
@@ -115,7 +117,7 @@ export class BillingController {
   }
 
   @Post("portal")
-  async portal(@Req() req: any) {
+  async portal(@Req() req: any, @Body() body?: { locale?: string }) {
     const userId = req.user?.id;
     if (!userId) throw new UnauthorizedException();
 
@@ -127,9 +129,17 @@ export class BillingController {
 
     if (!user?.stripe_customer_id) throw new Error("No Stripe customer");
 
+    const requestedLocale = body?.locale;
+    const locale = (
+      requestedLocale && ["en", "fr"].includes(requestedLocale)
+        ? requestedLocale
+        : "auto"
+    ) as "fr" | "en" | "auto";
+
     const session = await stripe.billingPortal.sessions.create({
       customer: user.stripe_customer_id,
-      return_url: `${APP_URL}/account`,
+      return_url: `${APP_URL}/subscriptions`,
+      locale,
     });
 
     return { url: session.url };

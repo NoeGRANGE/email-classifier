@@ -93,6 +93,7 @@ export default function SubscriptionsScreen() {
     [plans, info?.currentPlan]
   );
 
+  const hasActiveSubscription = Boolean(info?.currentPlan);
   const subscriptionStatus = info?.subscriptionStatus ?? null;
   const statusVariant: StatusVariant = subscriptionStatus
     ? STATUS_VARIANTS[subscriptionStatus]
@@ -235,7 +236,7 @@ export default function SubscriptionsScreen() {
     let redirected = false;
 
     try {
-      const portal = await API.openBillingPortal();
+      const portal = await API.openBillingPortal(locale);
       if (!portal?.url) {
         throw new Error("Missing portal URL");
       }
@@ -260,7 +261,7 @@ export default function SubscriptionsScreen() {
         setPortalRedirecting(false);
       }
     }
-  }, [isPortalRedirecting, t, extractErrorReason]);
+  }, [isPortalRedirecting, t, extractErrorReason, locale]);
 
   return (
     <div className={styles.wrapper}>
@@ -314,6 +315,11 @@ export default function SubscriptionsScreen() {
               t={t}
               onSelectPlan={handleSelectPlan}
               pendingPlanId={redirectingPlanId}
+              hasActiveSubscription={hasActiveSubscription}
+              onManageBillingPortal={
+                canManageBillingPortal ? handleOpenBillingPortal : undefined
+              }
+              manageBillingPending={isPortalRedirecting}
             />
           ) : null}
         </>

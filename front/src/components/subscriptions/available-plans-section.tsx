@@ -6,6 +6,9 @@ type AvailablePlansSectionProps = {
   t: TranslateFn;
   onSelectPlan: (plan: PlanCardData) => void;
   pendingPlanId: string | null;
+  hasActiveSubscription?: boolean;
+  onManageBillingPortal?: () => void;
+  manageBillingPending?: boolean;
 };
 
 export default function AvailablePlansSection({
@@ -13,6 +16,9 @@ export default function AvailablePlansSection({
   t,
   onSelectPlan,
   pendingPlanId,
+  hasActiveSubscription = false,
+  onManageBillingPortal,
+  manageBillingPending = false,
 }: AvailablePlansSectionProps) {
   if (!planCards.length) {
     return null;
@@ -39,6 +45,9 @@ export default function AvailablePlansSection({
             t={t}
             onSelectPlan={onSelectPlan}
             isPending={pendingPlanId === plan.id}
+            hasActiveSubscription={hasActiveSubscription}
+            onManageBilling={onManageBillingPortal}
+            manageBillingPending={manageBillingPending}
           />
         ))}
       </div>

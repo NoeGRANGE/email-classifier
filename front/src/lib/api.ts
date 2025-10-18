@@ -219,10 +219,14 @@ export async function createBillingCheckout(
   });
 }
 
-export async function openBillingPortal(cookieHeader?: string) {
+export async function openBillingPortal(
+  locale?: string,
+  cookieHeader?: string
+) {
   return fetchWithAuth<BillingPortalResponse>({
     path: "/billing/portal",
     method: "POST",
+    ...(locale ? { body: { locale } } : {}),
     cookieHeader,
   });
 }
