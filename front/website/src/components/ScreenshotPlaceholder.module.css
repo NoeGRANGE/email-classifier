@@ -1,0 +1,8 @@
+.placeholder {
+  border: 2px dashed var(--primary-color);
+  padding: 2rem;
+  text-align: center;
+  border-radius: var(--radius);
+  background-color: var(--primary-color-alpha);
+  color: var(--text-secondary);
+}

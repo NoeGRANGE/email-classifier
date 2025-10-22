@@ -1,0 +1,8 @@
+.note {
+  background-color: var(--accent-color);
+  color: white;
+  padding: 1rem;
+  border-radius: var(--radius);
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
