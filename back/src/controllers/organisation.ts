@@ -132,16 +132,19 @@ export class OrganisationController {
     @Body("name") name: string
   ) {
     const user = await this.registerService.getMe(req.user.id);
-    if (!user.org_id === null) {
+    if (!user.org_id === null || user.current_plan === null) {
       res
         .status(403)
         .send({ error: "User already registered in an organisation" });
       return;
     }
+    const subscriptionPlan =
+      await this.organisationService.getSubscriptionLimit(user.current_plan);
 
     const orgId = await this.organisationService.createOrganisation(
       name,
-      user.auth_user_id
+      user.auth_user_id,
+      subscriptionPlan.mailbox_limit
     );
     await Promise.all([
       this.organisationService.setOrganisationToUser(user.auth_user_id, orgId),

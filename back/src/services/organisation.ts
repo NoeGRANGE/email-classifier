@@ -6,12 +6,16 @@ import { randomBytes } from "crypto";
 export class OrganisationService {
   constructor(@Inject("SUPABASE") private supabase: Supa) {}
 
-  async createOrganisation(name: string, ownerOrgId: string): Promise<number> {
+  async createOrganisation(
+    name: string,
+    ownerOrgId: string,
+    limit: number
+  ): Promise<number> {
     const { error: orgErr, data } = await this.supabase
       .from("organisations")
       .insert({
         name,
-        seats_purchased: 1, // TODO: change to real values
+        seats_purchased: limit,
         seats_used: 1,
         owner_user_id: ownerOrgId,
       })
@@ -241,6 +245,18 @@ export class OrganisationService {
 
     if (error) throw error;
 
+    return data;
+  }
+
+  async getSubscriptionLimit(
+    plan: "solo" | "team" | "business" | "enterprise"
+  ) {
+    const { data, error } = await this.supabase
+      .from("billing_prices")
+      .select("mailbox_limit")
+      .eq("plan", plan)
+      .single();
+    if (error) throw error;
     return data;
   }
 }

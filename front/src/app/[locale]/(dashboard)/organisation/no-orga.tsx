@@ -78,12 +78,7 @@ export default function NoOrganisationPage() {
               {t("noOrga.actions.primary", "Choose a subscription")}
             </Link>
           </Button>
-          <Button preset="ghost" paddingInline="1.25rem" asChild>
-            {/* TODO: Add link to demo inbox */}
-            <Link href={`/${locale}/emails`}>
-              {t("noOrga.actions.secondary", "Explore demo inbox")}
-            </Link>
-          </Button>
+          {/* TODO: Add link to demo */}
         </footer>
       </div>
     </div>

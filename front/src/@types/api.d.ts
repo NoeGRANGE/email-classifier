@@ -21,6 +21,7 @@ declare global {
       auth_user_id: string;
       email: string;
       org_id: number;
+      subscription_status: string | null;
     };
   };
 

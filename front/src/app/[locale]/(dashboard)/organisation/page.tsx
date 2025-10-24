@@ -1,5 +1,6 @@
 import * as API from "@/lib/api";
 import OrganisationScreen from "@/components/organisation/screen";
+import CreateOrganisation from "@/components/organisation/create-organisation";
 import { headers } from "next/headers";
 import NoOrganisationPage from "./no-orga";
 import { cookies } from "next/headers";
@@ -40,6 +41,23 @@ export default async function OrganisationPage({
       </main>
     );
   } catch {
-    return <NoOrganisationPage />;
+    try {
+      const me = await API.apiMe(cookieHeader);
+      if (
+        me.user.org_id === null &&
+        (me.user.subscription_status === "active" ||
+          me.user.subscription_status === "trialing")
+      ) {
+        return (
+          <main>
+            <CreateOrganisation />
+          </main>
+        );
+      } else {
+        return <NoOrganisationPage />;
+      }
+    } catch {
+      return <NoOrganisationPage />;
+    }
   }
 }

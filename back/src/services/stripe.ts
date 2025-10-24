@@ -14,8 +14,6 @@ export class StripeWebhookService {
   ) {}
 
   async handleEvent(event: Stripe.Event) {
-    console.log("handling stripe event:", event.type);
-    console.log(event);
     const { error: dedupErr } = await this.supa
       .from("stripe_events")
       .insert({ id: event.id, type: event.type })

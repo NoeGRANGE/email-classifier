@@ -181,6 +181,18 @@ export async function getOrganisationData(
   });
 }
 
+export async function createOrganisation(
+  name: string,
+  cookieHeader?: string
+): Promise<{ ok: boolean }> {
+  return fetchWithAuth<{ ok: boolean }>({
+    method: "POST",
+    path: "/organisation/create",
+    body: { name },
+    cookieHeader,
+  });
+}
+
 export async function inviteToOrganisation(
   email: string,
   role: string,
