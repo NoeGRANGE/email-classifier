@@ -13,7 +13,7 @@
     "steps.items.classify.description": "Design smart categories that mirror the different types of emails in your inbox by just describing them.",
     "steps.items.classify.image_alt": "Email classifier dashboard illustration",
     "steps.items.insights.title": "3. Add Actions",
-    "steps.items.insights.description": "Attach automated actions - Slack alerts, tags, assignments - to keep every lead moving.",
+    "steps.items.insights.description": "Easily attach automated actions - tags, replies, forward and more - to keep every lead moving.",
     "steps.items.insights.image_alt": "Insights analytics illustration"
   },
   "fr": {
@@ -30,7 +30,7 @@
     "steps.items.classify.description": "Créez des catégories intelligentes qui reflètent les différents types d'emails dans votre boîte de réception en les décrivant simplement.",
     "steps.items.classify.image_alt": "Illustration du tableau de bord de classification d'emails",
     "steps.items.insights.title": "3. Ajoutez des actions",
-    "steps.items.insights.description": "Ajoutez des actions automatiques (alertes Slack, tags, attributions) pour garder chaque piste en mouvement.",
+    "steps.items.insights.description": "Ajoutez facilement des actions automatiques (tags, réponses, transferts, etc.) pour garder chaque piste en mouvement.",
     "steps.items.insights.image_alt": "Illustration d'analyses d'insights"
   }
 }

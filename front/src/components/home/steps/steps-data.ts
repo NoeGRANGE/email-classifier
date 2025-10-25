@@ -54,7 +54,7 @@ export const STEP_DEFINITIONS: StepDefinition[] = [
     titleFallback: "3. Add Actions",
     descriptionKey: "steps.items.insights.description",
     descriptionFallback:
-      "Attach automated actions - Slack alerts, tags, assignments - to keep every lead moving.",
+      "Easily attach automated actions - tags, replies, forward and more - to keep every lead moving.",
     imageAltKey: "steps.items.insights.image_alt",
     imageAltFallback: "Insights analytics illustration",
   },
