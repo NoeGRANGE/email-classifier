@@ -14,6 +14,7 @@
   flex-direction: column;
   gap: clamp(56px, 10vw, 120px);
   padding-bottom: clamp(56px, 12vw, 144px);
+  width: 100%;
 }
 
 .hero {
@@ -22,8 +23,9 @@
   flex-direction: column;
   justify-content: center;
   gap: 24px;
-  padding: 0 clamp(24px, 8vw, 96px) clamp(48px, 12vw, 128px);
+  padding: 0 clamp(24px, 8vw, 96px) clamp(28px, 8vw, 80px);
   max-width: 960px;
+  align-self: center;
 }
 
 .heroTitle {
@@ -31,13 +33,21 @@
   font-weight: 700;
   line-height: 1.1;
   color: var(--text-primary);
+  text-align: center;
+}
+
+.getStartedButton {
+  margin-top: 60px;
+  align-self: center;
 }
 
 .heroSubtitle {
   font-size: clamp(1.125rem, 2.5vw, 1.5rem);
   line-height: 1.6;
   color: var(--text-secondary);
-  max-width: 620px;
+  max-width: 520px;
+  align-self: center;
+  text-align: center;
 }
 
 @media (max-width: 720px) {
@@ -50,7 +60,7 @@
   }
 
   .hero {
-    padding: 0 clamp(16px, 6vw, 48px) clamp(40px, 16vw, 96px);
+    padding: 0 clamp(16px, 6vw, 48px) clamp(24px, 12vw, 72px);
   }
 }
 

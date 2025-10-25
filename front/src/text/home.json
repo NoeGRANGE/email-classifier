@@ -2,6 +2,7 @@
   "en": {
     "topbar.sign_in": "Log in",
     "hero.title": "The smart way to triage your inbox",
+    "hero.cta": "Get started for free",
     "hero.subtitle": "Automate email classification and keep your focus on building your startup.",
     "steps.eyebrow": "How it works",
     "steps.title": "Just 3 steps to get started",
@@ -18,6 +19,7 @@
   },
   "fr": {
     "topbar.sign_in": "Se connecter",
+    "hero.cta": "Commencer gratuitement",
     "hero.title": "La façon intelligente de trier votre boîte mail",
     "hero.subtitle": "Automatisez la classification des emails et concentrez-vous sur votre startup.",
     "steps.eyebrow": "Comment ça marche",
