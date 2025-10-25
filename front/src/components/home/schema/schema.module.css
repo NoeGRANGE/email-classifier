@@ -1,0 +1,10 @@
+.outlook {
+  width: 24px;
+  height: 24px;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--primary-color);
+}

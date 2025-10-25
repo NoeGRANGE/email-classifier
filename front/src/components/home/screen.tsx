@@ -6,12 +6,12 @@ import styles from "./screen.module.css";
 import Steps from "./steps";
 import TopBar from "./top-bar";
 import { Button } from "../ui/button";
+import AppSchema from "./schema/schema";
 
 export default function HomeScreen() {
   const { t } = useTranslations("home");
 
   const moveToSubscription = () => {
-    // get locale from URL or default to 'en'
     const locale = window.location.pathname.split("/")[1] || "en";
     window.location.href = `/${locale}/sign-up`;
   };
@@ -38,6 +38,7 @@ export default function HomeScreen() {
             {t("hero.cta", "Get Started for free")}
           </Button>
         </section>
+        <AppSchema />
         <Steps />
       </main>
     </div>
