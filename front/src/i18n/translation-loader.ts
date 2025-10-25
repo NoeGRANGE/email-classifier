@@ -12,6 +12,7 @@ const namespaceLoaders: Record<string, LoaderFn> = {
   dashboard: () => import("@/text/dashboard.json"),
   subscriptions: () => import("@/text/subscriptions.json"),
   organisation: () => import("@/text/organisation.json"),
+  home: () => import("@/text/home.json"),
   emails: () => import("@/text/emails.json"),
   configurations: () => import("@/text/configurations.json"),
   settings: () => import("@/text/settings.json"),

@@ -1,0 +1,117 @@
+.progressLineWrap {
+  align-self: stretch;
+  display: flex;
+}
+
+.progressLineWrap > * {
+  height: 100%;
+}
+
+.stepButton {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 18px;
+  padding: 18px 22px;
+  border-radius: clamp(12px, 2.4vw, 18px);
+  border: 1px solid transparent;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 160ms ease,
+    background-color 160ms ease, box-shadow 160ms ease;
+  color: inherit;
+}
+
+.stepButton:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--primary-color) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.stepNumber {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--primary-color);
+  background: color-mix(in srgb, var(--primary-color-alpha) 45%, #fff 55%);
+  border: 1px solid transparent;
+}
+
+.stepNumberActive {
+  border-color: color-mix(in srgb, var(--primary-color) 45%, transparent);
+  background: color-mix(in srgb, var(--primary-color-alpha) 65%, #fff 35%);
+}
+
+.stepContent {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stepHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stepIcon {
+  width: 22px;
+  height: 22px;
+  color: var(--primary-color);
+}
+
+.stepTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stepDescription {
+  margin: 0;
+  color: color-mix(in srgb, var(--text-secondary) 85%, #000 15%);
+  line-height: 1.55;
+  font-size: 16px;
+}
+
+.stepIconWrap {
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--primary-color-alpha);
+  color: var(--primary-color);
+  border-radius: 1000px;
+}
+
+@media (max-width: 1024px) {
+  .stepButton,
+  .stepButtonActive {
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .stepButton {
+    gap: 16px;
+    padding: 16px 18px;
+  }
+
+  .stepTitle {
+    font-size: 1rem;
+  }
+
+  .stepDescription {
+    font-size: 0.95rem;
+  }
+}

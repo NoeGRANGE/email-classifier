@@ -1,0 +1,27 @@
+.line {
+  width: 2px;
+  height: 100%;
+  background-color: var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.line.active::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0%;
+  background-color: var(--primary-color);
+  animation: fillOrange var(--anim-duration, 3s) forwards linear;
+}
+
+@keyframes fillOrange {
+  from {
+    height: 0%;
+  }
+  to {
+    height: 100%;
+  }
+}

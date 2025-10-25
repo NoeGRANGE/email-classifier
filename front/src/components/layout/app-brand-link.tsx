@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useMemo } from "react";
-
+import classnames from "classnames";
 import { useI18n } from "@/i18n/I18n-provider";
+import styles from "./app-brand-link.module.css";
 
 type AppBrandLinkProps = {
   className?: string;
@@ -23,7 +24,7 @@ export function AppBrandLink({
   }, [locale]);
 
   return (
-    <Link href={href} className={className}>
+    <Link href={href} className={classnames(styles.brand, className)}>
       {label ?? fallbackLabel}
     </Link>
   );

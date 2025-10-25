@@ -1,0 +1,36 @@
+{
+  "en": {
+    "topbar.sign_in": "Log in",
+    "hero.title": "The smart way to triage your inbox",
+    "hero.subtitle": "Automate email classification and keep your focus on building your startup.",
+    "steps.eyebrow": "How it works",
+    "steps.title": "Just 3 steps to get started",
+    "steps.subtitle": "Go from raw emails to automated actions without wasting time.",
+    "steps.items.upload.title": "1. Add Your MailBoxes",
+    "steps.items.upload.description": "Securely connect your Outlook mailboxes in a few clicks.",
+    "steps.items.upload.image_alt": "Inbox upload illustration",
+    "steps.items.classify.title": "2. Create Categories",
+    "steps.items.classify.description": "Design smart categories that mirror the different types of emails in your inbox by just describing them.",
+    "steps.items.classify.image_alt": "Email classifier dashboard illustration",
+    "steps.items.insights.title": "3. Add Actions",
+    "steps.items.insights.description": "Attach automated actions - Slack alerts, tags, assignments - to keep every lead moving.",
+    "steps.items.insights.image_alt": "Insights analytics illustration"
+  },
+  "fr": {
+    "topbar.sign_in": "Se connecter",
+    "hero.title": "La façon intelligente de trier votre boîte mail",
+    "hero.subtitle": "Automatisez la classification des emails et concentrez-vous sur votre startup.",
+    "steps.eyebrow": "Comment ça marche",
+    "steps.title": "3 étapes pour démarrer",
+    "steps.subtitle": "Passez d'emails bruts à des actions automatiques sans perdre de temps.",
+    "steps.items.upload.title": "1. Ajoutez vos boîtes mails",
+    "steps.items.upload.description": "Connectez en toute sécurité vos boîtes Outlook en quelques clics.",
+    "steps.items.upload.image_alt": "Illustration d'import de boîte mail",
+    "steps.items.classify.title": "2. Créez vos catégories",
+    "steps.items.classify.description": "Créez des catégories intelligentes qui reflètent les différents types d'emails dans votre boîte de réception en les décrivant simplement.",
+    "steps.items.classify.image_alt": "Illustration du tableau de bord de classification d'emails",
+    "steps.items.insights.title": "3. Ajoutez des actions",
+    "steps.items.insights.description": "Ajoutez des actions automatiques (alertes Slack, tags, attributions) pour garder chaque piste en mouvement.",
+    "steps.items.insights.image_alt": "Illustration d'analyses d'insights"
+  }
+}

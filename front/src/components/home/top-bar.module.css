@@ -1,0 +1,44 @@
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--home-topbar-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(20px, 8vw, 96px);
+  background: inherit;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 65%, transparent);
+  z-index: 20;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 24px);
+}
+
+.languageSwitcher {
+  display: flex;
+  align-items: center;
+}
+
+.loginButton {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    padding: 0 clamp(16px, 6vw, 48px);
+  }
+}
+
+@media (max-width: 480px) {
+  .actions {
+    gap: 12px;
+  }
+}

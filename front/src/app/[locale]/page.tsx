@@ -1,10 +1,5 @@
-import styles from "../page.module.css";
+import HomeScreen from "@/components/home/screen";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}></main>
-      <footer className={styles.footer}>TODO footer</footer>
-    </div>
-  );
+  return <HomeScreen />;
 }
