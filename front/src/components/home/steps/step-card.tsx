@@ -17,7 +17,9 @@ export function StepCard({ step, delay, isActive, onSelect }: StepCardProps) {
   return (
     <button
       type="button"
-      className={cn(styles.stepButton)}
+      className={cn(styles.stepButton, {
+        [styles.stepButtonActive]: isActive,
+      })}
       onClick={() => {
         if (!isActive) onSelect();
       }}

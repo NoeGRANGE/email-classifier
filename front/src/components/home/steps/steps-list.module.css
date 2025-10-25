@@ -5,9 +5,17 @@
   margin: 0;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 12px;
 }
 
 .stepListItem {
   margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .stepList {
+    max-width: 100%;
+    gap: 0;
+  }
 }

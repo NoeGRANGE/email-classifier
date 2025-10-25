@@ -4,7 +4,7 @@
   flex-direction: column;
   gap: 12px;
   align-items: center;
-  width: calc(50% - 12px);
+  width: min(calc(50% - 12px), 80%);
   padding: 15px;
 }
 
@@ -36,5 +36,12 @@
   .illustration {
     order: -1;
     width: 100%;
+  }
+  .illustrationInner {
+    width: min(340px, 100%);
+  }
+
+  .illustrationCaption {
+    display: none;
   }
 }
