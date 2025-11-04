@@ -1,3 +1,69 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  width: min(900px, 100%);
+  height: clamp(360px, 50vw, 500px);
+  padding: 25px;
+  margin: 0 auto;
+}
+
+.container {
+  position: absolute;
+}
+
+.layout {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: clamp(20px, 5vw, 48px);
+}
+
+.columnSingle,
+.columnLogo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.columnStack {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(12px, 3vw, 24px);
+}
+
+.circle {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  border: 2px solid color-mix(in srgb, var(--border) 70%, transparent 30%);
+  background: var(--surface);
+  box-shadow: 0 0 20px -12px rgba(0, 0, 0, 0.8);
+  padding: 12px;
+}
+
+.circleLarge {
+  width: 4rem;
+  height: 4rem;
+}
+
 .outlook {
   width: 24px;
   height: 24px;
@@ -7,4 +73,25 @@
   font-size: 28px;
   font-weight: bold;
   color: var(--primary-color);
+}
+
+@media (max-width: 640px) {
+  .container {
+    height: clamp(320px, 70vw, 380px);
+    /* padding: clamp(16px, 6vw, 32px); */
+  }
+
+  .layout {
+    gap: clamp(16px, 6vw, 28px);
+  }
+
+  .circle {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .circleLarge {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
 }

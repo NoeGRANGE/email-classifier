@@ -31,6 +31,7 @@ export default function HomeScreen() {
               "Automate email classification and keep your focus on building your startup."
             )}
           </p>
+          <AppSchema className={styles.schema} />
           <Button
             className={styles.getStartedButton}
             onClick={moveToSubscription}
@@ -38,7 +39,6 @@ export default function HomeScreen() {
             {t("hero.cta", "Get Started for free")}
           </Button>
         </section>
-        <AppSchema />
         <Steps />
       </main>
     </div>
