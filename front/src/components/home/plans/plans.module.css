@@ -1,0 +1,107 @@
+.wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.container {
+  min-width: 270px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 24px;
+  padding: 32px 28px;
+  max-width: 320px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 24px;
+  box-shadow: 0 32px 40px -32px rgba(15, 23, 42, 0.25);
+  text-align: center;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.container:hover {
+  box-shadow: 0 36px 48px -28px var(--primary-color);
+  transform: translateY(-6px);
+}
+
+.container h2 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b7280;
+}
+
+.price {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 8px;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.price::after {
+  content: "/ month";
+  text-wrap: nowrap;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+}
+
+.feature svg {
+  width: 18px;
+  height: 18px;
+  stroke: var(--primary-color);
+  stroke-width: 2.5;
+}
+
+.billing {
+  margin-top: -16px;
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.container button {
+  width: 100%;
+  padding: 12px 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  background: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #111827;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  margin-top: auto;
+}
+
+.container button:hover {
+  border-color: #111827;
+  box-shadow: 0 12px 24px -18px rgba(15, 23, 42, 0.55);
+  transform: translateY(-2px);
+}
+
+.container button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.2);
+}

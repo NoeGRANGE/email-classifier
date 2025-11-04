@@ -43,7 +43,7 @@ export const PLAN_AVAILABILITY_FALLBACK: Record<AvailabilityKey, string> = {
   over_limit: "Over current limit",
 };
 
-export const ENTERPRISE_CONTACT = "mailto:hello@linbolt.com";
+export const ENTERPRISE_CONTACT = "mailto:ngrange.dev@gmail.com";
 
 export const PLAN_ORDER: Record<PlanKey, number> = {
   solo: 1,

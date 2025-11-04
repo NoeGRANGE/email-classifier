@@ -23,7 +23,7 @@ import * as API from "@/lib/api";
 import styles from "./screen.module.css";
 
 const PRIVACY_FALLBACK = "/privacy";
-const HELP_FALLBACK = "mailto:support@linbolt.com";
+const HELP_FALLBACK = "mailto:ngrange.dev@gmail.com";
 
 const PRIVACY_HREF =
   process.env.NEXT_PUBLIC_PRIVACY_URL &&
