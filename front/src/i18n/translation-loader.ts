@@ -2,6 +2,7 @@ import type { Locale } from "./I18n-provider";
 
 export type TranslationDict = Record<string, string>;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type LoaderFn = () => Promise<any>;
 
 // Register JSON namespaces here so they can be shared by client and server helpers.
@@ -19,7 +20,10 @@ const namespaceLoaders: Record<string, LoaderFn> = {
   billing: () => import("@/text/billing.json"),
 };
 
-export function registerTranslationNamespace(namespace: string, loader: LoaderFn) {
+export function registerTranslationNamespace(
+  namespace: string,
+  loader: LoaderFn
+) {
   namespaceLoaders[namespace] = loader;
 }
 
@@ -38,8 +42,13 @@ export async function loadNamespaces(
   locale: Locale,
   namespaces: string[]
 ): Promise<TranslationDict> {
-  const dicts = await Promise.all(namespaces.map((ns) => loadNamespace(ns, locale)));
-  return dicts.reduce<TranslationDict>((acc, dict) => Object.assign(acc, dict), {});
+  const dicts = await Promise.all(
+    namespaces.map((ns) => loadNamespace(ns, locale))
+  );
+  return dicts.reduce<TranslationDict>(
+    (acc, dict) => Object.assign(acc, dict),
+    {}
+  );
 }
 
 export function createTranslator(dict: TranslationDict) {

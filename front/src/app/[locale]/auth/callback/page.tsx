@@ -28,6 +28,7 @@ export default function AuthCallback() {
         }
         if (!active) return;
         router.replace(`/${locale}`);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         if (!active) return;
         setError(e?.message || "Unexpected error");

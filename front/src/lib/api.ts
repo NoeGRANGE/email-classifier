@@ -16,6 +16,7 @@ type FetchWithAuthOptions = {
   extraHeaders?: Record<string, string>;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function fetchWithAuth<T = any>({
   path,
   method = "GET",
@@ -82,6 +83,7 @@ async function fetchWithAuth<T = any>({
     let serverMessage = "";
     try {
       if (contentType.includes("application/json")) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const data: any = await res.json();
         serverMessage =
           (typeof data?.message === "string" && data.message) ||
@@ -382,6 +384,7 @@ export async function createCategory(
   name: string,
   description: string,
   configId: number,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   actions: { type: CategoryActionType; props: any }[],
   cookieHeader?: string
 ): Promise<{ ok: boolean }> {
@@ -398,6 +401,7 @@ export async function updateCategory(
   name: string,
   description: string,
   configId: number,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   actions: { type: CategoryActionType; props: any }[],
   cookieHeader?: string
 ): Promise<{ ok: boolean }> {

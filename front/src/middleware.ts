@@ -40,6 +40,7 @@ export function middleware(req: NextRequest) {
 
   const segments = pathname.split("/").filter(Boolean);
   const [maybeLocale] = segments;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (maybeLocale && LOCALES.includes(maybeLocale as any)) {
     const res = NextResponse.next();
     res.cookies.set("locale", maybeLocale, { path: "/" });

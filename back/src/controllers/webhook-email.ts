@@ -9,7 +9,6 @@ import {
 } from "@nestjs/common";
 import { Cron } from "@nestjs/schedule";
 import { FastifyReply, FastifyRequest } from "fastify";
-import { LLMService } from "src/services/llm";
 import { OutlookAuthService } from "src/services/outlook-auth";
 import { EmailSubscriptionService } from "src/services/subscription";
 import { WebhookEmailService } from "src/services/webhook-email";
