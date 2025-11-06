@@ -2,12 +2,10 @@ import type { Metadata } from "next";
 import "../globals.css";
 import { I18nProvider, type Locale } from "@/i18n/I18n-provider";
 
-type Props = {
-  children: React.ReactNode;
-  params: Promise<{ locale: Locale }>;
-};
-
-export default async function LocaleLayout({ children, params }: Props) {
+export default async function LocaleLayout({
+  children,
+  params,
+}: LayoutProps<"/[locale]">) {
   const { locale: maybeLocale } = await params;
   const locale = (maybeLocale ?? "en") as Locale;
   return <I18nProvider initialLocale={locale}>{children}</I18nProvider>;
@@ -19,9 +17,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}): Promise<Metadata> {
+}: LayoutProps<"/[locale]">): Promise<Metadata> {
   const { locale: maybeLocale } = await params;
   const l = (maybeLocale ?? "en") as Locale;
   return {

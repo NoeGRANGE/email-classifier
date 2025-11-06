@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
 import {
   Drawer,
@@ -11,37 +11,40 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/drawer";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
-type Direction = "left" | "right" | "top" | "bottom"
+type Direction = "left" | "right" | "top" | "bottom";
 
-type ResponsiveDrawerProps = Omit<React.ComponentProps<typeof Drawer>, "direction"> & {
+type ResponsiveDrawerProps = Omit<
+  React.ComponentProps<typeof Drawer>,
+  "direction" | "fadeFromIndex"
+> & {
   /**
    * Drawer direction used on viewports below the mobile breakpoint.
    * Defaults to `"bottom"` so the drawer behaves like a native sheet on phones.
    */
-  mobileDirection?: Extract<Direction, "bottom" | "top">
+  mobileDirection?: Extract<Direction, "bottom" | "top">;
   /**
    * Drawer direction used on viewports at or above the mobile breakpoint.
    * Defaults to `"right"` for a sidebar-like experience on desktop.
    */
-  desktopDirection?: Extract<Direction, "right" | "left">
-}
+  desktopDirection?: Extract<Direction, "right" | "left">;
+};
 
 export function RightDrawer({
   mobileDirection = "bottom",
   desktopDirection = "right",
   ...props
 }: ResponsiveDrawerProps) {
-  const isMobile = useIsMobile()
-  const direction = isMobile ? mobileDirection : desktopDirection
+  const isMobile = useIsMobile();
+  const direction = isMobile ? mobileDirection : desktopDirection;
 
-  return <Drawer direction={direction} {...props} />
+  return <Drawer direction={direction} {...props} />;
 }
 
-type RightDrawerContentProps = React.ComponentProps<typeof DrawerContent>
+type RightDrawerContentProps = React.ComponentProps<typeof DrawerContent>;
 
 export const RightDrawerContent = React.forwardRef<
   React.ElementRef<typeof DrawerContent>,
@@ -64,8 +67,8 @@ export const RightDrawerContent = React.forwardRef<
     >
       {children}
     </DrawerContent>
-  )
-})
+  );
+});
 
 export {
   DrawerTrigger as RightDrawerTrigger,
@@ -74,4 +77,4 @@ export {
   DrawerFooter as RightDrawerFooter,
   DrawerTitle as RightDrawerTitle,
   DrawerDescription as RightDrawerDescription,
-}
+};
