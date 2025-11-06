@@ -34,6 +34,7 @@ export default function Steps() {
       className={styles.container}
       aria-labelledby="steps-title"
       data-testid="home-steps"
+      id="steps"
     >
       <p className={styles.eyebrow}>{t("steps.eyebrow", "How it works")}</p>
       <h2 id="steps-title" className={styles.title}>

@@ -44,7 +44,7 @@ export default function HomePlans() {
   );
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} id="plans">
       {plans.map(({ key, name, price, mailboxes, action, callBack }) => (
         <PlanComponent
           key={key}

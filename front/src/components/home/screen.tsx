@@ -8,6 +8,7 @@ import TopBar from "./top-bar";
 import { Button } from "../ui/button";
 import AppSchema from "./schema/schema";
 import HomePlans from "./plans/plans";
+import HomeFooter from "./footer/footer";
 
 export default function HomeScreen() {
   const { t } = useTranslations("home");
@@ -43,6 +44,7 @@ export default function HomeScreen() {
         <Steps />
         <HomePlans />
       </main>
+      <HomeFooter />
     </div>
   );
 }
