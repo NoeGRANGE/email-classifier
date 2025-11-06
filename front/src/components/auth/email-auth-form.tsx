@@ -116,6 +116,7 @@ export default function EmailAuthForm({ mode }: EmailAuthFormProps) {
         await apiLogin(accessToken, refreshToken);
         await redirectAfterSign();
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err?.message || t("err_unexpected"));
     } finally {
