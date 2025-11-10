@@ -2,8 +2,8 @@ module.exports = {
   apps: [
     {
       name: "email-classifier",
+      cwd: "/home/ubuntu/api/back",
       script: "dist/main.js",
-      cwd: ".",
       instances: 1,
       exec_mode: "fork",
       watch: false,
