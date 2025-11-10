@@ -30,7 +30,6 @@ export class RegisterController {
       refreshToken?: string;
     }
   ) {
-    console.log("RegisterController.registerMe called");
     const accessToken =
       body?.accessToken ||
       (req.headers["authorization"] as string | undefined)?.split(" ")[1];
@@ -40,19 +39,15 @@ export class RegisterController {
         .status(400)
         .send({ ok: false, error: "Missing accessToken" });
     }
-    console.log("Access Token:", accessToken);
     const { data, error } = await this.supabase.auth.getUser(accessToken);
-    console.log("User Data:", data);
     if (error || !data?.user) {
       return reply
         .status(401)
         .send({ ok: false, error: "Invalid accessToken" });
     }
-    console.log("User:", data.user);
 
     const user = data.user;
     const res = await this.register.registerUser(user.id, user.email || "");
-    console.log("Registered User:", res);
     const isProd = (process.env.NODE_ENV || "production") === "production";
     const cookieOpts = {
       path: "/",
@@ -71,7 +66,6 @@ export class RegisterController {
         maxAge: 60 * 24 * 60 * 60,
       });
     }
-    console.log("Cookies set");
     return reply.send({ ok: true, user: res });
   }
 
