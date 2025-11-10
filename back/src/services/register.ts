@@ -39,11 +39,17 @@ export class RegisterService {
   }
 
   async getMe(authUserId: string): Promise<RegisterResult | null> {
-    const { data } = await this.supabase
+    console.log("Get me", authUserId);
+    const { data, error } = await this.supabase
       .from("users")
       .select("auth_user_id,email,org_id,subscription_status,current_plan")
       .eq("auth_user_id", authUserId)
       .single();
+    console.log("Get me result", data);
+    if (error) {
+      console.error("Error fetching user:", error);
+      return null;
+    }
     return (data as RegisterResult) || null;
   }
 }
