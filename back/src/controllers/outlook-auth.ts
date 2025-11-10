@@ -71,8 +71,7 @@ export class OutlookAuthController {
       token.expires_in,
       email
     );
-    const FRONT_URL =
-      process.env.FRONTEND_URL ?? "http://localhost:3000/en/emails";
+    const FRONT_URL = process.env.APP_URL ?? "http://localhost:3000";
     const doneUrl = `${FRONT_URL}/en/emails/inbox?connected=outlook`;
     if (flow === "redirect") {
       return res.status(302).redirect(doneUrl);
