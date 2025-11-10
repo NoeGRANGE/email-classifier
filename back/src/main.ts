@@ -19,6 +19,7 @@ import cors from "@fastify/cors";
 import cookie from "@fastify/cookie";
 import "ts-node/register/transpile-only";
 import "tsconfig-paths/register";
+import { console } from "inspector";
 
 async function start() {
   const fastifyAdapter = new FastifyAdapter({
@@ -63,6 +64,7 @@ async function start() {
   });
 
   const PORT = Number(process.env.PORT || 3000);
+  console.log(`🚀 Server is running on http://127.0.0.1:${PORT}`);
   await app.listen({ port: PORT, host: "127.0.0.1" });
 }
 
