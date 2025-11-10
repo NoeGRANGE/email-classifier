@@ -19,7 +19,6 @@ import cors from "@fastify/cors";
 import cookie from "@fastify/cookie";
 import "ts-node/register/transpile-only";
 import "tsconfig-paths/register";
-import { console } from "inspector";
 
 async function start() {
   const fastifyAdapter = new FastifyAdapter({
