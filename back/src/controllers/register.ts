@@ -174,7 +174,6 @@ export class RegisterController {
   @UseGuards(SupabaseAuthGuard)
   @Get("me")
   async me(@Req() req: FastifyRequest) {
-    console.log("RegisterController.me called");
     const u = req.user;
     const me = await this.register.getMe(u.id);
     return { ok: true, user: me };
