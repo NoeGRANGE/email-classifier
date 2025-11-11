@@ -53,7 +53,8 @@ export class RegisterController {
       path: "/",
       httpOnly: true,
       secure: isProd,
-      sameSite: isProd ? "lax" : "lax",
+      sameSite: isProd ? "none" : "lax",
+      domain: isProd ? ".linbolt.com" : undefined,
     } as const;
 
     reply.setCookie("sb-access-token", accessToken, {
@@ -100,7 +101,8 @@ export class RegisterController {
       path: "/",
       httpOnly: true,
       secure: isProd,
-      sameSite: isProd ? "lax" : "lax",
+      sameSite: isProd ? "none" : "lax",
+      domain: isProd ? ".linbolt.com" : undefined,
     } as const;
 
     reply.setCookie("sb-access-token", accessToken, {
@@ -151,7 +153,8 @@ export class RegisterController {
       path: "/",
       httpOnly: true,
       secure: isProd,
-      sameSite: isProd ? "lax" : "lax",
+      sameSite: isProd ? "none" : "lax",
+      domain: isProd ? ".linbolt.com" : undefined,
     } as const;
 
     reply.setCookie("sb-access-token", session.access_token, {
