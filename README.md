@@ -2,7 +2,7 @@
 
 A powerful full-stack application designed to classify and manage emails efficiently. Built with modern web technologies, it integrates seamlessly with Microsoft 365 and offers a robust set of features for email automation.
 
-![Emails Dashboard](front/public/home.jpeg)
+![Emails Dashboard](./landing_page.mp4)
 
 ## 🚀 Features
 
