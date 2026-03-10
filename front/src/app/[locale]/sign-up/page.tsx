@@ -1,9 +1,10 @@
-import SignUpScreen from "@/components/sign-up/screen";
+import { redirect } from "next/navigation";
 
-export default function SignUpPage() {
-  return (
-    <main>
-      <SignUpScreen />
-    </main>
-  );
+export default async function SignUpPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  redirect(`/${locale}/deprecated`);
 }
